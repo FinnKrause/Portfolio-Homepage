@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+  homepage-nextjs-app:
+    build: .
+    ports:
+      - "8050:3000"
