@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(git --version)",
+      "Bash(textutil -convert txt \"/Users/finn/Downloads/Lebenslauf - Ausgeschrieben.docx\" -output ./cv_ausgeschrieben.txt)",
+      "Bash(python3 -c ' *)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:impeccable.style)",
+      "WebSearch",
+      "Bash(npm install *)",
+      "Bash(sips -g orientation \"/Users/finn/Downloads/IMG_3168.HEIC\")",
+      "Bash(sips -s format jpeg -s formatOptions 90 /Users/finn/Downloads/IMG_3168.HEIC --out /private/tmp/claude-501/-Users-finn-Desktop-Coding-Portfolio/48933c3f-efc7-4434-85ae-ed47dd3b087d/scratchpad/portrait_full.jpg)",
+      "Bash(sips -g pixelWidth -g pixelHeight -g orientation /private/tmp/claude-501/-Users-finn-Desktop-Coding-Portfolio/48933c3f-efc7-4434-85ae-ed47dd3b087d/scratchpad/portrait_full.jpg)",
+      "Bash(sips -r 90 /private/tmp/claude-501/-Users-finn-Desktop-Coding-Portfolio/48933c3f-efc7-4434-85ae-ed47dd3b087d/scratchpad/rotA.jpg)",
+      "Bash(sips -Z 1200 /private/tmp/claude-501/-Users-finn-Desktop-Coding-Portfolio/48933c3f-efc7-4434-85ae-ed47dd3b087d/scratchpad/rotA.jpg)",
+      "Bash(sips -r 270 /private/tmp/claude-501/-Users-finn-Desktop-Coding-Portfolio/48933c3f-efc7-4434-85ae-ed47dd3b087d/scratchpad/rotB.jpg)",
+      "Bash(sips -Z 600 /private/tmp/claude-501/-Users-finn-Desktop-Coding-Portfolio/48933c3f-efc7-4434-85ae-ed47dd3b087d/scratchpad/rotB.jpg)",
+      "Bash(sips -g pixelWidth -g pixelHeight /private/tmp/claude-501/-Users-finn-Desktop-Coding-Portfolio/48933c3f-efc7-4434-85ae-ed47dd3b087d/scratchpad/rotA.jpg)",
+      "Bash(npm run *)"
+    ]
+  }
+}
