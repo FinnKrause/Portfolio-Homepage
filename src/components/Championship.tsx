@@ -40,7 +40,7 @@ export function Championship() {
         <Reveal delay={0.05} className="mt-10">
           <div className="relative aspect-[2/1] overflow-hidden rounded-3xl border border-white/15 shadow-2xl md:aspect-[21/8]">
             <Image
-              src="/images/f1-podium.jpg"
+              src="/images/f1-podium2.jpg"
               alt={t(c.imageAlt)}
               fill
               sizes="(max-width: 1024px) 100vw, 72rem"

@@ -6,10 +6,30 @@ export const socials: {
   href: string;
   handle: string;
 }[] = [
-  { key: "github", label: "GitHub", href: "https://github.com/FinnKrause", handle: "@FinnKrause" },
-  { key: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/in/finnkrause001", handle: "in/finnkrause001" },
-  { key: "instagram", label: "Instagram", href: "https://www.instagram.com/f2nn.krse/", handle: "@f2nn.krse" },
-  { key: "email", label: "E-Mail", href: "mailto:mail@finnkrause.com", handle: "mail@finnkrause.com" },
+  {
+    key: "github",
+    label: "GitHub",
+    href: "https://github.com/FinnKrause",
+    handle: "@FinnKrause",
+  },
+  {
+    key: "linkedin",
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/finnkrause001",
+    handle: "in/finnkrause001",
+  },
+  {
+    key: "instagram",
+    label: "Instagram",
+    href: "https://www.instagram.com/f2nn.krse/",
+    handle: "@f2nn.krse",
+  },
+  {
+    key: "email",
+    label: "E-Mail",
+    href: "mailto:mail@finnkrause.com",
+    handle: "mail@finnkrause.com",
+  },
 ];
 
 export const profile = {
@@ -34,9 +54,27 @@ export const profile = {
   // Slim, understated highlight strip — a blend of achievement, engagement & craft
   // (deliberately not F1-only).
   heroHighlights: [
-    { icon: "trophy", label: { de: "F1 in Schools — Weltmeister ’23", en: "F1 in Schools — World Champion ’23" } },
-    { icon: "gavel", label: { de: "Umbruchszeiten — Jurymitglied", en: "Umbruchszeiten — jury member" } },
-    { icon: "lightbulb", label: { de: "Entwickler & Veranstaltungstechniker", en: "Developer & event engineer" } },
+    {
+      icon: "trophy",
+      label: {
+        de: "F1 in Schools — Weltmeister ’23",
+        en: "F1 in Schools — World Champion ’23",
+      },
+    },
+    {
+      icon: "gavel",
+      label: {
+        de: "Umbruchszeiten — Jurymitglied",
+        en: "Umbruchszeiten — jury member",
+      },
+    },
+    {
+      icon: "lightbulb",
+      label: {
+        de: "Entwickler & Veranstaltungstechniker",
+        en: "Developer & event engineer",
+      },
+    },
   ] as { icon: string; label: Localized }[],
 
   // About section — character-focused, drawn from the long-form CV.
@@ -126,13 +164,22 @@ export const profile = {
     } as Localized,
     stats: [
       { value: "1.", label: { de: "Platz weltweit", en: "place worldwide" } },
-      { value: "68", label: { de: "Teams im Finale", en: "teams in the final" } },
+      {
+        value: "68",
+        label: { de: "Teams im Finale", en: "teams in the final" },
+      },
       { value: "26", label: { de: "Nationen", en: "countries" } },
-      { value: "1 Mio.+", label: { de: "Teilnehmer / Jahr", en: "participants / year" } },
+      {
+        value: "1 Mio.+",
+        label: { de: "Teilnehmer / Jahr", en: "participants / year" },
+      },
     ] as { value: string; label: Localized }[],
     links: [
       {
-        label: { de: "Offizieller F1-Artikel", en: "Official Formula 1 article" },
+        label: {
+          de: "Offizieller F1-Artikel",
+          en: "Official Formula 1 article",
+        },
         href: "https://www.formula1.com/en/latest/article/german-team-crowned-champions-in-2023-aramco-f1-in-schools-world-finals.6AjY9ZlXQGicww2A7ZODN6",
       },
       {
@@ -147,16 +194,25 @@ export const profile = {
     galleryTitle: { de: "Impressionen", en: "Impressions" } as Localized,
     // Replace these placeholders with real photos (drop files in /public/images).
     gallery: [
-      { kind: "placeholder", label: { de: "Foto folgt", en: "Photo coming soon" }, aspect: "4 / 3" },
-      { kind: "placeholder", label: { de: "Foto folgt", en: "Photo coming soon" }, aspect: "4 / 3" },
-      { kind: "placeholder", label: { de: "Foto folgt", en: "Photo coming soon" }, aspect: "4 / 3" },
+      {
+        kind: "image",
+        src: "/images/f1-podium.jpg",
+      },
+      {
+        kind: "image",
+        src: "/images/f1-image1.jpeg",
+      },
+      {
+        kind: "image",
+        src: "/images/f1-image2.png",
+      },
     ] as MediaSlide[],
     videosTitle: { de: "Videos", en: "Videos" } as Localized,
     videos: [
-      { kind: "video", youtube: "TvUDUW9OsAQ" },
-      { kind: "video", youtube: "slCk5LKnrCA" },
       { kind: "video", youtube: "IW4Tb8JDNNA" },
       { kind: "video", youtube: "J-vTb7qopDI" },
+      { kind: "video", youtube: "slCk5LKnrCA" },
+      { kind: "video", youtube: "TvUDUW9OsAQ" },
     ] as MediaSlide[],
   },
 

@@ -14,8 +14,8 @@ export const projects: Project[] = [
       en: "Turning a MIDI controller into a lighting desk",
     },
     description: {
-      de: "Desktop-Software (Krause Software Solutions), die einen AKAI APCmini in ein vollwertiges Steuerpult für professionelle Lichttechnik verwandelt. Über ein visuelles 8×8-Raster werden Farben, Effekte, Moving Heads und ganze Szenen auf die Pads gelegt, live abgefeuert und als Konfiguration gespeichert.",
-      en: "Desktop software (Krause Software Solutions) that turns an AKAI APCmini into a full control surface for professional lighting. A visual 8×8 pad grid maps colours, effects, moving heads and entire scenes onto the pads — fired live and saved as reusable configs.",
+      de: "Desktop-Software, die einen AKAI APCmini in ein vollwertiges Steuerpult für professionelle Lichttechnik verwandelt. Über ein visuelles 8×8-Raster werden Farben, Effekte, Moving Heads und ganze Szenen auf die Pads gelegt, live abgefeuert und als Konfiguration gespeichert.",
+      en: "Desktop software that turns an AKAI APCmini into a full control surface for professional lighting. A visual 8×8 pad grid maps colours, effects, moving heads and entire scenes onto the pads — fired live and saved as reusable configs.",
     },
     highlights: [
       {
@@ -32,10 +32,7 @@ export const projects: Project[] = [
       },
     ],
     tech: ["JavaScript", "Node.js", "Electron", "MIDI", "DMX"],
-    gallery: [
-      { kind: "placeholder", label: { de: "Screenshot folgt", en: "Screenshot coming soon" }, aspect: "16 / 10" },
-      { kind: "placeholder", label: { de: "Screenshot folgt", en: "Screenshot coming soon" }, aspect: "16 / 10" },
-    ],
+    gallery: [{ kind: "image", src: "/images/apc-image1.png" }],
     repo: "https://github.com/FinnKrause/APCmini-Middleware",
     featured: true,
     accent: "brand",
@@ -75,8 +72,9 @@ export const projects: Project[] = [
       "Docker",
     ],
     gallery: [
-      { kind: "placeholder", label: { de: "Screenshot folgt", en: "Screenshot coming soon" }, aspect: "16 / 10" },
-      { kind: "placeholder", label: { de: "Screenshot folgt", en: "Screenshot coming soon" }, aspect: "16 / 10" },
+      { kind: "image", src: "/images/fsi-image1.png" },
+      { kind: "image", src: "/images/fsi-image2.png" },
+      { kind: "image", src: "/images/fsi-image3.png" },
     ],
     repo: "https://github.com/FinnKrause/Festival-Community-Stage-Portal",
     featured: true,

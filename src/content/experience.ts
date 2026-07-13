@@ -31,17 +31,6 @@ export const experience: ExperienceItem[] = [
     },
   },
   {
-    role: { de: "IT-Manager & IT-Sicherheit", en: "IT Manager & IT Security" },
-    org: "Marie-Therese-Gymnasium",
-    location: "Erlangen",
-    period: { de: "2019 – 2024", en: "2019 – 2024" },
-    kind: "work",
-    description: {
-      de: "Betreuung der schulischen IT-Infrastruktur. Zusätzlich prüfte ich Schulsysteme auf Schwachstellen und meldete diese verantwortungsvoll an den städtischen Dienstleister — für meine Funde wurde ich mehrfach von der Schulleitung ausgezeichnet.",
-      en: "Maintaining the school's IT infrastructure. On top of that I probed school systems for vulnerabilities and disclosed them responsibly to the city's IT provider — repeatedly recognised by the school's leadership for my findings.",
-    },
-  },
-  {
     role: { de: "Servicekraft im Altenheim", en: "Care-home service staff" },
     org: "Wohnstift Rathsberg",
     location: "Erlangen",
@@ -52,16 +41,27 @@ export const experience: ExperienceItem[] = [
       en: "Supporting residents with everyday tasks and meal service — a role close to my heart, as my grandparents live there.",
     },
   },
+  {
+    role: { de: "Zeitungsausträger", en: "Newspaper delivery" },
+    org: "Direktwerbung Franken",
+    location: "Erlangen",
+    period: { de: "Jun. 2019 – Nov. 2022", en: "Jun 2019 – Nov 2022" },
+    kind: "work",
+    description: {
+      de: "Wöchentliche Austragung von Zeitungen in der Nachbarschacht und Umgebung.",
+      en: "Weekly delivery of newspapers to the local neighbourhood.",
+    },
+  },
 
   // ---------- Voluntary ----------
   {
     role: {
-      de: "2. Vorsitzender „Q-Zirkel“ & Arbeitskreisleitung",
-      en: "Vice Chair “Q-Zirkel” & working-group lead",
+      de: "Ehemaliger 2. Vorsitzender „Q-Zirkel“ & Arbeitskreisleitung",
+      en: "Former Vice Chair “Q-Zirkel” & working-group lead",
     },
     org: "FSI WiSo · FAU Erlangen-Nürnberg",
     location: "Erlangen-Nürnberg",
-    period: { de: "Nov. 2024 – 2025", en: "Nov 2024 – 2025" },
+    period: { de: "seit November 2024", en: "Since November 2026" },
     kind: "voluntary",
     description: {
       de: "Finanzielle Koordination von Tutorien-Geldern sowie Leitung der Arbeitskreise „Website“ und „WiWi-Meisterschaften“ — inklusive Planung und Durchführung einer Festivalbühne für mehrere hundert Gäste gleichzeitig.",
@@ -89,4 +89,6 @@ export const experience: ExperienceItem[] = [
 ];
 
 export const workExperience = experience.filter((e) => e.kind === "work");
-export const voluntaryExperience = experience.filter((e) => e.kind === "voluntary");
+export const voluntaryExperience = experience.filter(
+  (e) => e.kind === "voluntary",
+);
