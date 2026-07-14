@@ -152,10 +152,10 @@ body {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(42rem 30rem at 12% 2%, rgba(38, 69, 230, 0.22), transparent 60%),
-    radial-gradient(52rem 34rem at 88% -6%, rgba(56, 189, 248, 0.26), transparent 60%),
-    radial-gradient(40rem 30rem at 50% 6%, rgba(97, 136, 252, 0.18), transparent 62%),
-    radial-gradient(30rem 26rem at 72% 54%, rgba(129, 140, 248, 0.12), transparent 64%);
+    radial-gradient(44rem 32rem at 14% 20%, rgba(38, 69, 230, 0.16), transparent 62%),
+    radial-gradient(52rem 34rem at 86% 12%, rgba(56, 189, 248, 0.18), transparent 62%),
+    radial-gradient(40rem 32rem at 50% 62%, rgba(97, 136, 252, 0.16), transparent 64%),
+    radial-gradient(30rem 26rem at 74% 44%, rgba(129, 140, 248, 0.12), transparent 66%);
   animation: auroraDrift 24s ease-in-out infinite alternate;
 }
 .hero-aurora::after {
@@ -209,6 +209,7 @@ body {
   height: 0;
   transform-origin: top center;
   display: none;
+  will-change: transform;
   animation: raySway 22s ease-in-out infinite;
 }
 @media (min-width: 768px) {
@@ -218,16 +219,16 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  height: 150vh;
+  height: 122vh;
   border-radius: 999px;
   transform-origin: top center;
   background: linear-gradient(
     to bottom,
-    rgba(120, 155, 255, 0.85) 0%,
-    rgba(56, 189, 248, 0.3) 34%,
-    transparent 76%
+    rgba(120, 155, 255, 0.82) 0%,
+    rgba(56, 189, 248, 0.28) 34%,
+    transparent 74%
   );
-  filter: blur(21px);
+  filter: blur(16px);
   opacity: var(--ray-min, 0.3);
   animation: rayBreathe var(--ray-dur, 8s) ease-in-out infinite;
 }
@@ -242,73 +243,119 @@ body {
 .ray-fan--static { animation: none; }
 .ray-fan--static .ray { animation: none; opacity: 0.4; }
 
-/* ---- Streaming code in the left/right gutters (desktop only) ---- */
-.gutter-code {
+/* ---- Aurora beams: slow drifting blue glows — the hero eye-catcher,
+        kept clear of the top navbar. ---- */
+.aurora-beam {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  width: clamp(12rem, 28vw, 30rem);
-  z-index: 0;
+  border-radius: 50%;
+  filter: blur(64px);
   pointer-events: none;
-  display: none;
+  will-change: transform;
 }
-@media (min-width: 1024px) {
-  .gutter-code { display: block; }
+.aurora-beam--1 {
+  left: -10%;
+  top: 30%;
+  width: 46rem;
+  height: 24rem;
+  background: radial-gradient(closest-side, rgba(56, 189, 248, 0.34), transparent 72%);
+  animation: auroraBeam1 17s ease-in-out infinite alternate;
 }
-.gutter-code--left {
-  left: 0;
-  -webkit-mask-image: radial-gradient(118% 96% at -6% 46%, #000 50%, transparent 94%);
-  mask-image: radial-gradient(118% 96% at -6% 46%, #000 50%, transparent 94%);
+.aurora-beam--2 {
+  right: -8%;
+  top: 24%;
+  width: 42rem;
+  height: 28rem;
+  background: radial-gradient(closest-side, rgba(61, 97, 245, 0.3), transparent 72%);
+  animation: auroraBeam2 21s ease-in-out infinite alternate;
 }
-.gutter-code--right {
-  right: 0;
-  -webkit-mask-image: radial-gradient(118% 96% at 106% 46%, #000 50%, transparent 94%);
-  mask-image: radial-gradient(118% 96% at 106% 46%, #000 50%, transparent 94%);
+.aurora-beam--3 {
+  left: 28%;
+  bottom: 2%;
+  width: 52rem;
+  height: 26rem;
+  background: radial-gradient(closest-side, rgba(129, 140, 248, 0.26), transparent 74%);
+  animation: auroraBeam3 19s ease-in-out infinite alternate;
+}
+@keyframes auroraBeam1 {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(7%, -5%, 0) scale(1.14); }
+}
+@keyframes auroraBeam2 {
+  from { transform: translate3d(0, 0, 0) scale(1.05); }
+  to { transform: translate3d(-6%, 6%, 0) scale(1); }
+}
+@keyframes auroraBeam3 {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(4%, -6%, 0) scale(1.12); }
+}
+@media (max-width: 767px) {
+  .aurora-beam { animation: none; opacity: 0.65; }
+  .aurora-beam--3 { display: none; }
 }
 
-/* ---- Fading dot-grid floor along the bottom of the hero ---- */
-.hero-floor-grid {
+/* ---- Perspective grid floor + horizon: grounds the figure on a surface,
+        so he reads as standing in a space rather than floating. ---- */
+.hero-stage-3d {
+  position: absolute;
+  inset-inline: -25%;
+  bottom: -1%;
+  height: 60%;
+  z-index: 0;
+  pointer-events: none;
+  perspective: 540px;
+  perspective-origin: 50% 0%;
+  -webkit-mask-image: radial-gradient(115% 100% at 50% 100%, #000 26%, transparent 76%);
+  mask-image: radial-gradient(115% 100% at 50% 100%, #000 26%, transparent 76%);
+}
+.hero-grid-3d {
+  position: absolute;
+  inset: 0;
+  transform: rotateX(66deg);
+  transform-origin: 50% 100%;
+  background-image:
+    linear-gradient(to right, rgba(61, 97, 245, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(61, 97, 245, 0.2) 1px, transparent 1px);
+  background-size: 68px 68px;
+  animation: gridPull 5.5s linear infinite;
+}
+@keyframes gridPull {
+  to { background-position: 0 68px; }
+}
+.hero-horizon {
   position: absolute;
   inset-inline: 0;
-  bottom: 0;
-  height: 48%;
+  top: 40%;
+  height: 24%;
   z-index: 0;
   pointer-events: none;
-  background-image: radial-gradient(circle at center, rgba(38, 69, 230, 0.16) 1px, transparent 1.5px);
-  background-size: 26px 26px;
-  -webkit-mask-image: linear-gradient(to top, #000, transparent 92%);
-  mask-image: linear-gradient(to top, #000, transparent 92%);
-  opacity: 0.55;
+  background: radial-gradient(58% 100% at 50% 100%, rgba(97, 136, 252, 0.32), transparent 72%);
+  filter: blur(7px);
 }
 
-/* ---- Spotlight halo + floor shadow behind the portrait ---- */
-.hero-halo {
-  position: absolute;
-  left: 50%;
-  top: 46%;
-  width: min(42rem, 88vw);
-  aspect-ratio: 0.92;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(
-    closest-side,
-    rgba(255, 255, 255, 0.55),
-    rgba(120, 160, 255, 0.28) 46%,
-    rgba(56, 189, 248, 0.1) 66%,
-    transparent 78%
-  );
-  filter: blur(14px);
-  pointer-events: none;
-}
-.hero-floor-shadow {
+/* ---- Lit contact pool where the figure meets the floor (grounds him,
+        sits BEHIND the figure via the image's own z-10). No centre halo. ---- */
+.hero-floor-pool {
   position: absolute;
   left: 50%;
   bottom: 2%;
-  width: 66%;
+  width: 78%;
   height: 12%;
   transform: translateX(-50%);
-  background: radial-gradient(ellipse at center, rgba(22, 28, 79, 0.20), transparent 70%);
+  background:
+    radial-gradient(ellipse at center, rgba(97, 136, 252, 0.5), transparent 68%),
+    radial-gradient(ellipse at 50% 64%, rgba(22, 28, 79, 0.22), transparent 72%);
   filter: blur(10px);
   pointer-events: none;
+  z-index: 0;
+}
+
+/* Below md the whole 3-D stage + rays are dropped for a clean, light hero. */
+@media (max-width: 767px) {
+  .hero-stage-3d,
+  .hero-horizon,
+  .light-rays .ray-fan {
+    display: none;
+  }
 }
 
 /* ---- Gentle vertical float for the portrait ---- */
@@ -333,9 +380,59 @@ body {
 }
 .scroll-cue { animation: scrollcue 1.9s ease-in-out infinite; }
 
+/* ---- Scroll-rail travelling shimmer (a single soft light gliding down) ---- */
+.rail-shimmer {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 40%;
+  border-radius: 999px;
+  background: linear-gradient(to bottom, transparent, rgba(120, 180, 255, 0.6) 50%, transparent);
+  filter: blur(1px);
+  animation: railShimmer 3.6s ease-in-out infinite;
+}
+@keyframes railShimmer {
+  0% { transform: translateY(-130%); opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateY(330%); opacity: 0; }
+}
+
+/* ---- Section edge-bloom: a light that grows inward from the rails into a
+        section's background as it enters view (desktop only). ---- */
+.section-bloom {
+  position: absolute;
+  top: 50%;
+  height: min(42rem, 80%);
+  width: clamp(10rem, 22vw, 24rem);
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 0;
+  will-change: opacity, transform;
+}
+.section-bloom--left {
+  left: 0;
+  transform-origin: left center;
+  background: radial-gradient(75% 60% at 0% 50%, var(--bloom, rgba(61, 97, 245, 0.22)), transparent 72%);
+}
+.section-bloom--right {
+  right: 0;
+  transform-origin: right center;
+  background: radial-gradient(75% 60% at 100% 50%, var(--bloom, rgba(61, 97, 245, 0.22)), transparent 72%);
+}
+@media (max-width: 1023px) {
+  .section-bloom { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rail-shimmer { animation: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-aurora::before,
   .ray,
+  .aurora-beam,
+  .hero-grid-3d,
   .float-slow,
   .scroll-dot {
     animation: none !important;

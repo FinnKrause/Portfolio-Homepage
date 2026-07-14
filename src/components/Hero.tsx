@@ -4,46 +4,72 @@ import { useRef } from "react";
 import Image from "next/image";
 import {
   motion,
+  useMotionValue,
   useReducedMotion,
   useScroll,
+  useSpring,
   useTransform,
   type Variants,
 } from "framer-motion";
 import { ArrowDown, MapPin } from "lucide-react";
 import { profile } from "@/content/profile";
 import { useLang } from "@/lib/i18n";
-import { CodeRain } from "./visuals/CodeRain";
-import { LightRays } from "./visuals/LightRays";
+import { useIsDesktop } from "@/lib/useIsDesktop";
+import { HeroBackdrop } from "./visuals/HeroBackdrop";
 
 export function Hero() {
   const { t } = useLang();
   const reduce = useReducedMotion();
+  const desktop = useIsDesktop();
   const ref = useRef<HTMLElement>(null);
 
-  // Scroll-linked exit: the whole stage dissolves upward as you leave the fold,
-  // the ambient layers drift down + fade — a cinematic hand-off into the story.
+  // Scroll-linked exit. The background only FADES (opacity is compositor-cheap);
+  // the content lifts. We never translate the big blurred ray layer on scroll —
+  // that was the source of the jank.
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
-  const bgY = useTransform(scrollYProgress, [0, 1], [0, 130]);
-  const bgOpacity = useTransform(scrollYProgress, [0, 0.9], [1, 0]);
-  const stageY = useTransform(scrollYProgress, [0, 1], [0, -80]);
+  const bgOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
+  const stageY = useTransform(scrollYProgress, [0, 1], [0, -70]);
   const stageOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
 
-  const bgStyle = reduce ? undefined : { y: bgY, opacity: bgOpacity };
-  const stageStyle = reduce ? undefined : { y: stageY, opacity: stageOpacity };
+  // Pointer parallax — spring-followed, critically damped. Only the cheap
+  // far layer (canvas + thin grid) moves; the blurred rays stay put.
+  const px = useMotionValue(0);
+  const py = useMotionValue(0);
+  const spring = { stiffness: 70, damping: 20, mass: 0.6, restDelta: 0.0005 };
+  const sx = useSpring(px, spring);
+  const sy = useSpring(py, spring);
+  const farX = useTransform(sx, (v) => v * -18);
+  const farY = useTransform(sy, (v) => v * -12);
+  const midX = useTransform(sx, (v) => v * -34);
+  const midY = useTransform(sy, (v) => v * -24);
+  const figX = useTransform(sx, (v) => v * 12);
+  const figY = useTransform(sy, (v) => v * 8);
+
+  const parallaxOn = desktop && !reduce;
+  const onMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (!parallaxOn) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    px.set((e.clientX - r.left) / r.width - 0.5);
+    py.set((e.clientY - r.top) / r.height - 0.5);
+  };
+  const onLeave = () => {
+    px.set(0);
+    py.set(0);
+  };
 
   const container: Variants = {
     hidden: {},
-    show: { transition: { staggerChildren: 0.12, delayChildren: 0.08 } },
+    show: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
   };
   const rise: Variants = {
-    hidden: { opacity: 0, y: reduce ? 0 : 24 },
+    hidden: { opacity: 0, y: reduce ? 0 : 22 },
     show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
   };
   const portraitIn: Variants = {
-    hidden: { opacity: 0, y: reduce ? 0 : 44, scale: reduce ? 1 : 0.96 },
+    hidden: { opacity: 0, y: reduce ? 0 : 36, scale: reduce ? 1 : 0.97 },
     show: {
       opacity: 1,
       y: 0,
@@ -56,37 +82,54 @@ export function Hero() {
     <section
       ref={ref}
       id="top"
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
       className="hero-aurora relative flex min-h-[100svh] flex-col overflow-hidden"
     >
-      {/* ---------- Ambient background: rays, side code streams, floor ---------- */}
-      <motion.div style={bgStyle} className="absolute inset-0 z-0" aria-hidden>
-        <LightRays />
+      {/* ---------- Ambient background (full-bleed) ---------- */}
+      <motion.div
+        style={reduce ? undefined : { opacity: bgOpacity }}
+        className="absolute inset-0 z-0"
+        aria-hidden
+      >
+        {/* Far layer — data field + perspective grid floor (cheap to translate) */}
+        <motion.div
+          style={parallaxOn ? { x: farX, y: farY } : undefined}
+          className="absolute inset-[-6%]"
+        >
+          <HeroBackdrop />
+          <div className="hero-horizon" />
+          <div className="hero-stage-3d">
+            <div className="hero-grid-3d" />
+          </div>
+        </motion.div>
 
-        <div className="gutter-code gutter-code--left">
-          <CodeRain intensity={0.95} fontSize={18} />
-        </div>
-        <div className="gutter-code gutter-code--right">
-          <CodeRain intensity={0.95} fontSize={18} />
-        </div>
-
-        <div className="hero-floor-grid" />
+        {/* Eye-catcher — slow drifting aurora beams (kept clear of the navbar) */}
+        <motion.div
+          style={parallaxOn ? { x: midX, y: midY } : undefined}
+          className="absolute inset-[-4%]"
+        >
+          <div className="aurora-beam aurora-beam--1" />
+          <div className="aurora-beam aurora-beam--2" />
+          <div className="aurora-beam aurora-beam--3" />
+        </motion.div>
       </motion.div>
 
-      {/* ---------- Centred content ---------- */}
+      {/* ---------- Content: text left, grounded figure right ---------- */}
       <motion.div
-        style={stageStyle}
-        className="mx-container relative z-10 flex flex-1 flex-col items-center justify-center pb-16 pt-24 text-center sm:pt-28"
+        style={reduce ? undefined : { y: stageY, opacity: stageOpacity }}
+        className="mx-container relative z-10 grid flex-1 items-center gap-6 pb-20 pt-28 sm:pt-32 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:pb-16"
       >
+        {/* Copy */}
         <motion.div
           variants={container}
           initial="hidden"
           animate="show"
-          className="flex w-full flex-col items-center"
+          className="order-2 flex flex-col items-center text-center lg:order-1 lg:items-start lg:text-left"
         >
-          {/* Status pill */}
           <motion.div
             variants={rise}
-            className="inline-flex items-center gap-2.5 rounded-full border border-line bg-white/70 px-4 py-1.5 text-sm text-ink-500 shadow-sm backdrop-blur-md"
+            className="inline-flex items-center gap-2.5 rounded-full border border-white/60 bg-white/60 px-4 py-1.5 text-sm text-ink-500 shadow-sm backdrop-blur-md"
           >
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500 opacity-60" />
@@ -100,66 +143,75 @@ export function Hero() {
             </span>
           </motion.div>
 
-          {/* Stage: name behind, Finn spotlit in front */}
-          <div className="relative mt-8 flex w-full flex-col items-center">
-            <div className="hero-halo" aria-hidden />
+          <motion.h1
+            variants={rise}
+            className="headline mt-6 text-[clamp(3rem,7.5vw,5.75rem)] font-bold text-ink-900"
+          >
+            <span className="block">Finn</span>
+            <span className="block text-gradient">Krause</span>
+          </motion.h1>
 
-            <motion.h1
-              variants={rise}
-              className="headline relative z-10 text-[clamp(3rem,11vw,6rem)] font-bold text-ink-900"
-            >
-              <span className="text-balance">{profile.name}</span>
-            </motion.h1>
+          <motion.p
+            variants={rise}
+            className="mt-5 max-w-xl text-pretty text-lg font-medium text-ink-700 sm:text-xl"
+          >
+            {t(profile.hero.headline)}
+          </motion.p>
 
-            <motion.div
-              variants={portraitIn}
-              className="relative z-20 -mt-[4vh] w-full sm:-mt-[5vh] lg:-mt-[7vh]"
-            >
-              <div className="hero-floor-shadow" aria-hidden />
-              <div className={reduce ? "" : "float-slow"}>
-                <Image
-                  src="/images/finn-portrait-transparent.png"
-                  alt={t({
-                    de: "Finn Krause im Anzug, freigestellt",
-                    en: "Finn Krause in a suit, cut out",
-                  })}
-                  width={1090}
-                  height={1700}
-                  priority
-                  sizes="(max-width: 640px) 78vw, (max-width: 1024px) 46vh, 52vh"
-                  className="mx-auto h-[40vh] w-auto max-w-[82vw] object-contain object-bottom [mask-image:linear-gradient(to_bottom,black_88%,transparent)] sm:h-[46vh] lg:h-[52vh]"
-                />
-              </div>
-            </motion.div>
+          <motion.p
+            variants={rise}
+            className="mt-3 max-w-lg text-pretty text-base leading-relaxed text-ink-500"
+          >
+            {t(profile.hero.lead)}
+          </motion.p>
 
-            {/* Evocative tagline sits just below the figure */}
-            <motion.p
-              variants={rise}
-              className="mt-6 max-w-2xl text-pretty text-lg font-medium text-ink-700 sm:text-xl"
+          <motion.div
+            variants={rise}
+            className="mt-8 flex flex-col items-center gap-3 sm:flex-row lg:items-start"
+          >
+            <a
+              href="#about"
+              className="group inline-flex items-center gap-2 rounded-full bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_-8px_rgba(38,69,230,0.7)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_16px_38px_-8px_rgba(38,69,230,0.85)]"
             >
-              {t(profile.hero.headline)}
-            </motion.p>
+              {t({ de: "Die Reise beginnen", en: "Start the journey" })}
+              <ArrowDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" />
+            </a>
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-2 rounded-full border border-line bg-white/60 px-6 py-3 text-sm font-semibold text-ink-700 backdrop-blur-sm transition-colors duration-300 hover:border-brand-200 hover:text-brand-700"
+            >
+              {t({ de: "Kontakt", en: "Get in touch" })}
+            </a>
+          </motion.div>
+        </motion.div>
 
-            {/* Actions */}
-            <motion.div
-              variants={rise}
-              className="mt-7 flex flex-col items-center gap-3 sm:flex-row"
-            >
-              <a
-                href="#about"
-                className="group inline-flex items-center gap-2 rounded-full bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_-8px_rgba(38,69,230,0.7)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_16px_38px_-8px_rgba(38,69,230,0.85)]"
-              >
-                {t({ de: "Die Reise beginnen", en: "Start the journey" })}
-                <ArrowDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" />
-              </a>
-              <a
-                href="#contact"
-                className="inline-flex items-center gap-2 rounded-full border border-line bg-white/60 px-6 py-3 text-sm font-semibold text-ink-700 backdrop-blur-sm transition-colors duration-300 hover:border-brand-200 hover:text-brand-700"
-              >
-                {t({ de: "Kontakt", en: "Get in touch" })}
-              </a>
-            </motion.div>
-          </div>
+        {/* Grounded figure (no halo) */}
+        <motion.div
+          variants={portraitIn}
+          initial="hidden"
+          animate="show"
+          className="order-1 flex justify-center lg:order-2 lg:justify-end"
+        >
+          <motion.div
+            style={parallaxOn ? { x: figX, y: figY } : undefined}
+            className="relative"
+          >
+            <div className="hero-floor-pool" aria-hidden />
+            <div className={reduce ? "relative z-10" : "relative z-10 float-slow"}>
+              <Image
+                src="/images/finn-portrait-transparent.png"
+                alt={t({
+                  de: "Finn Krause im Anzug, freigestellt",
+                  en: "Finn Krause in a suit, cut out",
+                })}
+                width={1090}
+                height={1700}
+                priority
+                sizes="(max-width: 640px) 74vw, (max-width: 1024px) 48vh, 40vw"
+                className="mx-auto h-[42vh] w-auto max-w-[80vw] object-contain object-bottom [mask-image:linear-gradient(to_bottom,black_85%,transparent)] sm:h-[48vh] lg:h-[60vh]"
+              />
+            </div>
+          </motion.div>
         </motion.div>
       </motion.div>
 

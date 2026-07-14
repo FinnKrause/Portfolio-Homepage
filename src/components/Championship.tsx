@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { Reveal } from "./motion/Reveal";
 import { MediaView } from "./media/MediaView";
 import { Gallery } from "./media/Gallery";
+import { SectionGlow } from "./visuals/SectionGlow";
 
 type ChapterT = (typeof profile.championship.chapters)[number];
 
@@ -74,6 +75,7 @@ export function Championship() {
         className="pointer-events-none absolute -top-24 right-0 h-96 w-96 rounded-full bg-sky-400/20 blur-3xl"
         aria-hidden
       />
+      <SectionGlow side="both" color="rgba(56, 189, 248, 0.34)" />
 
       <div className="mx-container relative">
         <Reveal className="max-w-3xl">

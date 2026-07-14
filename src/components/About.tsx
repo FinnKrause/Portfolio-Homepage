@@ -1,26 +1,34 @@
 "use client";
 
+import Image from "next/image";
 import { ArrowUpRight, Car, Plane } from "lucide-react";
 import { profile } from "@/content/profile";
 import { useLang } from "@/lib/i18n";
 import { Section } from "./Section";
 import { Reveal } from "./motion/Reveal";
-import { ImageRotator } from "./media/ImageRotator";
+import { Carousel } from "./media/Carousel";
 
 const HOBBY_ICONS: Record<string, typeof Car> = { rc: Car, travel: Plane };
 
-const ABOUT_IMAGES = [
-  { src: "/images/stage-lighting.jpg", alt: { de: "Von Finn gebaute Festivalbühne mit Lichttechnik.", en: "Festival stage built by Finn with lighting." } },
-  { src: "/images/apc-image1.png", alt: { de: "APCmini-Middleware — selbst entwickelte Lichtsteuerung.", en: "APCmini middleware — self-built lighting control." } },
-  { src: "/images/stage-lighting3.png", alt: { de: "Lichtdesign auf einer Veranstaltung.", en: "Lighting design at an event." } },
-  { src: "/images/f1-podium2.JPG", alt: { de: "F1 in Schools — Weltfinale in Singapur.", en: "F1 in Schools — World Finals in Singapore." } },
+// A click-through of moments Finn is actually in — competition, coaching,
+// jury work, on stage and on the road.
+const FINN_IMAGES = [
+  { src: "/images/f1-image1.jpeg", alt: { de: "Finn feiert den Weltmeistertitel bei den F1 in Schools World Finals in Singapur.", en: "Finn celebrating the world title at the F1 in Schools World Finals in Singapore." } },
+  { src: "/images/f1-podium.jpg", alt: { de: "Recoil Racing als Weltmeister 2023 auf dem Podium in Singapur.", en: "Recoil Racing as 2023 World Champions on the podium in Singapore." } },
+  { src: "/images/umbruchszeiten-judge-image2.png", alt: { de: "Finn als Jurymitglied im Interview bei Umbruchszeiten.", en: "Finn as a jury member during an Umbruchszeiten interview." } },
+  { src: "/images/fsi-image3.png", alt: { de: "Finn auf der Bühne bei einer Veranstaltung.", en: "Finn on stage at an event." } },
+  { src: "/images/f1-france-image1.png", alt: { de: "Finn (rechts) als Coach beim französischen F1-in-Schools-Finale.", en: "Finn (right) coaching at the French F1 in Schools finals." } },
+  { src: "/images/f1-france-image2.png", alt: { de: "Mit dem französischen Team LLP Racing in Avignon.", en: "With the French team LLP Racing in Avignon." } },
+  { src: "/images/f1-thailand-image1.png", alt: { de: "Finn zu Besuch im F1-in-Schools-Hauptquartier in Thailand.", en: "Finn visiting the F1 in Schools headquarters in Thailand." } },
+  { src: "/images/finn-portrait2.jpg", alt: { de: "Finn auf Reisen in Paris.", en: "Finn travelling in Paris." } },
+  { src: "/images/f1-image2.png", alt: { de: "Team-Selfie am Marina Bay Street Circuit in Singapur.", en: "Team selfie at the Marina Bay Street Circuit in Singapore." } },
 ];
 
 export function About() {
   const { t } = useLang();
 
   return (
-    <Section id="about">
+    <Section id="about" glow>
       <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
         {/* Text */}
         <div>
@@ -78,13 +86,28 @@ export function About() {
           </Reveal>
         </div>
 
-        {/* Rotating image panel */}
+        {/* Click-through gallery of Finn in action */}
         <Reveal>
           <div className="lg:sticky lg:top-24">
-            <ImageRotator
-              images={ABOUT_IMAGES.map((img) => ({ src: img.src, alt: t(img.alt) }))}
-              className="aspect-[4/5] w-full rounded-3xl border border-line shadow-lift sm:aspect-[4/3] lg:aspect-[4/5]"
-            />
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl border border-line shadow-lift sm:aspect-[4/3] lg:aspect-[4/5]">
+              <Carousel
+                fill
+                subtle
+                ariaLabel={t({ de: "Eindrücke von Finn", en: "Impressions of Finn" })}
+                slides={FINN_IMAGES.map((img) => (
+                  <div key={img.src} className="relative h-full w-full">
+                    <Image
+                      src={img.src}
+                      alt={t(img.alt)}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 40rem"
+                      className="object-cover"
+                    />
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+                  </div>
+                ))}
+              />
+            </div>
           </div>
         </Reveal>
       </div>

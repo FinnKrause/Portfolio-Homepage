@@ -44,7 +44,7 @@ export function Projects() {
   const { t } = useLang();
 
   return (
-    <Section id="projects">
+    <Section id="projects" glow glowSide="right">
       <SectionHeading
         eyebrow={t(ui.featured)}
         title={t({ de: "Projekte, die mir wichtig sind", en: "Projects I care about" })}

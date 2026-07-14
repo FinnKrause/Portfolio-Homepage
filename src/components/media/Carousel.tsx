@@ -19,12 +19,15 @@ export function Carousel({
   autoMs = 4200,
   ariaLabel,
   fill = false,
+  subtle = false,
   className,
 }: {
   slides: ReactNode[];
   autoMs?: number;
   ariaLabel?: string;
   fill?: boolean;
+  /** Quiet controls: small arrows that surface on hover/focus, not always-on. */
+  subtle?: boolean;
   className?: string;
 }) {
   const reduce = useReducedMotion();
@@ -61,7 +64,7 @@ export function Carousel({
   return (
     <div
       ref={rootRef}
-      className={cn("relative", fill && "h-full", className)}
+      className={cn("relative", fill && "h-full", subtle && "group", className)}
       aria-roledescription="carousel"
       aria-label={ariaLabel}
     >
@@ -110,22 +113,38 @@ export function Carousel({
       {count > 1 && (
         <>
           {/* Arrows */}
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-2">
+          <div
+            className={cn(
+              "pointer-events-none absolute inset-0 flex items-center justify-between px-2",
+              subtle &&
+                "px-3 opacity-0 transition-opacity duration-300 focus-within:opacity-100 group-hover:opacity-100",
+            )}
+          >
             <button
               type="button"
               onClick={() => go(index - 1)}
               aria-label="Previous"
-              className="pointer-events-auto grid h-9 w-9 place-items-center rounded-full bg-white/85 text-ink-700 shadow-md backdrop-blur transition hover:bg-white"
+              className={cn(
+                "pointer-events-auto grid place-items-center rounded-full transition",
+                subtle
+                  ? "h-8 w-8 bg-white/60 text-ink-600 shadow-sm ring-1 ring-black/5 backdrop-blur hover:bg-white/90 hover:text-ink-900"
+                  : "h-9 w-9 bg-white/85 text-ink-700 shadow-md backdrop-blur hover:bg-white",
+              )}
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className={subtle ? "h-4 w-4" : "h-5 w-5"} />
             </button>
             <button
               type="button"
               onClick={() => go(index + 1)}
               aria-label="Next"
-              className="pointer-events-auto grid h-9 w-9 place-items-center rounded-full bg-white/85 text-ink-700 shadow-md backdrop-blur transition hover:bg-white"
+              className={cn(
+                "pointer-events-auto grid place-items-center rounded-full transition",
+                subtle
+                  ? "h-8 w-8 bg-white/60 text-ink-600 shadow-sm ring-1 ring-black/5 backdrop-blur hover:bg-white/90 hover:text-ink-900"
+                  : "h-9 w-9 bg-white/85 text-ink-700 shadow-md backdrop-blur hover:bg-white",
+              )}
             >
-              <ChevronRight className="h-5 w-5" />
+              <ChevronRight className={subtle ? "h-4 w-4" : "h-5 w-5"} />
             </button>
           </div>
 
@@ -139,8 +158,14 @@ export function Carousel({
                 aria-label={`Go to slide ${i + 1}`}
                 aria-current={index === i}
                 className={cn(
-                  "h-1.5 rounded-full shadow-sm transition-all",
-                  index === i ? "w-5 bg-brand-600" : "w-1.5 bg-white/90 ring-1 ring-black/5 hover:bg-white",
+                  "rounded-full shadow-sm transition-all",
+                  subtle
+                    ? index === i
+                      ? "h-1.5 w-4 bg-white"
+                      : "h-1.5 w-1.5 bg-white/55 hover:bg-white/80"
+                    : index === i
+                      ? "h-1.5 w-5 bg-brand-600"
+                      : "h-1.5 w-1.5 bg-white/90 ring-1 ring-black/5 hover:bg-white",
                 )}
               />
             ))}

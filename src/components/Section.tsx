@@ -1,18 +1,32 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Reveal } from "./motion/Reveal";
+import { SectionGlow } from "./visuals/SectionGlow";
 
 interface SectionProps {
   id?: string;
   children: ReactNode;
   className?: string;
   containerClassName?: string;
+  /** Grow a light inward from the rails as the section enters view (desktop). */
+  glow?: boolean;
+  glowColor?: string;
+  glowSide?: "left" | "right" | "both";
 }
 
-export function Section({ id, children, className, containerClassName }: SectionProps) {
+export function Section({
+  id,
+  children,
+  className,
+  containerClassName,
+  glow = false,
+  glowColor,
+  glowSide = "both",
+}: SectionProps) {
   return (
     <section id={id} className={cn("relative py-20 md:py-28", className)}>
-      <div className={cn("mx-container", containerClassName)}>{children}</div>
+      {glow && <SectionGlow side={glowSide} color={glowColor} />}
+      <div className={cn("mx-container relative", containerClassName)}>{children}</div>
     </section>
   );
 }
