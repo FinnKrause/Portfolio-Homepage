@@ -26,8 +26,8 @@ export const experience: ExperienceItem[] = [
     period: { de: "Okt. 2025 – 2026", en: "Oct 2025 – 2026" },
     kind: "work",
     description: {
-      de: "Alleinige lichttechnische Betreuung von Club-Veranstaltungen — Programmierung, Bedienung und Wartung der Lichtanlage.",
-      en: "Sole lighting supervision for club events — programming, operating and maintaining the lighting rig.",
+      de: "Lichttechnische Betreuung von Club-Veranstaltungen",
+      en: "Lighting supervision and control for club events",
     },
   },
   {
@@ -37,8 +37,8 @@ export const experience: ExperienceItem[] = [
     period: { de: "Sep. 2022 – Juli 2024", en: "Sep 2022 – Jul 2024" },
     kind: "work",
     description: {
-      de: "Unterstützung der Bewohner bei alltäglichen Aufgaben und in der Essensausgabe — eine Herzensangelegenheit, da meine Großeltern dort leben.",
-      en: "Supporting residents with everyday tasks and meal service — a role close to my heart, as my grandparents live there.",
+      de: "Unterstützung der Bewohner bei alltäglichen Aufgaben und in der Essensausgabe — eine Herzensangelegenheit, da meine Großeltern dort lebten.",
+      en: "Supporting residents with everyday tasks and meal service — a role close to my heart, as my grandparents used to live there.",
     },
   },
   {

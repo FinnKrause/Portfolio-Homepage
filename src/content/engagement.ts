@@ -63,12 +63,18 @@ export const engagement: EngagementItem[] = [
       en: "Building our own team and company — all the way to the world title in Singapore. The full journey (incl. coaching in France in 2025 and visiting the Thai HQ) has its own section.",
     },
     links: [
-      { label: { de: "Zur F1-Reise", en: "See the F1 journey" }, href: "#championship" },
+      {
+        label: { de: "Zur F1-Reise", en: "See the F1 journey" },
+        href: "#championship",
+      },
     ],
   },
   {
     id: "umbruchszeiten",
-    title: { de: "„Umbruchszeiten“ — Teilnehmer & Jury", en: "“Umbruchszeiten” — participant & juror" },
+    title: {
+      de: "„Umbruchszeiten“ — Teilnehmer & Jury",
+      en: "“Umbruchszeiten” — participant & juror",
+    },
     org: "Bundesstiftung für Aufarbeitung · Berlin",
     periodLabel: { de: "2022 – 2024", en: "2022 – 2024" },
     start: 2022.4,
@@ -80,7 +86,10 @@ export const engagement: EngagementItem[] = [
     },
     links: [
       {
-        label: { de: "Preisverleihung ansehen", en: "Watch the award ceremony" },
+        label: {
+          de: "Preisverleihung ansehen",
+          en: "Watch the award ceremony",
+        },
         href: "https://www.youtube.com/watch?v=Vp_2SyLA4fY&t=2340s",
       },
     ],
@@ -91,15 +100,18 @@ export const engagement: EngagementItem[] = [
   },
   {
     id: "schuelersprecher",
-    title: { de: "Schüler- & Jahrgangsstufensprecher", en: "Student & year representative" },
+    title: {
+      de: "Schüler- & Jahrgangsstufensprecher",
+      en: "Student & year representative",
+    },
     org: "Marie-Therese-Gymnasium · Erlangen",
     periodLabel: { de: "2022 – 2024", en: "2022 – 2024" },
     start: 2022.6,
     end: 2024.55,
     category: "school",
     description: {
-      de: "Gewählter Vertreter der Schülerschaft in Gremien von Schule und Stadt. Leitung mehrerer AGs (Theatertechnik, Fotografie & Film) und Arbeitskreise (u. a. „Schule ohne Rassismus“).",
-      en: "Elected representative of the student body in school and city committees. Led several clubs (stage tech, photography & film) and working groups (incl. “School without Racism”).",
+      de: "Gewählter Vertreter der Schülerschaft in Gremien von Schule und Stadt. Leitung mehrerer AGs und AKs (Theatertechnik, Fotografie & Film, etc.)",
+      en: "Elected representative of the student body in school and city committees. Led several clubs (stage tech, photography & film, etc.)",
     },
     links: [
       {
@@ -117,13 +129,16 @@ export const engagement: EngagementItem[] = [
     end: 2024.28,
     category: "international",
     description: {
-      de: "Teilnahme als Delegierter an einer zweitägigen UN-Sitzungssimulation — Debatte, Resolutionen und Diplomatie auf Englisch.",
-      en: "Took part as a delegate in a two-day UN simulation — debate, resolutions and diplomacy in English.",
+      de: "Teilnahme als Delegierter an einer zweitägigen UN-Sitzungssimulation — Debatte, Resolutionen und ein Eindruck wie Diplomatie funktioniert.",
+      en: "Took part as a delegate in a two-day UN simulation — debate, resolutions and a first impression of how diplomacy works.",
     },
   },
   {
     id: "austausch",
-    title: { de: "Deutsch-französischer Austausch", en: "German-French exchange" },
+    title: {
+      de: "Deutsch-französischer Austausch",
+      en: "German-French exchange",
+    },
     org: "Lycée Jeanne d'Arc · Nancy, Frankreich",
     periodLabel: { de: "März 2024", en: "March 2024" },
     start: 2024.2,
@@ -136,7 +151,10 @@ export const engagement: EngagementItem[] = [
   },
   {
     id: "fsi",
-    title: { de: "FSI WiSo — AK-Leitung & Hochschulpolitik", en: "FSI WiSo — working groups & student politics" },
+    title: {
+      de: "FSI WiSo — AK-Leitung & Hochschulpolitik",
+      en: "FSI WiSo — working groups & student politics",
+    },
     org: "FAU Erlangen-Nürnberg",
     periodLabel: { de: "seit Nov. 2024", en: "since Nov 2024" },
     start: 2024.85,

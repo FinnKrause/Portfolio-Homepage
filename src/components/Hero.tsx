@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   motion,
@@ -22,6 +22,19 @@ export function Hero() {
   const reduce = useReducedMotion();
   const desktop = useIsDesktop();
   const ref = useRef<HTMLElement>(null);
+
+  // Pause all ambient hero motion (canvas + CSS) once the hero scrolls out of
+  // view, so it doesn't burn frames while the rest of the page is scrolling.
+  const [active, setActive] = useState(true);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setActive(e.isIntersecting), {
+      rootMargin: "150px",
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   // Scroll-linked exit. The background only FADES (opacity is compositor-cheap);
   // the content lifts. We never translate the big blurred ray layer on scroll —
@@ -84,7 +97,9 @@ export function Hero() {
       id="top"
       onMouseMove={onMove}
       onMouseLeave={onLeave}
-      className="hero-aurora relative flex min-h-[100svh] flex-col overflow-hidden"
+      className={`hero-aurora relative flex min-h-[100svh] flex-col overflow-hidden${
+        active ? "" : " hero-idle"
+      }`}
     >
       {/* ---------- Ambient background (full-bleed) ---------- */}
       <motion.div
@@ -97,7 +112,7 @@ export function Hero() {
           style={parallaxOn ? { x: farX, y: farY } : undefined}
           className="absolute inset-[-6%]"
         >
-          <HeroBackdrop />
+          <HeroBackdrop active={active} />
           <div className="hero-horizon" />
           <div className="hero-stage-3d">
             <div className="hero-grid-3d" />

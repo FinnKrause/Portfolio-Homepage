@@ -250,7 +250,6 @@ body {
   border-radius: 50%;
   filter: blur(64px);
   pointer-events: none;
-  will-change: transform;
 }
 .aurora-beam--1 {
   left: -10%;
@@ -293,6 +292,16 @@ body {
   .aurora-beam--3 { display: none; }
 }
 
+/* Freeze the hero's ambient motion while it is scrolled out of view — no
+   wasted frames during the rest of the page's scroll. */
+.hero-aurora.hero-idle::before { animation-play-state: paused; }
+.hero-idle .aurora-beam,
+.hero-idle .float-slow,
+.hero-idle .scroll-dot,
+.hero-idle .animate-ping {
+  animation-play-state: paused;
+}
+
 /* ---- Perspective grid floor + horizon: grounds the figure on a surface,
         so he reads as standing in a space rather than floating. ---- */
 .hero-stage-3d {
@@ -316,10 +325,6 @@ body {
     linear-gradient(to right, rgba(61, 97, 245, 0.15) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(61, 97, 245, 0.2) 1px, transparent 1px);
   background-size: 68px 68px;
-  animation: gridPull 5.5s linear infinite;
-}
-@keyframes gridPull {
-  to { background-position: 0 68px; }
 }
 .hero-horizon {
   position: absolute;

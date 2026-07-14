@@ -51,7 +51,7 @@ export function Nav() {
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300",
-        scrolled ? "border-b border-line bg-white/80 backdrop-blur-xl" : "border-b border-transparent",
+        scrolled ? "border-b border-line bg-white/80 backdrop-blur-md" : "border-b border-transparent",
       )}
     >
       <nav className="mx-container flex h-16 items-center justify-between gap-4">

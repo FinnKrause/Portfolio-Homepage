@@ -42,7 +42,7 @@ export const profile = {
   } as Localized,
 
   role: {
-    de: "Student, Entwickler & Veranstaltungstechniker",
+    de: "Student, (Software-)Entwickler & Veranstaltungstechniker",
     en: "Student, developer & event engineer",
   } as Localized,
 
@@ -53,14 +53,17 @@ export const profile = {
 
   // Understated, journey-led hero copy — the site leads with the story, not the name/photo.
   hero: {
-    intro: { de: "Hallo, ich bin Finn Krause", en: "Hi, I'm Finn Krause" } as Localized,
+    intro: {
+      de: "Hallo, ich bin Finn Krause",
+      en: "Hi, I'm Finn Krause",
+    } as Localized,
     headline: {
-      de: "Ich baue Software, gestalte Bühnen und bleibe unendlich neugierig.",
-      en: "I build software, design stages and stay endlessly curious.",
+      de: "Student der Wirtschaftsinformatik, Hobby-Softwareentwickler und Lichttechniker.",
+      en: "Student of Information Systems, hobby software engineer and lighting technician.",
     } as Localized,
     lead: {
-      de: "Diese Seite ist eine kleine Reise durch meine Projekte, mein Engagement und ein paar Wettbewerbe rund um die Welt. Nimm dir einen Moment und scroll dich durch.",
-      en: "This site is a small journey through my projects, my involvement and a few competitions around the world. Take a moment and scroll through.",
+      de: "Diese Seite ist eine kleine Reise durch meine Projekte, mein Engagement und ein paar Wettbewerbe rund um die Welt.",
+      en: "This site is a small journey through my projects, my involvement and a few competitions around the world.",
     } as Localized,
   },
 
@@ -94,12 +97,12 @@ export const profile = {
   aboutTitle: { de: "Über mich", en: "About me" } as Localized,
   aboutBody: [
     {
-      de: "Schon in der Grundschule habe ich angefangen, mich für die Gemeinschaft einzusetzen — als Klassensprecher, später als Schüler- und Jahrgangsstufensprecher. Ich vertrat die Schülerschaft in Gremien von Schule und Stadt, leitete Arbeitsgruppen von Fotografie & Film bis zur Theatertechnik und lernte, Menschen für gemeinsame Ziele zu begeistern.",
+      de: "Ab der Grundschule habe ich angefangen, mich für die Gemeinschaft einzusetzen — als Klassensprecher, später als Schüler- und Jahrgangsstufensprecher. Ich vertrat die Schülerschaft in Gremien von Schule und Stadt, leitete Arbeitsgruppen von Fotografie & Film bis zur Theatertechnik und lernte, Menschen für gemeinsame Ziele zu begeistern.",
       en: "I started getting involved for my community back in primary school — first as class representative, later as student and year representative. I represented the student body in school and city committees, led groups from photography & film to stage technology, and learned how to get people excited about a shared goal.",
     },
     {
-      de: "Parallel dazu treibt mich die Technik: Ich entwickle Software, beschäftige mich mit Cybersicherheit — während meiner Zeit als IT-Manager an der Schule fand ich Sicherheitslücken und meldete sie verantwortungsvoll — und stehe regelmäßig an den Lichtpulten großer Veranstaltungen. Ein freiwilliges Praktikum in der IT-Sicherheit von Siemens Healthineers brachte mir mit 15 mein erstes Jobangebot.",
-      en: "In parallel, technology drives me: I build software, work on cybersecurity — during my time as the school's IT manager I found security vulnerabilities and disclosed them responsibly — and I regularly run the lighting desks of large events. A voluntary internship in IT security at Siemens Healthineers earned me my first job offer at 15.",
+      de: "Parallel dazu treibt mich die Technik: Ich entwickle leidenschaftlich gerne Software, beschäftige mich mit Cybersicherheit und stehe regelmäßig an den Lichtpulten verschiedenster Veranstaltungen. Ein freiwilliges Praktikum in der IT-Sicherheit von Siemens Healthineers brachte mir mit 15 mein erstes Jobangebot.",
+      en: "In parallel, technology drives me: I build software, work on cybersecurity and I regularly run the lighting desks of various events. A voluntary internship in IT security at Siemens Healthineers earned me my first job offer at 15.",
     },
     {
       de: "Meine Energie ziehe ich vor allem aus einem: anderen zu helfen und Werte wie Gemeinschaft und Verantwortung aktiv zu leben. Ob im deutsch-französischen Austausch, als Delegierter bei Model United Nations oder heute im Studium der Wirtschaftsinformatik — ich möchte etwas bewegen und dabei stetig Neues lernen.",
@@ -121,16 +124,16 @@ export const profile = {
       key: "events",
       title: { de: "Veranstaltungstechnik", en: "Event technology" },
       body: {
-        de: "Lichtdesign und Show-Control (DMX, grandMA3, MIDI) für Bühnen mit mehreren hundert Gästen.",
-        en: "Lighting design and show control (DMX, grandMA3, MIDI) for stages with several hundred guests.",
+        de: "Lichtdesign und Veranstaltungsbetreuung (DMX-Joker, grandMA3, MIDI) für kleinen Veranstaltungen bis zu Veranstaltungen mit mehreren hundert Gästen.",
+        en: "Lighting design and Eventmanagement (DMX-Joker, grandMA3, MIDI) for small events to stages with several hundred guests.",
       },
     },
     {
       key: "security",
       title: { de: "Cybersicherheit", en: "Cybersecurity" },
       body: {
-        de: "Netzwerktheorie, Linux und praktische CTF-Erfahrung — Schwachstellen finden und verantwortungsvoll melden.",
-        en: "Network theory, Linux and hands-on CTF experience — finding vulnerabilities and reporting them responsibly.",
+        de: "Netzwerktheorie, Linux, private Serverlandschaften und praktische CTF-Erfahrung.",
+        en: "Network theory, Linux, private server architecture and hands-on CTF experience.",
       },
     },
     {
@@ -143,60 +146,12 @@ export const profile = {
     },
   ] as { key: string; title: Localized; body: Localized }[],
 
-  // Broad "who I am" topics — each with its own imagery (carousel + text).
-  aboutTopics: [
-    {
-      key: "software",
-      title: { de: "Software", en: "Software" },
-      body: {
-        de: "Von Web-Portalen über Desktop-Middleware bis zu kleinen Tools — ich baue am liebsten Dinge, die ein echtes Problem lösen. Zuhause bin ich in Java, C#, TypeScript und Python.",
-        en: "From web portals to desktop middleware to little tools — I most enjoy building things that solve a real problem. I'm at home in Java, C#, TypeScript and Python.",
-      },
-      gallery: [
-        { kind: "placeholder", label: { de: "Bild folgt", en: "Photo coming soon" }, aspect: "16 / 10" },
-      ],
-    },
-    {
-      key: "events",
-      title: { de: "Veranstaltungstechnik", en: "Event technology" },
-      body: {
-        de: "Licht, Show-Control und Bühnenbau (DMX, grandMA3, MIDI) — von Clubabenden bis zu Festivalbühnen für mehrere hundert Gäste. Hier treffen Technik, Timing und Gestaltung aufeinander.",
-        en: "Lighting, show control and stage building (DMX, grandMA3, MIDI) — from club nights to festival stages for several hundred guests. Where engineering, timing and design meet.",
-      },
-      gallery: [
-        { kind: "image", src: "/images/stage-lighting3.png" },
-        { kind: "image", src: "/images/stage-lighting-image4.png" },
-        { kind: "image", src: "/images/stage-lighting2.png" },
-        { kind: "image", src: "/images/stage-lighting.jpg" },
-      ],
-    },
-    {
-      key: "security",
-      title: { de: "Cybersicherheit", en: "Cybersecurity" },
-      body: {
-        de: "Netzwerktheorie, Linux und CTFs. Schwachstellen finden und verantwortungsvoll melden — begonnen an meiner Schule, vertieft im Praktikum bei Siemens Healthineers und in Uni-Wettbewerben.",
-        en: "Network theory, Linux and CTFs. Finding vulnerabilities and disclosing them responsibly — started at my school, deepened in an internship at Siemens Healthineers and in university competitions.",
-      },
-      gallery: [
-        { kind: "placeholder", label: { de: "Bild folgt", en: "Photo coming soon" }, aspect: "16 / 10" },
-      ],
-    },
-    {
-      key: "community",
-      title: { de: "Gemeinschaft & Führung", en: "Community & leadership" },
-      body: {
-        de: "Ob als Schülersprecher, in der Fachschaft oder im Wettbewerbsteam — ich bringe gern Menschen und Ideen zusammen, übernehme Verantwortung und ziehe meine Energie daraus, anderen zu helfen.",
-        en: "Whether as a student representative, in the student council or in a competition team — I love bringing people and ideas together, taking responsibility, and I draw my energy from helping others.",
-      },
-      gallery: [
-        { kind: "placeholder", label: { de: "Bild folgt", en: "Photo coming soon" }, aspect: "16 / 10" },
-      ],
-    },
-  ] as { key: string; title: Localized; body: Localized; gallery: MediaSlide[] }[],
-
   // Light-touch hobbies.
   hobbies: {
-    title: { de: "Abseits vom Schreibtisch", en: "Away from the desk" } as Localized,
+    title: {
+      de: "Abseits vom Schreibtisch",
+      en: "Away from the desk",
+    } as Localized,
     items: [
       {
         key: "rc",
@@ -254,8 +209,8 @@ export const profile = {
       en: "Gary Anderson, former F1 Technical Director",
     } as Localized,
     prize: {
-      de: "Der Titel brachte ein volles Stipendium für Maschinenbau am University College London (UCL) sowie eine Siegerehrung auf dem Podium des Großen Preises von Singapur.",
-      en: "The title came with a full bursary scholarship to Mechanical Engineering at University College London (UCL) and a trophy presentation on the podium of the Singapore Grand Prix.",
+      de: "Der Titel eröffnete den Zugang zum F1 Paddock des Grand Prix 2023 in Singapur und ermöglichte exklusiven GridVIP Access. Dazu gehörten zahlreiche Interviews - unter anderem mit dem bekannten F1-Moderator Martin Brundle -, Begegnungen mit echten Formel-1-Fahrern sowie eine Siegerehrung auf dem originalen Formel-1-Podium. Außerdem wurde ein Stipendium für die UCLA in London vergeben, das von meiner Teamkollegin Caro angenommen wurde.",
+      en: "The title opened the doors to the F1 Paddock and included exclusive GridVIP Access. It led to numerous interviews – including one with renowned F1 presenter Martin Brundle – meetings with real Formula 1 drivers, and an unforgettable podium ceremony on the official Formula 1 podium. In addition, a scholarship for UCLA Extension in London was awarded and accepted by my teammate Caro.",
     } as Localized,
     stats: [
       { value: "1.", label: { de: "Platz weltweit", en: "place worldwide" } },
@@ -310,18 +265,24 @@ export const profile = {
       { kind: "video", youtube: "TvUDUW9OsAQ" },
     ] as MediaSlide[],
     // The story didn't end with the title — kept small & expandable.
-    journeyTitle: { de: "Wie es weiterging", en: "Where the journey went next" } as Localized,
+    journeyTitle: {
+      de: "Wie es weiterging",
+      en: "Where the journey went next",
+    } as Localized,
     chapters: [
       {
         id: "france",
-        title: { de: "2025 · Als Coach in Frankreich", en: "2025 · Coaching in France" },
+        title: {
+          de: "2025 · Als Coach in Frankreich",
+          en: "2025 · Coaching in France",
+        },
         summary: {
           de: "Ein französisches Team bis zum Vize-Meister begleitet.",
           en: "Mentored a French team all the way to runner-up.",
         },
         body: {
-          de: "2025 reiste ich mit meinem Teamkollegen Timon nach Avignon, um LLP Racing vom Lycée Louis Pasteur zu coachen. Bei den französischen National-Finals am Circuit Paul Ricard erreichte das Team den 2. Platz — es war besonders schön, das Gelernte weiterzugeben.",
-          en: "In 2025 I travelled to Avignon with my teammate Timon to coach LLP Racing from Lycée Louis Pasteur. At the French National Finals held at Circuit Paul Ricard, the team finished 2nd — passing on what I'd learned was especially rewarding.",
+          de: "2025 reiste ich mit meinem Teamkollegen Timon nach Avignon, um LLP Racing vom Lycée Louis Pasteur zu coachen. Bei den französischen National-Finals am Circuit Paul Ricard erreichte das Team den 2. Platz. Es war besonders schön, das Gelernte weiterzugeben und noch einmal den Thrill der Competition zu erleben, ohne selbst abliefern zu müssen.",
+          en: "In 2025 I travelled to Avignon with my teammate Timon to coach LLP Racing from Lycée Louis Pasteur. At the French National Finals held at Circuit Paul Ricard, the team finished 2nd. Passing on what I'd learned was especially rewarding and being able to re-live the thrill of the competition without actually participating was amazing.",
         },
         gallery: [
           { kind: "image", src: "/images/f1-france-image1.png" },
@@ -336,8 +297,8 @@ export const profile = {
           en: "A guest at the F1 in Schools headquarters in Thailand.",
         },
         body: {
-          de: "Auf einer Reise besuchte ich das thailändische F1-in-Schools-Hauptquartier — ein Blick hinter die Kulissen des Wettbewerbs, der mich so geprägt hat.",
-          en: "On a trip I visited the Thai F1 in Schools headquarters — a look behind the scenes of the competition that shaped me so much.",
+          de: "Auf einer Reise besuchte ich das thailändische F1-in-Schools-Hauptquartier und lernet die dortigen Teilnehmer und Verantwortlichen kennen. Eine ganz andere Welt, wunderbare Menschen und ein toller, ereignisreicher Tag.",
+          en: "On a trip I visited the Thai F1 in Schools headquarters and had the chance to get to know some participants and the director of F1-in-Schools Thailand. A totally different world with the most amazing people behind and a very exciting and interesing day spent together.",
         },
         gallery: [{ kind: "image", src: "/images/f1-thailand-image1.png" }],
       },
@@ -354,8 +315,8 @@ export const profile = {
   contact: {
     title: { de: "Neugierig geworden?", en: "Curious?" } as Localized,
     body: {
-      de: "Diese Seite soll dich vor allem einen Eindruck von mir gewinnen lassen. Wenn du trotzdem Kontakt aufnehmen möchtest, freue ich mich — ganz unverbindlich.",
-      en: "This site is mostly here to give you an impression of who I am. If you'd still like to reach out, I'd be glad to hear from you — no strings attached.",
+      de: "Diese Seite soll dich vor allem einen Eindruck von mir gewinnen lassen. Wenn du Kontakt aufnehmen möchtest, freue ich mich :).",
+      en: "This site is mostly here to give you an impression of who I am. If you'd  like to reach out, I'd be glad to hear from you :)",
     } as Localized,
   },
 } as const;

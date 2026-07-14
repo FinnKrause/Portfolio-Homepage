@@ -56,7 +56,7 @@ export function GithubProjects() {
             rank(a) - rank(b) ||
             new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime(),
         );
-        setRepos(filtered.slice(0, 6));
+        setRepos(filtered.slice(0, 3));
       })
       .catch(() => {
         if (!cancelled) setFailed(true);
@@ -83,7 +83,7 @@ export function GithubProjects() {
     // Loading skeletons
     return (
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, i) => (
+        {Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="h-24 animate-pulse rounded-xl border border-line bg-paper-soft" />
         ))}
       </div>

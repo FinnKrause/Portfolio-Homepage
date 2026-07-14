@@ -11,10 +11,21 @@ import { cn } from "@/lib/utils";
  * transform-free (only compositor-friendly work), desktop-only, and fully
  * static under reduced-motion / on mobile.
  */
-export function HeroBackdrop({ className }: { className?: string }) {
+export function HeroBackdrop({
+  className,
+  active = true,
+}: {
+  className?: string;
+  active?: boolean;
+}) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const activeRef = useRef(active);
   const reduce = useReducedMotion();
   const desktop = useIsDesktop();
+
+  useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
 
   useEffect(() => {
     const canvas = ref.current;
@@ -78,6 +89,11 @@ export function HeroBackdrop({ className }: { className?: string }) {
 
     const draw = (t: number) => {
       raf = requestAnimationFrame(draw);
+      // Idle (hero off-screen): keep the loop alive but skip all the drawing.
+      if (!activeRef.current) {
+        last = t;
+        return;
+      }
       if (t - last < 1000 / 40) return; // cap ~40fps: smooth enough, easy on the CPU
       last = t;
 

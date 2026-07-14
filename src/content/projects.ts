@@ -14,17 +14,17 @@ export const projects: Project[] = [
       en: "Turning a MIDI controller into a lighting desk",
     },
     description: {
-      de: "Desktop-Software, die einen AKAI APCmini in ein vollwertiges Steuerpult für professionelle Lichttechnik verwandelt. Über ein visuelles 8×8-Raster werden Farben, Effekte, Moving Heads und ganze Szenen auf die Pads gelegt, live abgefeuert und als Konfiguration gespeichert.",
-      en: "Desktop software that turns an AKAI APCmini into a full control surface for professional lighting. A visual 8×8 pad grid maps colours, effects, moving heads and entire scenes onto the pads — fired live and saved as reusable configs.",
+      de: "Desktop-Software, die einen AKAI APCmini in ein vollwertiges Steuerpult für meine eigentliche Lichtsoftware verwandelt. Die Software fungiert dabei als Vermittler zwischen beiden Systemen und ermöglicht nicht nur deren Kommunikation, sondern auch die Konfiguration, das Speichern von Einstellungen, Pultsperren, den Ausdruck des Layouts und vieles mehr. Damit habe ich ein sehr nischiges Problem gelöst.",
+      en: "Desktop software that transforms an AKAI APCmini into a fully featured control surface for my lighting software. Acting as a bridge between both systems, it enables not only communication but also configuration, saving settings, console locking, printing layouts, and much more. It solves a highly niche problem that I was able to address with this software.",
     },
     highlights: [
       {
-        de: "8×8-Pad-Mapping mit ON/OFF-, Helligkeits- & Label-Editor",
-        en: "8×8 pad mapping with ON/OFF, brightness & label editor",
+        de: "8x8-Pad-Mapping mit möglichen Konfigurationen",
+        en: "8x8 pad mapping with multiple options",
       },
       {
-        de: "Effekt-Engine: Fade, Ripple, Strobe, Random, Chase",
-        en: "Effect engine: fade, ripple, strobe, random, chase",
+        de: "Druckbares Layout um den Überblick nicht zu verlieren",
+        en: "Printable layout to make live-navigating easier",
       },
       {
         de: "Konfigurationen speichern, laden & live umschalten",
@@ -46,8 +46,8 @@ export const projects: Project[] = [
       en: "The crowd votes, the DJ decides",
     },
     description: {
-      de: "Ein interaktives Song-Request-System für Live-Events: Gäste schlagen über ein Web-Portal Songs vor und stimmen ab, während der DJ die volle Kontrolle behält. Ein Echtzeit-Leaderboard zeigt, was die Crowd feiert; Vorschläge außerhalb der Top 3 verfallen nach 30 Minuten. Gebaut für die Festivalbühne der WiWi-Meisterschaften.",
-      en: "An interactive song-request system for live events: guests suggest and vote on tracks through a web portal while the DJ keeps full control. A real-time leaderboard shows what the crowd is vibing with; suggestions outside the top 3 expire after 30 minutes. Built for the WiWi-Meisterschaften festival stage.",
+      de: "Ein interaktives Song-Request-System für Live-Events, das das Publikum aktiv in die Musikauswahl einbindet. Über ein Webportal können Gäste Songs vorschlagen und für ihre Favoriten abstimmen, während der DJ jederzeit die volle Kontrolle über die Playlist behält. Eine Echtzeit-Rangliste zeigt die beliebtesten Titel, laufende Musiktitel werden live angezeigt und Songwünsche können direkt übernommen oder entfernt werden. Verschiedene Oberflächen- und Automatikmodi ermöglichen unter anderem das automatische Abspielen des bestbewerteten Songs oder einen speziellen DJ-Modus. Entwickelt wurde das System für die Festivalbühne der WiWi-Meisterschaften.",
+      en: "An interactive song request system for live events that actively involves the audience in the music selection. Guests can submit song requests and vote for their favorites through a web portal, while the DJ retains full control over the playlist. A real-time leaderboard displays the most popular tracks, the currently playing song is shown live, and requests can be accepted or removed with a single click. Multiple interface and automation modes support features such as automatically playing the highest-voted song or providing a dedicated DJ view. The system was developed for the FAU festival stage of the WiWi Championships.",
     },
     highlights: [
       {
@@ -79,22 +79,6 @@ export const projects: Project[] = [
     repo: "https://github.com/FinnKrause/Festival-Community-Stage-Portal",
     featured: true,
     accent: "violet",
-    year: "2026",
-  },
-  {
-    slug: "longdistance-countdown",
-    title: "Longdistance Countdown",
-    tagline: {
-      de: "Countdown-App für die Distanz",
-      en: "A countdown app for the distance",
-    },
-    description: {
-      de: "Eine liebevoll gestaltete Web-App, die die Zeit bis zum nächsten Wiedersehen herunterzählt.",
-      en: "A lovingly designed web app that counts down the time until the next reunion.",
-    },
-    tech: ["TypeScript", "React"],
-    repo: "https://github.com/FinnKrause/Longdistance-Countdown",
-    accent: "sky",
     year: "2026",
   },
   {
@@ -140,10 +124,9 @@ export const gridProjects = projects.filter((p) => !p.featured);
  * (only if a repo with that exact name actually exists).
  */
 export const PINNED_REPOS = [
-  "Longdistance-Countdown",
-  "-FAU-MRKLK-Rettungssystem",
   "PMTool_Umbruchszeiten2020",
-  "WoL-Dc-Mc-Integration",
+  "Portfolio-Homepage",
+  "PMTool_Umbruchszeiten2020_MobileApp",
 ];
 
 /** Repos hidden from the grid (already featured above, or not worth showing). */
