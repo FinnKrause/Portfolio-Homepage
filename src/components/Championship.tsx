@@ -22,14 +22,14 @@ function Chapter({ chapter }: { chapter: ChapterT }) {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex w-full items-center gap-4 p-4 text-left transition-colors hover:bg-white/[0.06] sm:p-5"
+        className="flex w-full items-center gap-3 p-3.5 text-left transition-colors hover:bg-white/[0.06] sm:p-4"
       >
         <div className="min-w-0 flex-1">
-          <h4 className="text-base font-semibold text-white">{t(chapter.title)}</h4>
-          <p className="mt-0.5 text-sm text-brand-100/80">{t(chapter.summary)}</p>
+          <h4 className="text-sm font-semibold text-white">{t(chapter.title)}</h4>
+          <p className="mt-0.5 text-xs text-brand-100/70">{t(chapter.summary)}</p>
         </div>
         <ChevronDown
-          className={cn("h-5 w-5 shrink-0 text-sky-300 transition-transform duration-300", open && "rotate-180")}
+          className={cn("h-4 w-4 shrink-0 text-sky-300 transition-transform duration-300", open && "rotate-180")}
         />
       </button>
       <AnimatePresence initial={false}>
@@ -41,9 +41,11 @@ function Chapter({ chapter }: { chapter: ChapterT }) {
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-5 sm:px-5">
-              <p className="max-w-2xl text-sm leading-relaxed text-brand-100/90">{t(chapter.body)}</p>
-              <Gallery slides={chapter.gallery} className="mt-4 max-w-lg" />
+            <div className="px-3.5 pb-4 sm:px-4">
+              <p className="max-w-2xl text-xs leading-relaxed text-brand-100/90 sm:text-sm">
+                {t(chapter.body)}
+              </p>
+              <Gallery slides={chapter.gallery} columns={3} className="mt-3 max-w-md" />
             </div>
           </motion.div>
         )}
@@ -160,20 +162,8 @@ export function Championship() {
           </Reveal>
         </div>
 
-        {/* Journey chapters — small & expandable (France 2025, Thailand) */}
-        <Reveal className="mt-14">
-          <h3 className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-sky-300">
-            {t(c.journeyTitle)}
-          </h3>
-          <div className="mt-4 space-y-3">
-            {c.chapters.map((ch) => (
-              <Chapter key={ch.id} chapter={ch} />
-            ))}
-          </div>
-        </Reveal>
-
         {/* Photo gallery — hover to zoom, click to enlarge */}
-        <Reveal className="mt-14">
+        <Reveal className="mt-16">
           <h3 className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-sky-300">
             {t(c.galleryTitle)}
           </h3>
@@ -188,6 +178,18 @@ export function Championship() {
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {c.videos.map((slide, i) => (
               <MediaView key={i} slide={slide} />
+            ))}
+          </div>
+        </Reveal>
+
+        {/* Where the journey went next — compact, below the videos */}
+        <Reveal className="mt-12">
+          <h3 className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-sky-300">
+            {t(c.journeyTitle)}
+          </h3>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {c.chapters.map((ch) => (
+              <Chapter key={ch.id} chapter={ch} />
             ))}
           </div>
         </Reveal>

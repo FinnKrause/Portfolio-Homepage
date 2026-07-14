@@ -24,8 +24,10 @@ export const awards: Award[] = [
         href: "https://www.youtube.com/watch?v=Vp_2SyLA4fY&t=2340s",
       },
     ],
-    // Add real photos later (drop files in /public/images).
-    gallery: [{ kind: "image", src: "/images/umbruchszeiten-image1.png" }],
+    gallery: [
+      { kind: "image", src: "/images/umbruchszeiten-image1.png" },
+      { kind: "image", src: "/images/umbruchszeiten-judge-image2.png" },
+    ],
   },
   {
     title: {

@@ -2,10 +2,13 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { ArrowUpRight, ChevronDown } from "lucide-react";
+import { ArrowUpRight, ChevronDown, MapPin } from "lucide-react";
 import { profile } from "@/content/profile";
 import { nav } from "@/content/ui";
 import { useLang } from "@/lib/i18n";
+import { CodeRain } from "./visuals/CodeRain";
+
+const MASK = "linear-gradient(to right, transparent, transparent 28%, black 72%)";
 
 export function Hero() {
   const { t } = useLang();
@@ -22,76 +25,75 @@ export function Hero() {
 
   return (
     <section id="top" className="hero-aurora relative overflow-hidden pt-32 pb-16 md:pt-40 md:pb-24">
+      {/* Code-rain background, faded away from the text column */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ maskImage: MASK, WebkitMaskImage: MASK }}
+        aria-hidden
+      >
+        <CodeRain intensity={0.5} />
+      </div>
+
       <div className="mx-container relative z-10">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
-          {/* Copy — the story leads */}
+        <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
+          {/* Copy — name, rough details, links */}
           <motion.div variants={container} initial="hidden" animate="show">
-            <motion.div variants={item} className="flex items-center gap-2.5 text-sm text-ink-500">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500 opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-600" />
+            <motion.div
+              variants={item}
+              className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-ink-500"
+            >
+              <span className="inline-flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500 opacity-60" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-600" />
+                </span>
+                {t(profile.eyebrow)}
               </span>
-              <span className="font-medium">{t(profile.hero.intro)}</span>
               <span className="text-ink-300">·</span>
-              <span>{t(profile.eyebrow)}</span>
+              <span className="inline-flex items-center gap-1">
+                <MapPin className="h-3.5 w-3.5 text-brand-600" />
+                Erlangen, DE
+              </span>
             </motion.div>
 
             <motion.h1
               variants={item}
-              className="headline mt-6 max-w-2xl text-4xl font-semibold text-ink-900 sm:text-5xl md:text-6xl"
+              className="headline mt-5 text-6xl font-bold text-ink-900 sm:text-7xl"
             >
-              {t(profile.hero.headline)}
+              {profile.name}
             </motion.h1>
 
-            <motion.p
-              variants={item}
-              className="mt-6 max-w-xl text-base leading-relaxed text-ink-500 sm:text-lg"
-            >
-              {t(profile.hero.lead)}
+            <motion.p variants={item} className="mt-4 text-lg font-medium text-ink-700 sm:text-xl">
+              {t(profile.role)}
             </motion.p>
 
-            {/* Journey chapters — a quiet table of contents */}
-            <motion.nav variants={item} className="mt-8" aria-label="Kapitel">
-              <ul className="flex flex-wrap gap-x-5 gap-y-2">
-                {nav.slice(0, 5).map((item, i) => (
-                  <li key={item.id}>
-                    <a
-                      href={`#${item.id}`}
-                      className="group inline-flex items-center gap-1 text-sm font-medium text-ink-700 transition-colors hover:text-brand-700"
-                    >
-                      <span className="font-mono text-xs text-brand-400">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      {t(item.label)}
-                    </a>
-                  </li>
-                ))}
+            {/* Journey links */}
+            <motion.nav variants={item} className="mt-9" aria-label={t({ de: "Die Reise", en: "The journey" })}>
+              <p className="eyebrow mb-3">{t({ de: "Die Reise", en: "The journey" })}</p>
+              <ul className="flex flex-col gap-1.5">
+                {nav
+                  .filter((n) => n.id !== "contact")
+                  .map((it, i) => (
+                    <li key={it.id}>
+                      <a
+                        href={`#${it.id}`}
+                        className="group inline-flex items-baseline gap-3 text-lg font-medium text-ink-700 transition-colors hover:text-brand-700"
+                      >
+                        <span className="font-mono text-xs text-brand-400">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <span className="border-b border-transparent transition-colors group-hover:border-brand-300">
+                          {t(it.label)}
+                        </span>
+                        <ArrowUpRight className="h-4 w-4 -translate-x-1 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
+                      </a>
+                    </li>
+                  ))}
               </ul>
             </motion.nav>
-
-            <motion.div variants={item} className="mt-9 flex flex-wrap items-center gap-3">
-              <motion.a
-                href="#projects"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center gap-2 rounded-full bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_30px_-8px_rgba(38,69,230,0.7)] transition-colors hover:bg-brand-700"
-              >
-                {t({ de: "Reise beginnen", en: "Start the journey" })}
-                <ChevronDown className="h-4 w-4" />
-              </motion.a>
-              <motion.a
-                href="#contact"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-5 py-3 text-sm font-semibold text-ink-900 transition-colors hover:border-brand-300 hover:text-brand-700"
-              >
-                {t({ de: "Kontakt", en: "Contact" })}
-                <ArrowUpRight className="h-4 w-4" />
-              </motion.a>
-            </motion.div>
           </motion.div>
 
-          {/* Portrait — a soft accent, deliberately not dominant */}
+          {/* Portrait — a soft accent */}
           <motion.div
             initial={{ opacity: 0, y: reduce ? 0 : 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -108,7 +110,7 @@ export function Hero() {
               width={1090}
               height={1700}
               priority
-              sizes="(max-width: 1024px) 18rem, 20rem"
+              sizes="(max-width: 1024px) 18rem, 24rem"
               className="h-auto w-full object-contain [mask-image:linear-gradient(to_bottom,black_86%,transparent)]"
             />
           </motion.div>
@@ -122,7 +124,7 @@ export function Hero() {
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
         aria-label={t({ de: "Weiter scrollen", en: "Scroll down" })}
-        className="mx-auto mt-8 hidden w-fit flex-col items-center gap-1.5 text-[0.7rem] font-medium uppercase tracking-[0.2em] text-ink-500 lg:flex"
+        className="relative z-10 mx-auto mt-10 hidden w-fit flex-col items-center gap-1.5 text-[0.7rem] font-medium uppercase tracking-[0.2em] text-ink-500 lg:flex"
       >
         <span>{t({ de: "Scrollen", en: "Scroll" })}</span>
         <ChevronDown className="scroll-cue h-4 w-4 text-brand-600" />

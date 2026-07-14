@@ -1,110 +1,93 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { ArrowUpRight, Car, Plane } from "lucide-react";
 import { profile } from "@/content/profile";
-import type { MediaSlide } from "@/content/types";
 import { useLang } from "@/lib/i18n";
 import { Section } from "./Section";
 import { Reveal } from "./motion/Reveal";
-import { Carousel } from "./media/Carousel";
-import { MediaView } from "./media/MediaView";
-import { cn } from "@/lib/utils";
+import { ImageRotator } from "./media/ImageRotator";
 
 const HOBBY_ICONS: Record<string, typeof Car> = { rc: Car, travel: Plane };
 
-function topicSlides(gallery: MediaSlide[]): ReactNode[] {
-  return gallery.map((slide, i) => <MediaView key={i} slide={slide} fill />);
-}
+const ABOUT_IMAGES = [
+  { src: "/images/stage-lighting.jpg", alt: { de: "Von Finn gebaute Festivalbühne mit Lichttechnik.", en: "Festival stage built by Finn with lighting." } },
+  { src: "/images/apc-image1.png", alt: { de: "APCmini-Middleware — selbst entwickelte Lichtsteuerung.", en: "APCmini middleware — self-built lighting control." } },
+  { src: "/images/stage-lighting3.png", alt: { de: "Lichtdesign auf einer Veranstaltung.", en: "Lighting design at an event." } },
+  { src: "/images/f1-podium2.JPG", alt: { de: "F1 in Schools — Weltfinale in Singapur.", en: "F1 in Schools — World Finals in Singapore." } },
+];
 
 export function About() {
   const { t } = useLang();
 
   return (
     <Section id="about">
-      {/* Intro */}
-      <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
-        <Reveal>
-          <p className="eyebrow">{t({ de: "Über mich", en: "About" })}</p>
-          <h2 className="headline mt-3 text-3xl font-semibold text-ink-900 sm:text-4xl">
-            {t({
-              de: "Ein breiter Blick auf das, was mich ausmacht",
-              en: "A broad look at what makes me tick",
-            })}
-          </h2>
-        </Reveal>
-        <div className="space-y-4">
-          {profile.aboutBody.map((para, i) => (
-            <Reveal key={i} delay={0.05 * i}>
-              <p className="text-base leading-relaxed text-ink-500 sm:text-lg">{t(para)}</p>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-
-      {/* Topic blocks — carousel + text, alternating */}
-      <div className="mt-16 space-y-6">
-        {profile.aboutTopics.map((topic, index) => (
-          <Reveal key={topic.key} delay={index * 0.03}>
-            <article className="overflow-hidden rounded-3xl border border-line bg-white shadow-soft">
-              <div className="grid lg:grid-cols-2">
-                <div
-                  className={cn(
-                    "relative overflow-hidden bg-gradient-to-br from-brand-50 to-sky-50",
-                    index % 2 === 1 && "lg:order-last",
-                  )}
-                >
-                  <div className="relative aspect-[16/10] w-full lg:absolute lg:inset-0 lg:aspect-auto lg:h-full">
-                    <Carousel fill className="h-full" ariaLabel={t(topic.title)} slides={topicSlides(topic.gallery)} />
-                  </div>
-                </div>
-                <div className="flex flex-col justify-center p-6 sm:p-10">
-                  <span className="font-mono text-xs font-medium uppercase tracking-widest text-brand-700">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <h3 className="mt-3 text-2xl font-semibold text-ink-900">{t(topic.title)}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-ink-500 sm:text-base">{t(topic.body)}</p>
-                </div>
-              </div>
-            </article>
+      <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+        {/* Text */}
+        <div>
+          <Reveal>
+            <p className="eyebrow">{t({ de: "Über mich", en: "About" })}</p>
+            <h2 className="headline mt-3 text-3xl font-semibold text-ink-900 sm:text-4xl">
+              {t({
+                de: "Technik, Bühne und Gemeinschaft",
+                en: "Technology, stage and community",
+              })}
+            </h2>
           </Reveal>
-        ))}
-      </div>
 
-      {/* Hobbies — light touch */}
-      <Reveal className="mt-12">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-700">
-          {t(profile.hobbies.title)}
-        </h3>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          {profile.hobbies.items.map((h) => {
-            const Icon = HOBBY_ICONS[h.key] ?? Car;
-            return (
-              <div
-                key={h.key}
-                className="flex items-start gap-4 rounded-2xl border border-line bg-white p-5 shadow-sm transition-colors hover:border-brand-200"
-              >
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-700">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <div>
-                  <h4 className="text-base font-semibold text-ink-900">{t(h.title)}</h4>
-                  <p className="mt-1 text-sm leading-relaxed text-ink-500">{t(h.body)}</p>
+          <div className="mt-6 space-y-4">
+            {profile.aboutBody.map((para, i) => (
+              <Reveal key={i} delay={0.05 * i}>
+                <p className="text-base leading-relaxed text-ink-500 sm:text-lg">{t(para)}</p>
+              </Reveal>
+            ))}
+          </div>
+
+          {/* What I do — compact, text only */}
+          <Reveal className="mt-8">
+            <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
+              {profile.pillars.map((pillar) => (
+                <div key={pillar.key} className="border-l-2 border-brand-100 pl-4">
+                  <dt className="text-sm font-semibold text-ink-900">{t(pillar.title)}</dt>
+                  <dd className="mt-1 text-sm leading-relaxed text-ink-500">{t(pillar.body)}</dd>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
+
+          {/* Hobbies */}
+          <Reveal className="mt-8">
+            <p className="eyebrow">{t(profile.hobbies.title)}</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {profile.hobbies.items.map((h) => {
+                const Icon = HOBBY_ICONS[h.key] ?? Car;
+                return (
                   <a
+                    key={h.key}
                     href={h.link.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-brand-700 transition-colors hover:text-brand-900"
+                    className="group inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-1.5 text-sm font-medium text-ink-700 shadow-sm transition-colors hover:border-brand-200 hover:text-brand-700"
                   >
-                    {t(h.link.label)}
-                    <ArrowUpRight className="h-4 w-4" />
+                    <Icon className="h-4 w-4 text-brand-600" />
+                    {t(h.title)}
+                    <ArrowUpRight className="h-3.5 w-3.5 text-ink-300 transition-colors group-hover:text-brand-600" />
                   </a>
-                </div>
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          </Reveal>
         </div>
-      </Reveal>
+
+        {/* Rotating image panel */}
+        <Reveal>
+          <div className="lg:sticky lg:top-24">
+            <ImageRotator
+              images={ABOUT_IMAGES.map((img) => ({ src: img.src, alt: t(img.alt) }))}
+              className="aspect-[4/5] w-full rounded-3xl border border-line shadow-lift sm:aspect-[4/3] lg:aspect-[4/5]"
+            />
+          </div>
+        </Reveal>
+      </div>
     </Section>
   );
 }
