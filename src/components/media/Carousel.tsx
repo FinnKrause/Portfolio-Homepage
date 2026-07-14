@@ -7,21 +7,24 @@ import { cn } from "@/lib/utils";
 
 /**
  * Crossfade carousel.
- * - The FIRST slide stays in normal flow and defines the height; the rest
- *   are overlaid absolutely. So slides of different intrinsic heights work.
+ * - `fill`: every slide is absolutely positioned to fill the parent (the parent
+ *   must define the height). Use for edge-to-edge media panels.
+ * - default (no `fill`): the FIRST slide stays in flow and defines the height;
+ *   the rest are overlaid. Good for slides of differing intrinsic heights.
  * - Auto-advances only while scrolled into view.
- * - Any manual interaction (arrow/dot) permanently stops auto-advance, so it
- *   never yanks away while you're looking at a specific slide.
+ * - Any manual interaction (arrow/dot) permanently stops auto-advance.
  */
 export function Carousel({
   slides,
   autoMs = 4200,
   ariaLabel,
+  fill = false,
   className,
 }: {
   slides: ReactNode[];
   autoMs?: number;
   ariaLabel?: string;
+  fill?: boolean;
   className?: string;
 }) {
   const reduce = useReducedMotion();
@@ -56,32 +59,53 @@ export function Carousel({
   if (count === 0) return null;
 
   return (
-    <div ref={rootRef} className={cn("relative", className)} aria-roledescription="carousel" aria-label={ariaLabel}>
-      {/* Sizer = first slide, always in flow */}
-      <div
-        className={cn("transition-opacity duration-500", index === 0 ? "opacity-100" : "opacity-0")}
-        aria-hidden={index !== 0}
-      >
-        {slides[0]}
-      </div>
-
-      {/* Overlays */}
-      {slides.slice(1).map((node, i) => {
-        const slideIndex = i + 1;
-        const active = index === slideIndex;
-        return (
+    <div
+      ref={rootRef}
+      className={cn("relative", fill && "h-full", className)}
+      aria-roledescription="carousel"
+      aria-label={ariaLabel}
+    >
+      {fill ? (
+        // Fill mode: all slides absolute; parent provides the height.
+        slides.map((node, i) => (
           <div
-            key={slideIndex}
+            key={i}
             className={cn(
               "absolute inset-0 transition-opacity duration-500",
-              active ? "opacity-100" : "pointer-events-none opacity-0",
+              index === i ? "opacity-100" : "pointer-events-none opacity-0",
             )}
-            aria-hidden={!active}
+            aria-hidden={index !== i}
           >
             {node}
           </div>
-        );
-      })}
+        ))
+      ) : (
+        <>
+          {/* Sizer = first slide, always in flow */}
+          <div
+            className={cn("transition-opacity duration-500", index === 0 ? "opacity-100" : "opacity-0")}
+            aria-hidden={index !== 0}
+          >
+            {slides[0]}
+          </div>
+          {slides.slice(1).map((node, i) => {
+            const slideIndex = i + 1;
+            const active = index === slideIndex;
+            return (
+              <div
+                key={slideIndex}
+                className={cn(
+                  "absolute inset-0 transition-opacity duration-500",
+                  active ? "opacity-100" : "pointer-events-none opacity-0",
+                )}
+                aria-hidden={!active}
+              >
+                {node}
+              </div>
+            );
+          })}
+        </>
+      )}
 
       {count > 1 && (
         <>
@@ -115,8 +139,8 @@ export function Carousel({
                 aria-label={`Go to slide ${i + 1}`}
                 aria-current={index === i}
                 className={cn(
-                  "h-1.5 rounded-full transition-all",
-                  index === i ? "w-5 bg-white" : "w-1.5 bg-white/60 hover:bg-white/80",
+                  "h-1.5 rounded-full shadow-sm transition-all",
+                  index === i ? "w-5 bg-brand-600" : "w-1.5 bg-white/90 ring-1 ring-black/5 hover:bg-white",
                 )}
               />
             ))}

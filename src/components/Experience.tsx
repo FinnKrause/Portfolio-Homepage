@@ -1,18 +1,18 @@
 "use client";
 
-import { ArrowUpRight, Briefcase, GraduationCap, HeartHandshake, Youtube } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Briefcase, GraduationCap, HeartHandshake, Youtube } from "lucide-react";
 import { workExperience, voluntaryExperience } from "@/content/experience";
 import { education } from "@/content/education";
 import type { ExperienceItem } from "@/content/types";
 import { useLang } from "@/lib/i18n";
 import { Section, SectionHeading } from "./Section";
 import { Reveal, RevealGroup, RevealItem } from "./motion/Reveal";
-import { MediaView } from "./media/MediaView";
+import { Gallery } from "./media/Gallery";
 import { cn } from "@/lib/utils";
 
 function ExpEntry({ item }: { item: ExperienceItem }) {
   const { t } = useLang();
-  const isYoutube = item.link?.href.includes("youtu");
+  const links = [...(item.links ?? []), ...(item.link ? [item.link] : [])];
 
   return (
     <li className="relative">
@@ -52,23 +52,29 @@ function ExpEntry({ item }: { item: ExperienceItem }) {
       ))}
 
       {item.gallery && item.gallery.length > 0 && (
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:max-w-sm">
-          {item.gallery.map((slide, i) => (
-            <MediaView key={i} slide={slide} />
-          ))}
-        </div>
+        <Gallery slides={item.gallery} className="mt-3 sm:max-w-md" />
       )}
 
-      {item.link && (
-        <a
-          href={item.link.href}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-brand-700 hover:text-brand-900"
-        >
-          {isYoutube ? <Youtube className="h-4 w-4" /> : <ArrowUpRight className="h-4 w-4" />}
-          {t(item.link.label)}
-        </a>
+      {links.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
+          {links.map((link, i) => {
+            const isYoutube = /youtu\.?be/.test(link.href);
+            const internal = link.href.startsWith("#");
+            const Icon = isYoutube ? Youtube : internal ? ArrowRight : ArrowUpRight;
+            return (
+              <a
+                key={i}
+                href={link.href}
+                target={internal ? undefined : "_blank"}
+                rel={internal ? undefined : "noreferrer"}
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-700 transition-colors hover:text-brand-900"
+              >
+                <Icon className="h-4 w-4" />
+                {t(link.label)}
+              </a>
+            );
+          })}
+        </div>
       )}
     </li>
   );

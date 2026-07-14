@@ -21,9 +21,16 @@ export function MediaView({
 
   if (slide.kind === "image") {
     if (fill) {
+      // Fill a media panel while keeping the whole image visible (screenshots).
       return (
-        <div className={cn("relative h-full w-full overflow-hidden rounded-xl", className)}>
-          <Image src={slide.src} alt={slide.alt ? t(slide.alt) : ""} fill sizes="(max-width: 768px) 100vw, 40rem" className="object-cover" />
+        <div className={cn("relative h-full w-full", className)}>
+          <Image
+            src={slide.src}
+            alt={slide.alt ? t(slide.alt) : ""}
+            fill
+            sizes="(max-width: 768px) 100vw, 40rem"
+            className="object-contain"
+          />
         </div>
       );
     }

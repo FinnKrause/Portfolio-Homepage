@@ -63,6 +63,8 @@ export interface ExperienceItem {
   gallery?: MediaSlide[];
   /** Optional related link (e.g. a talk or article). */
   link?: LinkItem;
+  /** Optional additional links (YouTube, articles, …). */
+  links?: LinkItem[];
 }
 
 export interface EducationItem {
@@ -80,7 +82,10 @@ export interface Award {
   description: Localized;
   /** The one showcased award (Umbruchszeiten) renders larger with a gallery. */
   emphasis?: boolean;
+  /** A single related link (kept for convenience). */
   link?: LinkItem;
+  /** Any number of related links (YouTube, articles, the section above, …). */
+  links?: LinkItem[];
   /** Optional images/placeholders for the award. */
   gallery?: MediaSlide[];
 }

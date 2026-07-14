@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ArrowUp } from "lucide-react";
 import { nav, ui } from "@/content/ui";
 import { profile, socials } from "@/content/profile";
@@ -32,7 +33,7 @@ export function Footer() {
             {nav.map((item) => (
               <a
                 key={item.id}
-                href={`#${item.id}`}
+                href={`/#${item.id}`}
                 className="text-sm text-ink-500 transition-colors hover:text-brand-700"
               >
                 {t(item.label)}
@@ -41,11 +42,22 @@ export function Footer() {
           </nav>
         </div>
 
-        <div className="mt-10 flex flex-col-reverse items-start gap-4 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-ink-500">
-            © {year} {profile.name} ·{" "}
-            {t({ de: "Mit Next.js gebaut.", en: "Built with Next.js." })}
-          </p>
+        <div className="mt-10 flex flex-col gap-4 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-x-4 gap-y-2 text-xs text-ink-500 sm:flex-row sm:items-center">
+            <p>
+              © {year} {profile.name}
+            </p>
+            <span className="hidden text-ink-300 sm:inline">·</span>
+            <div className="flex items-center gap-4">
+              <Link href="/impressum" className="font-medium transition-colors hover:text-brand-700">
+                Impressum
+              </Link>
+              <Link href="/datenschutz" className="font-medium transition-colors hover:text-brand-700">
+                {t({ de: "Datenschutz", en: "Privacy" })}
+              </Link>
+            </div>
+          </div>
+
           <div className="flex items-center gap-3">
             <ul className="flex items-center gap-4">
               {socials.map((s) => (
@@ -62,7 +74,7 @@ export function Footer() {
               ))}
             </ul>
             <a
-              href="#top"
+              href="/#top"
               aria-label={t(ui.backToTop)}
               className="grid h-9 w-9 place-items-center rounded-full border border-line bg-white text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700"
             >

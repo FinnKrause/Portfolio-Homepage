@@ -30,8 +30,8 @@ const ACCENT_PANEL: Record<NonNullable<Project["accent"]>, string> = {
 
 function slidesFor(project: Project): ReactNode[] {
   const slides: ReactNode[] = [
-    <div key="visual" className="grid place-items-center">
-      {VISUALS[project.slug]}
+    <div key="visual" className="flex h-full w-full items-center justify-center p-4 sm:p-6">
+      <div className="w-full max-w-sm">{VISUALS[project.slug]}</div>
     </div>,
   ];
   (project.gallery ?? []).forEach((slide, i) => {
@@ -60,15 +60,17 @@ export function Projects() {
           <Reveal key={project.slug} delay={index * 0.05}>
             <article className="overflow-hidden rounded-3xl border border-line bg-white shadow-soft transition-shadow duration-300 hover:shadow-lift">
               <div className="grid lg:grid-cols-2">
-                {/* Visual carousel */}
+                {/* Visual carousel — media fills the panel edge-to-edge */}
                 <div
                   className={cn(
-                    "relative flex items-center justify-center bg-gradient-to-br p-6 sm:p-10",
+                    "relative overflow-hidden bg-gradient-to-br",
                     ACCENT_PANEL[project.accent ?? "brand"],
                     index % 2 === 1 && "lg:order-last",
                   )}
                 >
-                  <Carousel className="w-full max-w-md" ariaLabel={project.title} slides={slidesFor(project)} />
+                  <div className="relative aspect-[4/3] w-full sm:aspect-[16/10] lg:absolute lg:inset-0 lg:aspect-auto lg:h-full">
+                    <Carousel fill className="h-full" ariaLabel={project.title} slides={slidesFor(project)} />
+                  </div>
                 </div>
 
                 {/* Content */}

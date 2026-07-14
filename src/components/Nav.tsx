@@ -55,7 +55,7 @@ export function Nav() {
       )}
     >
       <nav className="mx-container flex h-16 items-center justify-between gap-4">
-        <a href="#top" className="group flex items-center gap-2.5" aria-label="Finn Krause — Start">
+        <a href="/" className="group flex items-center gap-2.5" aria-label="Finn Krause — Start">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-600 to-brand-800 text-sm font-bold text-white shadow-[0_6px_16px_-4px_rgba(38,69,230,0.6)]">
             FK
           </span>
@@ -69,7 +69,7 @@ export function Nav() {
           {nav.map((item) => (
             <li key={item.id}>
               <a
-                href={`#${item.id}`}
+                href={`/#${item.id}`}
                 className={cn(
                   "relative rounded-full px-3.5 py-2 text-sm font-medium transition-colors",
                   active === item.id ? "text-brand-700" : "text-ink-500 hover:text-ink-900",
@@ -136,7 +136,7 @@ export function Nav() {
               {nav.map((item) => (
                 <li key={item.id}>
                   <a
-                    href={`#${item.id}`}
+                    href={`/#${item.id}`}
                     onClick={() => setOpen(false)}
                     className={cn(
                       "block rounded-xl px-3 py-3 text-base font-medium transition-colors",

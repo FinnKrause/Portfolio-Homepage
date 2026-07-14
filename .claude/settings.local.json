@@ -18,7 +18,9 @@
       "Bash(sips -r 270 /private/tmp/claude-501/-Users-finn-Desktop-Coding-Portfolio/48933c3f-efc7-4434-85ae-ed47dd3b087d/scratchpad/rotB.jpg)",
       "Bash(sips -Z 600 /private/tmp/claude-501/-Users-finn-Desktop-Coding-Portfolio/48933c3f-efc7-4434-85ae-ed47dd3b087d/scratchpad/rotB.jpg)",
       "Bash(sips -g pixelWidth -g pixelHeight /private/tmp/claude-501/-Users-finn-Desktop-Coding-Portfolio/48933c3f-efc7-4434-85ae-ed47dd3b087d/scratchpad/rotA.jpg)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Read(//Users/finn/.claude/skills/ui-ux-pro-max/**)",
+      "Bash(python3 scripts/search.py \"personal portfolio developer event-tech world-champion bold editorial professional\" --design-system --variance 6 --motion 7 -p \"Finn Krause Portfolio\")"
     ]
   }
 }

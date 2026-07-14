@@ -116,7 +116,24 @@ falls back to the static list in the same file.
 ### Add an award / experience / education / skill
 Append to `awards.ts`, `experience.ts` (set `kind: "work"` or `"voluntary"`), `education.ts`
 (`upcoming: true` for planned items) or `skills.ts`. Every text field is `{ de, en }`. Experience
-items can be extended later with `more` (extra paragraphs), `gallery` (images) and `link`.
+items can be extended later with `more` (extra paragraphs) and `gallery` (images).
+
+### Links (awards & experience)
+Both awards and experience entries take a `links: LinkItem[]` array (plus a single `link` for
+convenience). Icons are auto-detected: a **YouTube** URL gets a play icon, an in-page anchor
+(`#championship`) gets a → arrow (same tab), any other URL opens in a new tab. Example:
+
+```ts
+links: [
+  { label: { de: "Preisverleihung ansehen", en: "Watch the ceremony" },
+    href: "https://www.youtube.com/watch?v=…" },
+]
+```
+
+### Galleries open in a lightbox
+Any `gallery` of images (championship, awards, experience) renders through the shared `Gallery`
+component: a responsive grid that hover-zooms and opens a full-screen **lightbox** (keyboard +
+prev/next). The grid auto-adapts its column count, so adding more photos later just works.
 
 ### Translations
 Every string is a `Localized` object `{ de: "…", en: "…" }`. The active language is resolved with the
@@ -132,6 +149,15 @@ All colours, fonts and shadows are CSS variables in `src/app/globals.css` under 
 ## Notes & decisions
 
 - **Light mode only** is enforced (`color-scheme: light`, no dark variants) as requested.
+- **⚠️ Legal (German law) — action required:** `/impressum` and `/datenschutz` pages exist and are
+  linked in the footer. Before going live, fill in `legalConfig` in
+  [`src/content/legal.ts`](src/content/legal.ts): a German **Impressum (§ 5 DDG) legally requires a
+  real postal address** (no P.O. box) and the **hosting provider**. These are left as `[…]`
+  placeholders and are **not** auto-filled with a home address. The Datenschutzerklärung already
+  documents this site's actual data flows (server logs, YouTube facade, GitHub API, self-hosted fonts,
+  local-storage language pref) — review and adapt it to your host.
+- **Typography:** Space Grotesk (display headings) + Inter (body) + JetBrains Mono (labels), all
+  self-hosted via `next/font` (no external Google Fonts request).
 - **Privacy:** the public site intentionally omits Finn's home address, phone number and date of birth
   (all present in the CV). It exposes email, GitHub, LinkedIn and Instagram. Adjust in
   `content/profile.ts` if desired.

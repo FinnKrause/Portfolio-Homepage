@@ -48,7 +48,7 @@ export const experience: ExperienceItem[] = [
     period: { de: "Jun. 2019 – Nov. 2022", en: "Jun 2019 – Nov 2022" },
     kind: "work",
     description: {
-      de: "Wöchentliche Austragung von Zeitungen in der Nachbarschacht und Umgebung.",
+      de: "Wöchentliche Austragung von Zeitungen in der Nachbarschaft und Umgebung.",
       en: "Weekly delivery of newspapers to the local neighbourhood.",
     },
   },
@@ -61,7 +61,7 @@ export const experience: ExperienceItem[] = [
     },
     org: "FSI WiSo · FAU Erlangen-Nürnberg",
     location: "Erlangen-Nürnberg",
-    period: { de: "seit November 2024", en: "Since November 2026" },
+    period: { de: "seit November 2024", en: "Since November 2024" },
     kind: "voluntary",
     description: {
       de: "Finanzielle Koordination von Tutorien-Geldern sowie Leitung der Arbeitskreise „Website“ und „WiWi-Meisterschaften“ — inklusive Planung und Durchführung einer Festivalbühne für mehrere hundert Gäste gleichzeitig.",

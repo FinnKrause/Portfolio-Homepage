@@ -7,7 +7,10 @@ import type { Award } from "./types";
  */
 export const awards: Award[] = [
   {
-    title: { de: "„Umbruchszeiten“ — 2. Platz & Jurymitglied", en: "“Umbruchszeiten” — 2nd place & juror" },
+    title: {
+      de: "„Umbruchszeiten“ — 2. Platz & Jurymitglied",
+      en: "“Umbruchszeiten” — 2nd place & juror",
+    },
     org: "Bundesstiftung für Aufarbeitung · Berlin",
     year: "2022",
     emphasis: true,
@@ -15,14 +18,20 @@ export const awards: Award[] = [
       de: "2. Platz im bundesweiten Geschichtswettbewerb und anschließende Berufung in die Jury. Seitdem bewerte ich eingereichte Projekte und arbeite mit Politikerinnen und Politikern aus Berlin zusammen — die Preisverleihung fand gemeinsam mit „MrWissen2Go“ statt.",
       en: "2nd place in the national history competition and a subsequent appointment to the jury. Since then I evaluate submitted projects and collaborate with politicians in Berlin — the award ceremony was hosted together with “MrWissen2Go”.",
     },
-    // Add real photos later (drop files in /public/images).
-    gallery: [
-      { kind: "placeholder", label: { de: "Foto folgt", en: "Photo coming soon" }, aspect: "4 / 3" },
-      { kind: "placeholder", label: { de: "Foto folgt", en: "Photo coming soon" }, aspect: "4 / 3" },
+    links: [
+      {
+        label: { de: "Preisverleihung ansehen", en: "Watch the award ceremony" },
+        href: "https://www.youtube.com/watch?v=Vp_2SyLA4fY&t=2340s",
+      },
     ],
+    // Add real photos later (drop files in /public/images).
+    gallery: [{ kind: "image", src: "/images/umbruchszeiten-image1.png" }],
   },
   {
-    title: { de: "F1 in Schools — Weltmeister", en: "F1 in Schools — World Champion" },
+    title: {
+      de: "F1 in Schools — Weltmeister",
+      en: "F1 in Schools — World Champion",
+    },
     org: "Aramco F1 in Schools World Finals · Singapur · 2023",
     year: "2023",
     description: {
@@ -30,12 +39,18 @@ export const awards: Award[] = [
       en: "World title with team Recoil Racing — covered in detail in its own section.",
     },
     link: {
-      label: { de: "Zur Weltmeister-Sektion", en: "See the World Champion section" },
+      label: {
+        de: "Zur Weltmeister-Sektion",
+        en: "See the World Champion section",
+      },
       href: "#championship",
     },
   },
   {
-    title: { de: "„FAUST“ Security Workshop — 2. Platz", en: "“FAUST” Security Workshop — 2nd place" },
+    title: {
+      de: "„FAUST“ Security Workshop — 2. Platz",
+      en: "“FAUST” Security Workshop — 2nd place",
+    },
     org: "FAU Erlangen-Nürnberg · 2024",
     year: "2024",
     description: {

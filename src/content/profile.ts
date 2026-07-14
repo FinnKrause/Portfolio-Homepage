@@ -196,15 +196,15 @@ export const profile = {
     gallery: [
       {
         kind: "image",
-        src: "/images/f1-podium.jpg",
-      },
-      {
-        kind: "image",
         src: "/images/f1-image1.jpeg",
       },
       {
         kind: "image",
         src: "/images/f1-image2.png",
+      },
+      {
+        kind: "image",
+        src: "/images/f1-podium2.JPG",
       },
     ] as MediaSlide[],
     videosTitle: { de: "Videos", en: "Videos" } as Localized,

@@ -10,6 +10,7 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
   --font-serif: var(--font-instrument), ui-serif, Georgia, "Times New Roman", serif;
+  --font-display: var(--font-space-grotesk), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   /* Brand blue scale */
   --color-brand-50: #eef4ff;
@@ -106,8 +107,9 @@ body {
 }
 
 .headline {
-  letter-spacing: -0.03em;
-  line-height: 0.98;
+  font-family: var(--font-display);
+  letter-spacing: -0.035em;
+  line-height: 0.96;
 }
 
 .card {
@@ -140,6 +142,37 @@ body {
   pointer-events: none;
   z-index: 0;
 }
+
+/* Hero aurora — bold, colourful at the top; fades to clean white deeper down
+   so the page visually calms into a professional look as you scroll. */
+.hero-aurora::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38rem 26rem at 10% 6%, rgba(38, 69, 230, 0.20), transparent 62%),
+    radial-gradient(46rem 30rem at 92% -6%, rgba(56, 189, 248, 0.22), transparent 60%),
+    radial-gradient(34rem 26rem at 66% 48%, rgba(129, 140, 248, 0.14), transparent 62%);
+}
+.hero-aurora::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 45%;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--color-paper) 92%);
+}
+
+/* Scroll cue */
+@keyframes scrollcue {
+  0%, 100% { transform: translateY(0); opacity: 0.85; }
+  50% { transform: translateY(7px); opacity: 0.35; }
+}
+.scroll-cue { animation: scrollcue 1.9s ease-in-out infinite; }
 
 /* ---------- APCmini pad-grid chase animation ---------- */
 @keyframes padPulse {

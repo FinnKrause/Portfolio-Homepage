@@ -6,6 +6,7 @@ import { profile } from "@/content/profile";
 import { useLang } from "@/lib/i18n";
 import { Reveal } from "./motion/Reveal";
 import { MediaView } from "./media/MediaView";
+import { Gallery } from "./media/Gallery";
 
 export function Championship() {
   const { t } = useLang();
@@ -115,16 +116,12 @@ export function Championship() {
           </Reveal>
         </div>
 
-        {/* Photo gallery (replace placeholders with real photos) */}
+        {/* Photo gallery — hover to zoom, click to enlarge */}
         <Reveal className="mt-16">
           <h3 className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-sky-300">
             {t(c.galleryTitle)}
           </h3>
-          <div className="mt-4 grid gap-4 sm:grid-cols-3">
-            {c.gallery.map((slide, i) => (
-              <MediaView key={i} slide={slide} />
-            ))}
-          </div>
+          <Gallery slides={c.gallery} className="mt-4" />
         </Reveal>
 
         {/* Videos */}

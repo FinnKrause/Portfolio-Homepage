@@ -1,17 +1,48 @@
 "use client";
 
-import { ArrowUpRight, Gavel, ShieldCheck, Trophy } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Gavel, ShieldCheck, Trophy, Youtube } from "lucide-react";
 import { emphasisAward, sideAwards } from "@/content/awards";
-import type { Award } from "@/content/types";
+import type { Award, LinkItem } from "@/content/types";
 import { useLang } from "@/lib/i18n";
 import { Section, SectionHeading } from "./Section";
 import { Reveal } from "./motion/Reveal";
-import { MediaView } from "./media/MediaView";
+import { Gallery } from "./media/Gallery";
 
 function sideIcon(award: Award) {
   if (award.title.en.includes("F1")) return Trophy;
   if (award.title.en.includes("FAUST")) return ShieldCheck;
   return Gavel;
+}
+
+/** Merge the convenience `link` with the `links` array. */
+function mergedLinks(award: Award): LinkItem[] {
+  return [...(award.links ?? []), ...(award.link ? [award.link] : [])];
+}
+
+function AwardLinks({ links }: { links: LinkItem[] }) {
+  const { t } = useLang();
+  if (links.length === 0) return null;
+  return (
+    <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2">
+      {links.map((link, i) => {
+        const isYoutube = /youtu\.?be/.test(link.href);
+        const internal = link.href.startsWith("#");
+        const Icon = isYoutube ? Youtube : internal ? ArrowRight : ArrowUpRight;
+        return (
+          <a
+            key={i}
+            href={link.href}
+            target={internal ? undefined : "_blank"}
+            rel={internal ? undefined : "noreferrer"}
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 transition-colors hover:text-brand-900"
+          >
+            <Icon className="h-4 w-4" />
+            {t(link.label)}
+          </a>
+        );
+      })}
+    </div>
+  );
 }
 
 export function Awards() {
@@ -45,12 +76,10 @@ export function Awards() {
                 {t(emphasisAward.description)}
               </p>
 
+              <AwardLinks links={mergedLinks(emphasisAward)} />
+
               {emphasisAward.gallery && emphasisAward.gallery.length > 0 && (
-                <div className="mt-5 grid grid-cols-2 gap-3">
-                  {emphasisAward.gallery.map((slide, i) => (
-                    <MediaView key={i} slide={slide} />
-                  ))}
-                </div>
+                <Gallery slides={emphasisAward.gallery} className="mt-5" />
               )}
             </article>
           </Reveal>
@@ -61,7 +90,6 @@ export function Awards() {
           <div className="flex h-full flex-col gap-5">
             {sideAwards.map((award, i) => {
               const Icon = sideIcon(award);
-              const internal = award.link?.href.startsWith("#");
               return (
                 <article
                   key={i}
@@ -76,17 +104,7 @@ export function Awards() {
                   <h3 className="mt-3 text-base font-semibold text-ink-900">{t(award.title)}</h3>
                   <p className="mt-0.5 text-sm text-ink-500">{award.org}</p>
                   <p className="mt-2 text-sm leading-relaxed text-ink-500">{t(award.description)}</p>
-                  {award.link && (
-                    <a
-                      href={award.link.href}
-                      target={internal ? undefined : "_blank"}
-                      rel={internal ? undefined : "noreferrer"}
-                      className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 hover:text-brand-900"
-                    >
-                      {t(award.link.label)}
-                      <ArrowUpRight className="h-4 w-4" />
-                    </a>
-                  )}
+                  <AwardLinks links={mergedLinks(award)} />
                 </article>
               );
             })}
