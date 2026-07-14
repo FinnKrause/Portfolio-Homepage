@@ -17,11 +17,13 @@ export function CodeRain({
   headColor = "56, 189, 248", // sky-400
   trailColor = "38, 69, 230", // brand-600
   intensity = 0.55,
+  fontSize = 15,
 }: {
   className?: string;
   headColor?: string;
   trailColor?: string;
   intensity?: number;
+  fontSize?: number;
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const reduce = useReducedMotion();
@@ -39,8 +41,7 @@ export function CodeRain({
       return;
     }
 
-    const fontSize = 15;
-    const trail = 10;
+    const trail = 12;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let w = 0;
     let h = 0;
@@ -99,7 +100,7 @@ export function CodeRain({
       ro.disconnect();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
-  }, [desktop, reduce, headColor, trailColor, intensity]);
+  }, [desktop, reduce, headColor, trailColor, intensity, fontSize]);
 
   return (
     <canvas
