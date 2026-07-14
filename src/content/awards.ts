@@ -15,8 +15,8 @@ export const awards: Award[] = [
     year: "2022",
     emphasis: true,
     description: {
-      de: "2. Platz im bundesweiten Geschichtswettbewerb und anschließende Berufung in die Jury. Seitdem bewerte ich eingereichte Projekte und arbeite mit Politikerinnen und Politikern aus Berlin zusammen — die Preisverleihung fand gemeinsam mit „MrWissen2Go“ statt.",
-      en: "2nd place in the national history competition and a subsequent appointment to the jury. Since then I evaluate submitted projects and collaborate with politicians in Berlin — the award ceremony was hosted together with “MrWissen2Go”.",
+      de: "2. Platz im bundesweiten Geschichtswettbewerb (2022) und anschließende Berufung in die Jury, in der ich bis 2024 eingereichte Projekte bewertete und mit Politikerinnen und Politikern aus Berlin zusammenarbeitete. Die Preisverleihung fand gemeinsam mit „MrWissen2Go“ statt.",
+      en: "2nd place in the national history competition (2022) and a subsequent appointment to the jury, where until 2024 I evaluated submitted projects and worked with politicians in Berlin. The award ceremony was hosted together with “MrWissen2Go”.",
     },
     links: [
       {

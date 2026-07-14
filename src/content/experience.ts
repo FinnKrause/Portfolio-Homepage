@@ -56,16 +56,17 @@ export const experience: ExperienceItem[] = [
   // ---------- Voluntary ----------
   {
     role: {
-      de: "Ehemaliger 2. Vorsitzender „Q-Zirkel“ & Arbeitskreisleitung",
-      en: "Former Vice Chair “Q-Zirkel” & working-group lead",
+      de: "Arbeitskreisleitung & Hochschulpolitik",
+      en: "Working-group lead & student politics",
     },
     org: "FSI WiSo · FAU Erlangen-Nürnberg",
     location: "Erlangen-Nürnberg",
-    period: { de: "seit November 2024", en: "Since November 2024" },
+    period: { de: "seit November 2024", en: "since November 2024" },
     kind: "voluntary",
+    current: true,
     description: {
-      de: "Finanzielle Koordination von Tutorien-Geldern sowie Leitung der Arbeitskreise „Website“ und „WiWi-Meisterschaften“ — inklusive Planung und Durchführung einer Festivalbühne für mehrere hundert Gäste gleichzeitig.",
-      en: "Financial coordination of tutoring funds and leadership of the “Website” and “WiWi-Meisterschaften” working groups — including planning and running a festival stage for several hundred guests at once.",
+      de: "Leitung der Arbeitskreise „Website“ und „WiWi-Meisterschaften“ — inklusive Planung und Durchführung einer Festivalbühne für mehrere hundert Gäste gleichzeitig. Bei den Hochschulwahlen trat ich auf der FSI-WiSo-Liste für die Studierendenvertretung an und erreichte den 4. Platz.",
+      en: "Leading the “Website” and “WiWi-Meisterschaften” working groups — including planning and running a festival stage for several hundred guests at once. In the student elections I ran on the FSI WiSo list for the student representation and came 4th.",
     },
   },
   {

@@ -16,7 +16,16 @@ import { cn } from "@/lib/utils";
  * images later "just works". Non-image slides (video/placeholder) render
  * as-is and are not lightbox-openable.
  */
-export function Gallery({ slides, className }: { slides: MediaSlide[]; className?: string }) {
+export function Gallery({
+  slides,
+  columns,
+  className,
+}: {
+  slides: MediaSlide[];
+  /** Force a fixed max column count (keeps lone images from going full-width). */
+  columns?: 2 | 3;
+  className?: string;
+}) {
   const { t } = useLang();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -35,7 +44,15 @@ export function Gallery({ slides, className }: { slides: MediaSlide[]; className
 
   const n = slides.length;
   const gridCols =
-    n <= 1 ? "grid-cols-1" : n === 2 ? "grid-cols-2" : "grid-cols-2 md:grid-cols-3";
+    columns === 3
+      ? "grid-cols-2 sm:grid-cols-3"
+      : columns === 2
+        ? "grid-cols-2"
+        : n <= 1
+          ? "grid-cols-1"
+          : n === 2
+            ? "grid-cols-2"
+            : "grid-cols-2 md:grid-cols-3";
 
   return (
     <>

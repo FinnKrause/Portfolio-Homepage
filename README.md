@@ -167,3 +167,24 @@ All colours, fonts and shadows are CSS variables in `src/app/globals.css` under 
 - The provided `IMG_3176.MOV` is HEVC; transcode it to MP4/WebM if you want to embed it as video.
 - Accessibility: reduced-motion is respected, there is a skip link, focus-visible rings, and semantic
   landmarks.
+
+---
+
+## Redesign (v2) — architecture
+
+The site is a single scroll-driven story framed by an animated "spine".
+
+- **`components/ScrollRails.tsx`** — thin blue rails on both margins that fill with scroll progress
+  (desktop only, reduced-motion → static). Rendered once in `layout.tsx`.
+- **Hero** (`components/Hero.tsx`) — understated & journey-led; copy in `profile.hero`; uses the
+  transparent cut-out `finn-portrait-transparent.png`. The chapter list mirrors `content/ui.ts` `nav`.
+- **About** (`components/About.tsx`) — broad topic blocks (carousel + text) from `profile.aboutTopics`
+  plus `profile.hobbies`. Add a topic or swap a `gallery` image there.
+- **F1 journey** (`components/Championship.tsx`) — the 2023 story **plus** expandable chapters from
+  `profile.championship.chapters` (France 2025, Thailand). Add a chapter → append there.
+- **Engagement timeline** (`components/Engagement.tsx` + `content/engagement.ts`) — vertical rows with
+  overlap bars on a shared year axis (`engagementAxis`). Add an activity → append an `EngagementItem`
+  with `start`/`end` decimal years; overlaps render automatically. Expandable detail + links + gallery.
+- **Media** — `Gallery` takes an optional `columns` prop to keep lone images from going full-width.
+
+See `REDESIGN-PLAN.md` for the full plan, decisions and progress.

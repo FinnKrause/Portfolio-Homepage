@@ -1,12 +1,56 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
-import { ArrowUpRight, ExternalLink, Quote, Trophy } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpRight, ChevronDown, ExternalLink, Quote, Trophy } from "lucide-react";
 import { profile } from "@/content/profile";
 import { useLang } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
 import { Reveal } from "./motion/Reveal";
 import { MediaView } from "./media/MediaView";
 import { Gallery } from "./media/Gallery";
+
+type ChapterT = (typeof profile.championship.chapters)[number];
+
+function Chapter({ chapter }: { chapter: ChapterT }) {
+  const { t } = useLang();
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="overflow-hidden rounded-2xl border border-white/12 bg-white/[0.04]">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        className="flex w-full items-center gap-4 p-4 text-left transition-colors hover:bg-white/[0.06] sm:p-5"
+      >
+        <div className="min-w-0 flex-1">
+          <h4 className="text-base font-semibold text-white">{t(chapter.title)}</h4>
+          <p className="mt-0.5 text-sm text-brand-100/80">{t(chapter.summary)}</p>
+        </div>
+        <ChevronDown
+          className={cn("h-5 w-5 shrink-0 text-sky-300 transition-transform duration-300", open && "rotate-180")}
+        />
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="px-4 pb-5 sm:px-5">
+              <p className="max-w-2xl text-sm leading-relaxed text-brand-100/90">{t(chapter.body)}</p>
+              <Gallery slides={chapter.gallery} className="mt-4 max-w-lg" />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export function Championship() {
   const { t } = useLang();
@@ -116,8 +160,20 @@ export function Championship() {
           </Reveal>
         </div>
 
+        {/* Journey chapters — small & expandable (France 2025, Thailand) */}
+        <Reveal className="mt-14">
+          <h3 className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-sky-300">
+            {t(c.journeyTitle)}
+          </h3>
+          <div className="mt-4 space-y-3">
+            {c.chapters.map((ch) => (
+              <Chapter key={ch.id} chapter={ch} />
+            ))}
+          </div>
+        </Reveal>
+
         {/* Photo gallery — hover to zoom, click to enlarge */}
-        <Reveal className="mt-16">
+        <Reveal className="mt-14">
           <h3 className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-sky-300">
             {t(c.galleryTitle)}
           </h3>

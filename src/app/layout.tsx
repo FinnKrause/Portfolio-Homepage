@@ -5,6 +5,7 @@ import { LanguageProvider } from "@/lib/i18n";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { SkipLink } from "@/components/SkipLink";
+import { ScrollRails } from "@/components/ScrollRails";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -67,6 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen bg-paper antialiased">
         <LanguageProvider>
           <SkipLink />
+          <ScrollRails />
           <Nav />
           <main id="main">{children}</main>
           <Footer />

@@ -1,7 +1,7 @@
 "use client";
 
-import { ArrowRight, ArrowUpRight, Briefcase, GraduationCap, HeartHandshake, Youtube } from "lucide-react";
-import { workExperience, voluntaryExperience } from "@/content/experience";
+import { ArrowRight, ArrowUpRight, Briefcase, GraduationCap, Youtube } from "lucide-react";
+import { workExperience } from "@/content/experience";
 import { education } from "@/content/education";
 import type { ExperienceItem } from "@/content/types";
 import { useLang } from "@/lib/i18n";
@@ -98,15 +98,15 @@ export function Experience() {
     <Section id="experience" className="bg-paper-soft">
       <SectionHeading
         eyebrow={t({ de: "Werdegang", en: "Experience" })}
-        title={t({ de: "Beruf & Ehrenamt", en: "Work & involvement" })}
+        title={t({ de: "Beruf & Studium", en: "Work & studies" })}
         intro={t({
-          de: "Berufliche Stationen und ehrenamtliches Engagement — oft an der Schnittstelle von Technik und Menschen.",
-          en: "Professional roles and voluntary involvement — often at the intersection of technology and people.",
+          de: "Berufliche Stationen neben dem Studium — und der Blick nach vorn. (Alles Ehrenamtliche findest du im Kapitel „Engagement“.)",
+          en: "Professional roles alongside my studies — and a look ahead. (Everything voluntary lives in the “Involvement” chapter.)",
         })}
       />
 
       <div className="mt-12 grid gap-12 lg:grid-cols-2 lg:gap-16">
-        {/* Professional */}
+        {/* Professional work */}
         <Reveal>
           <ColumnHeader icon={Briefcase} label={t({ de: "Berufserfahrung", en: "Professional work" })} />
           <ol className="relative ml-1.5 space-y-8 border-l border-line pl-7">
@@ -116,51 +116,41 @@ export function Experience() {
           </ol>
         </Reveal>
 
-        {/* Voluntary */}
+        {/* Study & outlook */}
         <Reveal delay={0.08}>
-          <ColumnHeader icon={HeartHandshake} label={t({ de: "Ehrenamt & Engagement", en: "Voluntary work" })} />
-          <ol className="relative ml-1.5 space-y-8 border-l border-line pl-7">
-            {voluntaryExperience.map((item, i) => (
-              <ExpEntry key={i} item={item} />
-            ))}
-          </ol>
-        </Reveal>
-      </div>
-
-      {/* Study & outlook */}
-      <Reveal className="mt-14">
-        <ColumnHeader icon={GraduationCap} label={t({ de: "Studium & Ausblick", en: "Study & what's next" })} />
-        <RevealGroup className="grid gap-3 sm:grid-cols-3" stagger={0.07}>
-          {education.map((edu, i) => (
-            <RevealItem key={i}>
-              <div
-                className={cn(
-                  "flex h-full flex-col rounded-2xl border p-5",
-                  edu.upcoming
-                    ? "border-dashed border-brand-200 bg-brand-50/40"
-                    : "border-line bg-white shadow-sm",
-                )}
-              >
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs uppercase tracking-wider text-brand-700">
-                    {t(edu.period)}
-                  </span>
-                  {edu.upcoming && (
-                    <span className="rounded-full bg-brand-100 px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide text-brand-700">
-                      {t({ de: "geplant", en: "planned" })}
+          <ColumnHeader icon={GraduationCap} label={t({ de: "Studium & Ausblick", en: "Study & what's next" })} />
+          <RevealGroup className="space-y-3" stagger={0.07}>
+            {education.map((edu, i) => (
+              <RevealItem key={i}>
+                <div
+                  className={cn(
+                    "flex flex-col rounded-2xl border p-5",
+                    edu.upcoming
+                      ? "border-dashed border-brand-200 bg-brand-50/40"
+                      : "border-line bg-white shadow-sm",
+                  )}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs uppercase tracking-wider text-brand-700">
+                      {t(edu.period)}
                     </span>
+                    {edu.upcoming && (
+                      <span className="rounded-full bg-brand-100 px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide text-brand-700">
+                        {t({ de: "geplant", en: "planned" })}
+                      </span>
+                    )}
+                  </div>
+                  <h4 className="mt-2 text-base font-semibold text-ink-900">{t(edu.title)}</h4>
+                  <p className="text-sm font-medium text-ink-700">{edu.org}</p>
+                  {edu.description && (
+                    <p className="mt-1.5 text-sm leading-relaxed text-ink-500">{t(edu.description)}</p>
                   )}
                 </div>
-                <h4 className="mt-2 text-base font-semibold text-ink-900">{t(edu.title)}</h4>
-                <p className="text-sm font-medium text-ink-700">{edu.org}</p>
-                {edu.description && (
-                  <p className="mt-1.5 text-sm leading-relaxed text-ink-500">{t(edu.description)}</p>
-                )}
-              </div>
-            </RevealItem>
-          ))}
-        </RevealGroup>
-      </Reveal>
+              </RevealItem>
+            ))}
+          </RevealGroup>
+        </Reveal>
+      </div>
     </Section>
   );
 }

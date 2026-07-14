@@ -51,6 +51,19 @@ export const profile = {
     en: "I build software, design live-event technology and treat security as a first-class concern. Most of all I love getting projects across the finish line with a strong team — with curiosity, responsibility and a love for making things.",
   } as Localized,
 
+  // Understated, journey-led hero copy — the site leads with the story, not the name/photo.
+  hero: {
+    intro: { de: "Hallo, ich bin Finn Krause", en: "Hi, I'm Finn Krause" } as Localized,
+    headline: {
+      de: "Ich baue Software, gestalte Bühnen und bleibe unendlich neugierig.",
+      en: "I build software, design stages and stay endlessly curious.",
+    } as Localized,
+    lead: {
+      de: "Diese Seite ist eine kleine Reise durch meine Projekte, mein Engagement und ein paar Wettbewerbe rund um die Welt. Nimm dir einen Moment und scroll dich durch.",
+      en: "This site is a small journey through my projects, my involvement and a few competitions around the world. Take a moment and scroll through.",
+    } as Localized,
+  },
+
   // Slim, understated highlight strip — a blend of achievement, engagement & craft
   // (deliberately not F1-only).
   heroHighlights: [
@@ -129,6 +142,88 @@ export const profile = {
       },
     },
   ] as { key: string; title: Localized; body: Localized }[],
+
+  // Broad "who I am" topics — each with its own imagery (carousel + text).
+  aboutTopics: [
+    {
+      key: "software",
+      title: { de: "Software", en: "Software" },
+      body: {
+        de: "Von Web-Portalen über Desktop-Middleware bis zu kleinen Tools — ich baue am liebsten Dinge, die ein echtes Problem lösen. Zuhause bin ich in Java, C#, TypeScript und Python.",
+        en: "From web portals to desktop middleware to little tools — I most enjoy building things that solve a real problem. I'm at home in Java, C#, TypeScript and Python.",
+      },
+      gallery: [
+        { kind: "placeholder", label: { de: "Bild folgt", en: "Photo coming soon" }, aspect: "16 / 10" },
+      ],
+    },
+    {
+      key: "events",
+      title: { de: "Veranstaltungstechnik", en: "Event technology" },
+      body: {
+        de: "Licht, Show-Control und Bühnenbau (DMX, grandMA3, MIDI) — von Clubabenden bis zu Festivalbühnen für mehrere hundert Gäste. Hier treffen Technik, Timing und Gestaltung aufeinander.",
+        en: "Lighting, show control and stage building (DMX, grandMA3, MIDI) — from club nights to festival stages for several hundred guests. Where engineering, timing and design meet.",
+      },
+      gallery: [
+        { kind: "image", src: "/images/stage-lighting3.png" },
+        { kind: "image", src: "/images/stage-lighting-image4.png" },
+        { kind: "image", src: "/images/stage-lighting2.png" },
+        { kind: "image", src: "/images/stage-lighting.jpg" },
+      ],
+    },
+    {
+      key: "security",
+      title: { de: "Cybersicherheit", en: "Cybersecurity" },
+      body: {
+        de: "Netzwerktheorie, Linux und CTFs. Schwachstellen finden und verantwortungsvoll melden — begonnen an meiner Schule, vertieft im Praktikum bei Siemens Healthineers und in Uni-Wettbewerben.",
+        en: "Network theory, Linux and CTFs. Finding vulnerabilities and disclosing them responsibly — started at my school, deepened in an internship at Siemens Healthineers and in university competitions.",
+      },
+      gallery: [
+        { kind: "placeholder", label: { de: "Bild folgt", en: "Photo coming soon" }, aspect: "16 / 10" },
+      ],
+    },
+    {
+      key: "community",
+      title: { de: "Gemeinschaft & Führung", en: "Community & leadership" },
+      body: {
+        de: "Ob als Schülersprecher, in der Fachschaft oder im Wettbewerbsteam — ich bringe gern Menschen und Ideen zusammen, übernehme Verantwortung und ziehe meine Energie daraus, anderen zu helfen.",
+        en: "Whether as a student representative, in the student council or in a competition team — I love bringing people and ideas together, taking responsibility, and I draw my energy from helping others.",
+      },
+      gallery: [
+        { kind: "placeholder", label: { de: "Bild folgt", en: "Photo coming soon" }, aspect: "16 / 10" },
+      ],
+    },
+  ] as { key: string; title: Localized; body: Localized; gallery: MediaSlide[] }[],
+
+  // Light-touch hobbies.
+  hobbies: {
+    title: { de: "Abseits vom Schreibtisch", en: "Away from the desk" } as Localized,
+    items: [
+      {
+        key: "rc",
+        title: { de: "RC-Cars", en: "RC cars" },
+        body: {
+          de: "Basteln, Tuning und Fahren ferngesteuerter Autos.",
+          en: "Building, tuning and driving remote-control cars.",
+        },
+        link: {
+          label: { de: "Clip ansehen", en: "Watch a clip" },
+          href: "/images/rc-cars-image1.mov",
+        },
+      },
+      {
+        key: "travel",
+        title: { de: "Reisen", en: "Travelling" },
+        body: {
+          de: "Neue Orte und Kulturen entdecken — mehr davon auf Instagram (nur für Follower).",
+          en: "Discovering new places and cultures — more of that on Instagram (followers only).",
+        },
+        link: {
+          label: { de: "Auf Instagram", en: "On Instagram" },
+          href: "https://www.instagram.com/f2nn.krse/",
+        },
+      },
+    ] as { key: string; title: Localized; body: Localized; link: LinkItem }[],
+  },
 
   // Championship (F1 in Schools) feature
   championship: {
@@ -214,6 +309,45 @@ export const profile = {
       { kind: "video", youtube: "slCk5LKnrCA" },
       { kind: "video", youtube: "TvUDUW9OsAQ" },
     ] as MediaSlide[],
+    // The story didn't end with the title — kept small & expandable.
+    journeyTitle: { de: "Wie es weiterging", en: "Where the journey went next" } as Localized,
+    chapters: [
+      {
+        id: "france",
+        title: { de: "2025 · Als Coach in Frankreich", en: "2025 · Coaching in France" },
+        summary: {
+          de: "Ein französisches Team bis zum Vize-Meister begleitet.",
+          en: "Mentored a French team all the way to runner-up.",
+        },
+        body: {
+          de: "2025 reiste ich mit meinem Teamkollegen Timon nach Avignon, um LLP Racing vom Lycée Louis Pasteur zu coachen. Bei den französischen National-Finals am Circuit Paul Ricard erreichte das Team den 2. Platz — es war besonders schön, das Gelernte weiterzugeben.",
+          en: "In 2025 I travelled to Avignon with my teammate Timon to coach LLP Racing from Lycée Louis Pasteur. At the French National Finals held at Circuit Paul Ricard, the team finished 2nd — passing on what I'd learned was especially rewarding.",
+        },
+        gallery: [
+          { kind: "image", src: "/images/f1-france-image1.png" },
+          { kind: "image", src: "/images/f1-france-image2.png" },
+        ],
+      },
+      {
+        id: "thailand",
+        title: { de: "Besuch im Thai-HQ", en: "Visiting the Thai HQ" },
+        summary: {
+          de: "Zu Gast im F1-in-Schools-Hauptquartier in Thailand.",
+          en: "A guest at the F1 in Schools headquarters in Thailand.",
+        },
+        body: {
+          de: "Auf einer Reise besuchte ich das thailändische F1-in-Schools-Hauptquartier — ein Blick hinter die Kulissen des Wettbewerbs, der mich so geprägt hat.",
+          en: "On a trip I visited the Thai F1 in Schools headquarters — a look behind the scenes of the competition that shaped me so much.",
+        },
+        gallery: [{ kind: "image", src: "/images/f1-thailand-image1.png" }],
+      },
+    ] as {
+      id: string;
+      title: Localized;
+      summary: Localized;
+      body: Localized;
+      gallery: MediaSlide[];
+    }[],
   },
 
   // Contact — deliberately understated. Reachable, but not the point of the page.

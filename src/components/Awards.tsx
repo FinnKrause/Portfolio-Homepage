@@ -79,7 +79,7 @@ export function Awards() {
               <AwardLinks links={mergedLinks(emphasisAward)} />
 
               {emphasisAward.gallery && emphasisAward.gallery.length > 0 && (
-                <Gallery slides={emphasisAward.gallery} className="mt-5" />
+                <Gallery slides={emphasisAward.gallery} columns={3} className="mt-5" />
               )}
             </article>
           </Reveal>

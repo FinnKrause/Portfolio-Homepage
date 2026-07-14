@@ -3,10 +3,10 @@ import type { Localized } from "./types";
 /** Navigation + generic UI microcopy. */
 export const nav: { id: string; label: Localized }[] = [
   { id: "about", label: { de: "Über mich", en: "About" } },
-  { id: "championship", label: { de: "Weltmeister", en: "World Champion" } },
   { id: "projects", label: { de: "Projekte", en: "Projects" } },
+  { id: "championship", label: { de: "F1-Reise", en: "F1 journey" } },
+  { id: "engagement", label: { de: "Engagement", en: "Involvement" } },
   { id: "experience", label: { de: "Werdegang", en: "Experience" } },
-  { id: "awards", label: { de: "Auszeichnungen", en: "Awards" } },
   { id: "contact", label: { de: "Kontakt", en: "Contact" } },
 ];
 

@@ -121,19 +121,70 @@ The foundation everything else sits on.
 
 ---
 
-## 3. Open questions (won't block — I'll use sensible placeholders)
+## 3. Confirmed details (answered)
 
-1. **Hochschulwahlen 4th place** — which body/list (e.g. FSI/Fachschaft, Studierendenparlament) and
-   which year (2024/2025)? Are you elected as a result, or is 4th place the standing?
-2. **French team (2025)** — team/school name & where, so the F1 journey copy is accurate.
-3. **Thailand** — is this the F1 in Schools / STEM Racing center? Any date?
-4. **MUN / France exchange** — confirm both were March 2024 at Lycée Jeanne d'Arc, Nancy.
-5. Any **paid work** to still show separately (Hempels Burger, Die Box Club, Wohnstift, IT/Security),
-   or fold some away?
+1. **Hochschulwahlen** — ran on the **FSI WiSo Liste** for the student representation
+   (Studierendenvertretung) for the **next academic year**; achieved **4th place**.
+2. **French team (2025)** — **LLP Racing**, from **Lycée Louis Pasteur** near **Avignon**. Finn
+   coached them on-site with teammate **Timon**; they placed **2nd** at the **French National
+   Finals 2025** held at **Circuit Paul Ricard**.
+3. **Thailand** — visited the **Thai F1 in Schools HQ**. Photos for both events added.
+   → Keep both stories **small and expandable** (present but collapsed; expand to view).
+4. **MUN + France exchange** — confirmed, both **March 2024**, Lycée Jeanne d'Arc, Nancy.
+5. **Paid work** — keep as-is.
+
+### Additions
+- **Hobbies (light touch):** **RC cars** (`rc-cars-image1.mov`, a small sidenote) and
+  **travelling** (more on Instagram — followers-only; link, don't embed).
+- **New topic images:** stage-lighting (`stage-lighting2/3`, `stage-lighting-image4`), Umbruchszeiten
+  judging (`umbruchszeiten-judge-image2`), F1 France (`f1-france-image1/2`), Thailand
+  (`f1-thailand-image1`).
+- **Engagement (Phase E)** must include: F1 (2022–23 + 2025 coaching), Umbruchszeiten jury
+  (2022–2024), Schüler-/Jahrgangsstufensprecher (2022–24), **MUN (März 2024)**,
+  **Frankreich-Austausch (März 2024)**, FSI working groups + Hochschulwahlen (seit 2024).
+
+### Asset optimisation TODO (large files)
+`f1-thailand-image1.png` (30 MB), `stage-lighting2/3.png` & `umbruchszeiten-judge-image2.png`
+(12–13 MB), `f1-france-image2.png` (10 MB), `stage-lighting-image4.png` (9.8 MB),
+`finn-portrait-transparent.png` (7.9 MB), `f1-france-image1.png` (6.8 MB) → resize/compress.
+`rc-cars-image1.mov` (46 MB, likely HEVC) → transcode to mp4/webm + poster, or link.
 
 ---
 
-## 4. Progress log
+## 4. Design decisions (LOCKED)
 
-- **2026-07-13** — Requirements captured; new transparent hero portrait reviewed; this plan written.
-  Implementation queued to start at **Phase A**.
+Premium bar: **should feel like a $10k site.**
+- **Aesthetic:** Refined editorial (whitespace, elegant type, restrained blue accents). Apple/Linear-ish.
+- **Motion:** Between *tasteful* and *minimal* — content-first, easy to consume, **never distracting**.
+  Subtle reveals; the spine fills gently on scroll; no pinning/scrubbing gimmicks.
+- **Hero / self-presentation:** **Understated.** Do **not** oversell name or photo; Finn is *not*
+  centered and the site must not feel self-infatuated. Lead with the story/overview; portrait is a
+  tasteful accent (eye-catcher, not dominant). I choose which portrait image to use.
+- **Spine:** Elegant thin animated blue rails on the margins (fill/react on scroll).
+
+---
+
+## 5. Progress log
+
+- **2026-07-13** — Requirements captured; transparent hero portrait reviewed; plan written; tasks
+  created (Phases A–H).
+- **2026-07-13** — Open questions answered; hobbies + new assets recorded; asset inventory taken.
+  Awaiting 4 design decisions before implementation.
+- **2026-07-13** — Design decisions locked (refined editorial · restrained motion · understated
+  self-presentation · thin animated rails). Large images optimised (30 MB → 5 MB etc.).
+- **2026-07-13** — **ALL PHASES COMPLETE.** Build green, no console errors.
+  - **✅ A** Animated blue scroll rails ("spine"), wired globally; fill tracks scroll (verified).
+  - **✅ B** Hero rebuilt — understated & journey-led (modest name, statement headline, chapter TOC,
+    transparent cut-out as a soft accent, slightly enlarged per feedback). Old strip removed.
+  - **✅ C** About broadened into topic blocks (Software / Event tech / Security / Community) with
+    carousel + text; real stage photos wired; placeholders elsewhere; RC-cars + travel hobbies.
+  - **✅ D** F1 journey deepened — expandable chapters: France 2025 (LLP Racing, Circuit Paul Ricard,
+    2nd place, with Timon) + Thai HQ visit, with photos.
+  - **✅ E** Engagement timeline — vertical rows + overlap bars on a shared 2022–27 axis (F1,
+    Umbruchszeiten jury, Schülersprecher, MUN, France exchange, FSI), expandable. Awards kept separate.
+  - **✅ F** FSI corrected (AK lead + Hochschulwahlen 4th, FSI-WiSo list); Umbruchszeiten jury → 2024;
+    Datenschutz self-hosting + log auto-deletion (≤6 months); "Since November 2026" already fixed.
+  - **✅ G** Umbruchszeiten media constrained (Gallery `columns` prop → small tiles, scales to many).
+  - **✅ H** Build green; desktop + mobile + DE/EN verified; no console errors; README updated.
+  - **Known follow-ups:** RC-cars clip is HEVC `.mov` → currently a "watch clip" link; add an
+    mp4/webm for inline playback. Topic photos for Software/Security/Community are placeholders.
