@@ -101,12 +101,12 @@ export const profile = {
       en: "I started getting involved for my community back in primary school — first as class representative, later as student and year representative. I represented the student body in school and city committees, led groups from photography & film to stage technology, and learned how to get people excited about a shared goal.",
     },
     {
-      de: "Parallel dazu treibt mich die Technik: Ich entwickle leidenschaftlich gerne Software, beschäftige mich mit Cybersicherheit und stehe regelmäßig an den Lichtpulten verschiedenster Veranstaltungen. Ein freiwilliges Praktikum in der IT-Sicherheit von Siemens Healthineers brachte mir mit 15 mein erstes Jobangebot.",
-      en: "In parallel, technology drives me: I build software, work on cybersecurity and I regularly run the lighting desks of various events. A voluntary internship in IT security at Siemens Healthineers earned me my first job offer at 15.",
+      de: "Parallel dazu treibt mich die Technik: Ich entwickle leidenschaftlich gerne Software, beschäftige mich mit Cybersicherheit und stehe regelmäßig an den Lichtpulten verschiedenster Veranstaltungen.",
+      en: "In parallel, technology drives me: I build software, work on cybersecurity and I regularly run the lighting desks of various events. ",
     },
     {
-      de: "Meine Energie ziehe ich vor allem aus einem: anderen zu helfen und Werte wie Gemeinschaft und Verantwortung aktiv zu leben. Ob im deutsch-französischen Austausch, als Delegierter bei Model United Nations oder heute im Studium der Wirtschaftsinformatik — ich möchte etwas bewegen und dabei stetig Neues lernen.",
-      en: "Most of my energy comes from one thing: helping others and actively living values like community and responsibility. Whether on a German-French exchange, as a delegate at Model United Nations, or today studying Information Systems — I want to make a difference and keep learning along the way.",
+      de: "Meine Energie ziehe ich vor allem darin mein Wissen zu teilen und Werte wie Gemeinschaft und Verantwortung aktiv zu leben. Ob im deutsch-französischen Austausch, als Delegierter bei Model United Nations oder heute als Mitglied der Fachschaft im Studium der Wirtschaftsinformatik — ich möchte etwas bewegen und dabei stetig Neues lernen.",
+      en: "Most of my energy comes from sharing my knowledge and actively living values like community and responsibility. Whether on a German-French exchange, as a delegate at Model United Nations, or today as an active member of numerous working groups alongside my studies of Information Systems — I want to make a difference and keep learning along the way.",
     },
   ] as Localized[],
 
@@ -116,15 +116,15 @@ export const profile = {
       key: "software",
       title: { de: "Softwareentwicklung", en: "Software development" },
       body: {
-        de: "Anwendungen in Java, C#, TypeScript und Python — vom Web-Portal bis zur Desktop-Middleware.",
-        en: "Applications in Java, C#, TypeScript and Python — from web portals to desktop middleware.",
+        de: "Anwendungen in Java, C#, TypeScript und Python — vom Web-Portal bis zur Desktop-Middleware. Immer das was zu meinem aktuellen Problem am besten passt.",
+        en: "Applications in Java, C#, TypeScript and Python — from web portals to desktop middleware. Whatever is best for my current problem.",
       },
     },
     {
       key: "events",
       title: { de: "Veranstaltungstechnik", en: "Event technology" },
       body: {
-        de: "Lichtdesign und Veranstaltungsbetreuung (DMX-Joker, grandMA3, MIDI) für kleinen Veranstaltungen bis zu Veranstaltungen mit mehreren hundert Gästen.",
+        de: "Lichtdesign und Veranstaltungsbetreuung (DMX-Joker, grandMA3, MIDI) für kleine Veranstaltungen bis zu Veranstaltungen mit mehreren hundert Gästen.",
         en: "Lighting design and Eventmanagement (DMX-Joker, grandMA3, MIDI) for small events to stages with several hundred guests.",
       },
     },
@@ -140,8 +140,8 @@ export const profile = {
       key: "leadership",
       title: { de: "Führung & Engagement", en: "Leadership & involvement" },
       body: {
-        de: "Gremienarbeit, Budgetkoordination und Eventplanung — Menschen und Ideen zusammenbringen.",
-        en: "Committee work, budget coordination and event planning — bringing people and ideas together.",
+        de: "Gremien- und Fachschaftsarbeit, internationale Projekte und Beziehungen, Wettbewerbe - alles wo man Leute zusammenkriegt.",
+        en: "Committee work, international projects and relationships, competitions and event planning - anything where people come together.",
       },
     },
   ] as { key: string; title: Localized; body: Localized }[],
@@ -254,7 +254,7 @@ export const profile = {
       },
       {
         kind: "image",
-        src: "/images/f1-podium2.JPG",
+        src: "/images/f1-podium.JPG",
       },
     ] as MediaSlide[],
     videosTitle: { de: "Videos", en: "Videos" } as Localized,

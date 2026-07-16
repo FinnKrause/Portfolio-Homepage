@@ -42,8 +42,8 @@ export function Engagement() {
         eyebrow={t({ de: "Engagement", en: "Involvement" })}
         title={t({ de: "Neben dem Studium", en: "Alongside my studies" })}
         intro={t({
-          de: "Was parallel zu Schule, Studium und Job lief — Wettbewerbe, Gremien und Hochschulpolitik.",
-          en: "What ran in parallel to school, studies and work — competitions, committees and student politics.",
+          de: "Wo man mich schon alles sehen und finden konnte.",
+          en: "Everything that happend along-side.",
         })}
       />
 
