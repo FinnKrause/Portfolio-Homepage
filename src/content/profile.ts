@@ -254,7 +254,7 @@ export const profile = {
       },
       {
         kind: "image",
-        src: "/images/f1-podium.JPG",
+        src: "/images/f1-podium.jpg",
       },
     ] as MediaSlide[],
     videosTitle: { de: "Videos", en: "Videos" } as Localized,
