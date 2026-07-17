@@ -51,6 +51,7 @@ export function Awards() {
   return (
     <Section id="awards">
       <SectionHeading
+        index="06"
         eyebrow={t({ de: "Auszeichnungen", en: "Awards" })}
         title={t({ de: "Anerkennung & Wettbewerbe", en: "Recognition & competitions" })}
       />
@@ -59,9 +60,9 @@ export function Awards() {
         {/* Showcase: Umbruchszeiten */}
         {emphasisAward && (
           <Reveal>
-            <article className="flex h-full flex-col rounded-3xl border border-brand-200 bg-gradient-to-br from-brand-50 via-white to-sky-50 p-6 shadow-soft sm:p-8">
+            <article className="flex h-full flex-col border border-brand-200 bg-gradient-to-br from-brand-50 via-white to-paper-soft p-6 shadow-soft sm:p-8">
               <div className="flex items-center gap-3">
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-brand-600 text-white shadow">
+                <span className="grid h-11 w-11 place-items-center bg-brand-600 text-white">
                   <Gavel className="h-5 w-5" />
                 </span>
                 <span className="font-mono text-sm font-semibold text-brand-700">
@@ -93,10 +94,10 @@ export function Awards() {
               return (
                 <article
                   key={i}
-                  className="flex flex-1 flex-col rounded-2xl border border-line bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-lift"
+                  className="flex flex-1 flex-col border border-line bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-lift"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="grid h-9 w-9 place-items-center rounded-lg bg-brand-50 text-brand-700">
+                    <span className="grid h-9 w-9 place-items-center border border-line bg-brand-50 text-brand-700">
                       <Icon className="h-4 w-4" />
                     </span>
                     <span className="font-mono text-xs font-semibold text-brand-700">{award.year}</span>

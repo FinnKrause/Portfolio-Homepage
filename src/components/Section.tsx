@@ -1,51 +1,59 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Reveal } from "./motion/Reveal";
-import { SectionGlow } from "./visuals/SectionGlow";
 
 interface SectionProps {
   id?: string;
   children: ReactNode;
   className?: string;
   containerClassName?: string;
-  /** Grow a light inward from the rails as the section enters view (desktop). */
-  glow?: boolean;
-  glowColor?: string;
-  glowSide?: "left" | "right" | "both";
 }
 
-export function Section({
-  id,
-  children,
-  className,
-  containerClassName,
-  glow = false,
-  glowColor,
-  glowSide = "both",
-}: SectionProps) {
+export function Section({ id, children, className, containerClassName }: SectionProps) {
   return (
     <section id={id} className={cn("relative py-20 md:py-28", className)}>
-      {glow && <SectionGlow side={glowSide} color={glowColor} />}
       <div className={cn("mx-container relative", containerClassName)}>{children}</div>
     </section>
   );
 }
 
 interface SectionHeadingProps {
+  /** Dossier index, e.g. "01" — rendered as a mono label above the title. */
+  index: string;
   eyebrow: string;
   title: string;
   intro?: string;
-  align?: "left" | "center";
+  /** On dark sections, flips label & text colors. */
+  dark?: boolean;
 }
 
-export function SectionHeading({ eyebrow, title, intro, align = "left" }: SectionHeadingProps) {
+export function SectionHeading({ index, eyebrow, title, intro, dark = false }: SectionHeadingProps) {
   return (
-    <Reveal className={cn("max-w-2xl", align === "center" && "mx-auto text-center")}>
-      <p className="eyebrow">{eyebrow}</p>
-      <h2 className="headline mt-3 text-3xl font-semibold text-ink-900 sm:text-4xl md:text-[2.75rem]">
+    <Reveal>
+      <div className="flex items-baseline gap-4">
+        <span className={cn("index-label", dark && "index-label--dark")}>
+          {index} — {eyebrow}
+        </span>
+        <span className={cn("h-px flex-1", dark ? "bg-night-line" : "bg-line")} aria-hidden />
+      </div>
+      <h2
+        className={cn(
+          "headline mt-5 max-w-3xl text-4xl font-semibold sm:text-5xl md:text-[3.4rem]",
+          dark ? "text-white" : "text-ink-900",
+        )}
+      >
         {title}
       </h2>
-      {intro ? <p className="mt-4 text-lg leading-relaxed text-ink-500">{intro}</p> : null}
+      {intro ? (
+        <p
+          className={cn(
+            "mt-4 max-w-2xl text-lg leading-relaxed",
+            dark ? "text-night-mute" : "text-ink-500",
+          )}
+        >
+          {intro}
+        </p>
+      ) : null}
     </Reveal>
   );
 }

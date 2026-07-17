@@ -83,7 +83,7 @@ function ExpEntry({ item }: { item: ExperienceItem }) {
 function ColumnHeader({ icon: Icon, label }: { icon: typeof Briefcase; label: string }) {
   return (
     <div className="mb-6 flex items-center gap-2.5">
-      <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand-50 text-brand-700">
+      <span className="grid h-8 w-8 place-items-center border border-line bg-brand-50 text-brand-700">
         <Icon className="h-4 w-4" />
       </span>
       <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-700">{label}</h3>
@@ -97,6 +97,7 @@ export function Experience() {
   return (
     <Section id="experience" className="bg-paper-soft">
       <SectionHeading
+        index="05"
         eyebrow={t({ de: "Werdegang", en: "Experience" })}
         title={t({ de: "Beruf & Studium", en: "Work & studies" })}
         intro={t({
@@ -124,7 +125,7 @@ export function Experience() {
               <RevealItem key={i}>
                 <div
                   className={cn(
-                    "flex flex-col rounded-2xl border p-5",
+                    "flex flex-col border p-5",
                     edu.upcoming
                       ? "border-dashed border-brand-200 bg-brand-50/40"
                       : "border-line bg-white shadow-sm",

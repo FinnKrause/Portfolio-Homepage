@@ -16,16 +16,16 @@ export function Contact() {
   const { t } = useLang();
 
   return (
-    <section id="contact" className="border-t border-line py-16 md:py-20">
+    <section id="contact" className="border-t border-line py-20 md:py-24">
       <div className="mx-container">
         <Reveal>
-          <div className="mx-auto flex max-w-2xl flex-col items-center gap-5 text-center">
+          <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
             <div>
-              <p className="eyebrow">{t({ de: "Kontakt", en: "Contact" })}</p>
-              <h2 className="mt-2 text-2xl font-semibold text-ink-900 sm:text-3xl">
+              <p className="index-label">08 — {t({ de: "Kontakt", en: "Contact" })}</p>
+              <h2 className="headline mt-4 text-3xl font-semibold text-ink-900 sm:text-4xl">
                 {t(profile.contact.title)}
               </h2>
-              <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-ink-500 sm:text-base">
+              <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-ink-500 sm:text-base">
                 {t(profile.contact.body)}
               </p>
             </div>
@@ -33,7 +33,7 @@ export function Contact() {
             <div className="flex flex-wrap items-center justify-center gap-2.5">
               <a
                 href={`mailto:${profile.email}`}
-                className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-800 transition-colors hover:bg-brand-100"
+                className="inline-flex items-center gap-2 rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-700"
               >
                 <Mail className="h-4 w-4" />
                 {profile.email}
@@ -49,7 +49,7 @@ export function Contact() {
                       target="_blank"
                       rel="noreferrer"
                       aria-label={s.label}
-                      className="grid h-9 w-9 place-items-center rounded-full border border-line text-ink-500 transition-colors hover:border-brand-300 hover:text-brand-700"
+                      className="grid h-10 w-10 place-items-center rounded-full border border-line text-ink-500 transition-colors hover:border-brand-300 hover:text-brand-700"
                     >
                       <Icon className="h-4 w-4" />
                     </a>

@@ -71,7 +71,7 @@ export const metadata: Metadata = VERIFICATION_ENABLED
   : publicMetadata;
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: "#06080f",
   colorScheme: "light",
 };
 

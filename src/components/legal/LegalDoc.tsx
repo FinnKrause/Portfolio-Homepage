@@ -10,7 +10,8 @@ export function LegalDoc({ doc }: { doc: LegalDocT }) {
   const { t } = useLang();
 
   return (
-    <div className="mx-auto max-w-3xl px-5 pb-20 pt-28 md:px-8 md:pt-32">
+    <div className="min-h-[100svh] bg-paper">
+      <div className="mx-auto max-w-3xl px-5 pb-20 pt-28 md:px-8 md:pt-32">
       <Link
         href="/"
         className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-700 transition-colors hover:text-brand-900"
@@ -41,6 +42,7 @@ export function LegalDoc({ doc }: { doc: LegalDocT }) {
             </div>
           </section>
         ))}
+      </div>
       </div>
     </div>
   );

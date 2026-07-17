@@ -8,6 +8,7 @@ import { formatAccessCode, isValidAccessCode } from "@/config/access";
 import { LanguageToggle } from "../LanguageToggle";
 import { cn } from "@/lib/utils";
 
+/** The sealed cover of the file — the same dark world the hero opens into. */
 export function AccessScreen({ onGranted }: { onGranted: () => void }) {
   const { t } = useLang();
   const reduce = useReducedMotion();
@@ -30,46 +31,40 @@ export function AccessScreen({ onGranted }: { onGranted: () => void }) {
   };
 
   return (
-    <div className="relative min-h-[100svh] overflow-hidden bg-paper">
-      {/* Calm, static brand backdrop (no content, no heavy motion) */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(42rem 30rem at 15% -10%, rgba(56,189,248,0.16), transparent 60%)," +
-            "radial-gradient(46rem 32rem at 90% 0%, rgba(38,69,230,0.14), transparent 60%)," +
-            "radial-gradient(40rem 30rem at 50% 115%, rgba(97,136,252,0.12), transparent 62%)",
-        }}
-      />
-
-      <div className="absolute right-4 top-4 z-10 sm:right-6 sm:top-6">
-        <LanguageToggle />
+    <div className="relative min-h-[100svh] overflow-hidden bg-night text-night-ink">
+      {/* Same calm cover backdrop as the hero */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="cover-wash" />
+        <div className="cover-grid" />
       </div>
 
-      <div className="mx-auto flex min-h-[100svh] max-w-[700px] flex-col justify-center px-5 py-16">
+      <div className="absolute right-4 top-4 z-10 sm:right-6 sm:top-6">
+        <LanguageToggle onDark />
+      </div>
+
+      <div className="relative mx-auto flex min-h-[100svh] max-w-[700px] flex-col justify-center px-5 py-16">
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="rounded-3xl border border-line bg-white/90 p-6 shadow-lift backdrop-blur-sm sm:p-8"
+          className="border border-night-line bg-night-soft/70 p-6 backdrop-blur-sm sm:p-8"
         >
           {/* Header */}
           <div className="flex items-center gap-3">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-600 to-brand-800 text-sm font-bold text-white shadow-[0_6px_16px_-4px_rgba(38,69,230,0.6)]">
+            <span className="grid h-9 w-9 place-items-center border border-night-line bg-night font-mono text-xs font-semibold tracking-wider text-brand-300">
               FK
             </span>
-            <span className="inline-flex items-center gap-1.5 font-mono text-xs font-medium uppercase tracking-[0.18em] text-brand-700">
+            <span className="inline-flex items-center gap-1.5 font-mono text-xs font-medium uppercase tracking-[0.18em] text-brand-300">
               <ShieldCheck className="h-3.5 w-3.5" />
               {tx("Kurzer Zugangs-Check", "Quick access check")}
             </span>
           </div>
 
-          <h1 className="headline mt-5 text-3xl font-bold text-ink-900 sm:text-[2.5rem]">
+          <h1 className="headline mt-6 text-3xl font-semibold text-white sm:text-[2.5rem]">
             {tx("Einen Moment bevor du reindarfst.", "One moment before you come in.")}
           </h1>
 
-          <p className="mt-4 text-pretty text-base leading-relaxed text-ink-600">
+          <p className="mt-4 text-pretty text-base leading-relaxed text-night-mute">
             {tx(
               "Das hier ist meine persönliche Website mit vielen Daten über mich. Damit KI-Crawler und Scraper meine Daten nicht einfach abgrasen, liegt der Inhalt hinter einem Prüfcode. Kein Login, keine Datensammlung, etc. sondern nur eine Vorkehrung dass meine Informationen bei Menschen ankommen und nicht bei Bots.",
               "This is my personal website containing a lot of information about me. To prevent AI crawlers and scrapers from simply harvesting my data, the content is protected behind a verification code. There's no login, no data collection, or anything like that—it's simply a measure to ensure that my information reaches people rather than bots.",
@@ -80,7 +75,7 @@ export function AccessScreen({ onGranted }: { onGranted: () => void }) {
           <form onSubmit={submit} className="mt-7">
             <label
               htmlFor="access-code"
-              className="block text-sm font-semibold text-ink-900"
+              className="block font-mono text-xs font-semibold uppercase tracking-[0.18em] text-night-ink"
             >
               {tx("Zugangscode", "Access code")}
             </label>
@@ -103,16 +98,16 @@ export function AccessScreen({ onGranted }: { onGranted: () => void }) {
                   if (error) setError(false);
                 }}
                 className={cn(
-                  "w-full rounded-xl border bg-white px-4 py-3 text-center font-mono text-xl tracking-[0.35em] text-ink-900 outline-none transition-colors placeholder:tracking-[0.35em] placeholder:text-ink-300 focus:ring-2",
+                  "w-full border bg-night px-4 py-3 text-center font-mono text-xl tracking-[0.35em] text-white outline-none transition-colors placeholder:tracking-[0.35em] placeholder:text-night-mute/50 focus:ring-2",
                   error
-                    ? "border-red-400 focus:border-red-500 focus:ring-red-200"
-                    : "border-line focus:border-brand-400 focus:ring-brand-200",
+                    ? "border-red-400 focus:border-red-400 focus:ring-red-500/30"
+                    : "border-night-line focus:border-brand-400 focus:ring-brand-500/30",
                 )}
               />
               <button
                 type="submit"
                 disabled={!complete}
-                className="inline-flex min-h-[3rem] items-center justify-center gap-2 rounded-xl bg-brand-600 px-6 text-sm font-semibold text-white shadow-[0_10px_26px_-8px_rgba(38,69,230,0.7)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-700 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-45 disabled:shadow-none"
+                className="inline-flex min-h-[3rem] items-center justify-center gap-2 bg-brand-500 px-6 text-sm font-semibold text-white transition-all duration-200 hover:bg-brand-400 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {tx("Eintreten", "Enter")}
                 <ArrowRight className="h-4 w-4" />
@@ -123,13 +118,13 @@ export function AccessScreen({ onGranted }: { onGranted: () => void }) {
               role={error ? "alert" : undefined}
               className={cn(
                 "mt-2 text-sm",
-                error ? "font-medium text-red-600" : "text-ink-500",
+                error ? "font-medium text-red-400" : "text-night-mute",
               )}
             >
               {error
                 ? tx(
-                    "Die Prüfziffer passt nicht.",
-                    "The check digit doesn't match.",
+                    "Der Zugangscode ist nicht gültig",
+                    "The code is not valid.",
                   )
                 : tx(
                     "Fünf Ziffern im Format XXXX-X. Du wirst auf diesem Gerät nur einmal gefragt.",
@@ -138,19 +133,19 @@ export function AccessScreen({ onGranted }: { onGranted: () => void }) {
             </p>
           </form>
 
-          <hr className="my-7 border-line" />
+          <hr className="my-7 border-night-line" />
 
           {/* Where a code might have come from */}
           <section>
-            <h2 className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-brand-700">
+            <h2 className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-brand-300">
               {tx("Woher du einen Code haben könntest", "Where a code might have reached you")}
             </h2>
-            <ul className="mt-3 space-y-2.5 text-sm text-ink-600">
+            <ul className="mt-3 space-y-2.5 text-sm text-night-mute">
               <li className="flex gap-2.5">
-                <Link2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-500" />
+                <Link2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-300" />
                 <span>
                   {tx("Im Link selbst — z. B. ", "In the link itself — e.g. ")}
-                  <code className="rounded bg-brand-50 px-1.5 py-0.5 font-mono text-xs text-brand-800">
+                  <code className="border border-night-line bg-night px-1.5 py-0.5 font-mono text-xs text-brand-200">
                     finnkrause.com/?code=1234-5
                   </code>
                   {tx(
@@ -160,7 +155,7 @@ export function AccessScreen({ onGranted }: { onGranted: () => void }) {
                 </span>
               </li>
               <li className="flex gap-2.5">
-                <QrCode className="mt-0.5 h-4 w-4 shrink-0 text-brand-500" />
+                <QrCode className="mt-0.5 h-4 w-4 shrink-0 text-brand-300" />
                 <span>
                   {tx(
                     "Auf einer Karte, im Lebenslauf oder neben dem Link als Notiz.",
@@ -169,15 +164,15 @@ export function AccessScreen({ onGranted }: { onGranted: () => void }) {
                 </span>
               </li>
               <li className="flex gap-2.5">
-                <Send className="mt-0.5 h-4 w-4 shrink-0 text-brand-500" />
+                <Send className="mt-0.5 h-4 w-4 shrink-0 text-brand-300" />
                 <span>{tx("Direkt von mir, in einer Nachricht.", "Straight from me, in a message.")}</span>
               </li>
             </ul>
           </section>
 
           {/* Privacy note */}
-          <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-ink-500">
-            <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ink-400" />
+          <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-night-mute/80">
+            <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             {tx(
               "Kein Tracking, keine Analyse, nichts wird über dich gespeichert. In deinem Browser wird nur ein einzelner Haken gesetzt, damit du das nicht noch einmal siehst. Diese Information verlässt nie deinen Browser.",
               "No tracking, no analytics, nothing is logged about you. Your browser just stores a single flag so you won't see this again. That peace of information is never sent to a server.",

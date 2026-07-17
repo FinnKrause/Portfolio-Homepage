@@ -28,6 +28,7 @@ export function MediaView({
             src={slide.src}
             alt={slide.alt ? t(slide.alt) : ""}
             fill
+            quality={90}
             sizes="(max-width: 768px) 100vw, 40rem"
             className="object-contain"
           />
@@ -35,8 +36,8 @@ export function MediaView({
       );
     }
     return (
-      <div className={cn("relative overflow-hidden rounded-xl", className)} style={{ aspectRatio: "4 / 3" }}>
-        <Image src={slide.src} alt={slide.alt ? t(slide.alt) : ""} fill sizes="(max-width: 768px) 100vw, 40rem" className="object-cover" />
+      <div className={cn("relative overflow-hidden", className)} style={{ aspectRatio: "4 / 3" }}>
+        <Image src={slide.src} alt={slide.alt ? t(slide.alt) : ""} fill quality={90} sizes="(max-width: 768px) 100vw, 40rem" className="object-cover" />
       </div>
     );
   }

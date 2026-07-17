@@ -102,7 +102,8 @@ export function Lightbox({
               src={images[index].src}
               alt={images[index].alt}
               fill
-              sizes="90vw"
+              sizes="100vw"
+              quality={95}
               className="object-contain"
               priority
             />

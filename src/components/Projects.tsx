@@ -21,11 +21,11 @@ const VISUALS: Record<string, ReactNode> = {
 };
 
 const ACCENT_PANEL: Record<NonNullable<Project["accent"]>, string> = {
-  brand: "from-brand-100 to-sky-50",
-  sky: "from-sky-100 to-brand-50",
-  violet: "from-violet-100 to-brand-50",
-  emerald: "from-emerald-100 to-sky-50",
-  amber: "from-amber-100 to-rose-50",
+  brand: "from-brand-50 to-paper-soft",
+  sky: "from-sky-50 to-paper-soft",
+  violet: "from-violet-50 to-paper-soft",
+  emerald: "from-emerald-50 to-paper-soft",
+  amber: "from-amber-50 to-paper-soft",
 };
 
 function slidesFor(project: Project): ReactNode[] {
@@ -44,8 +44,9 @@ export function Projects() {
   const { t } = useLang();
 
   return (
-    <Section id="projects" glow glowSide="right">
+    <Section id="projects" className="bg-paper-soft">
       <SectionHeading
+        index="02"
         eyebrow={t(ui.featured)}
         title={t({ de: "Projekte, die mir wichtig sind", en: "Projects I care about" })}
         intro={t({
@@ -55,17 +56,17 @@ export function Projects() {
       />
 
       {/* Featured */}
-      <div className="mt-12 space-y-6">
+      <div className="mt-12 space-y-8">
         {featuredProjects.map((project, index) => (
           <Reveal key={project.slug} delay={index * 0.05}>
-            <article className="overflow-hidden rounded-3xl border border-line bg-white shadow-soft transition-shadow duration-300 hover:shadow-lift">
+            <article className="overflow-hidden border border-line bg-white shadow-soft transition-shadow duration-300 hover:shadow-lift">
               <div className="grid lg:grid-cols-2">
                 {/* Visual carousel — media fills the panel edge-to-edge */}
                 <div
                   className={cn(
-                    "relative overflow-hidden bg-gradient-to-br",
+                    "relative overflow-hidden border-line bg-gradient-to-br max-lg:border-b lg:border-r",
                     ACCENT_PANEL[project.accent ?? "brand"],
-                    index % 2 === 1 && "lg:order-last",
+                    index % 2 === 1 && "lg:order-last lg:border-l lg:border-r-0",
                   )}
                 >
                   <div className="relative aspect-[4/3] w-full sm:aspect-[16/10] lg:absolute lg:inset-0 lg:aspect-auto lg:h-full">
@@ -77,7 +78,7 @@ export function Projects() {
                 <div className="flex flex-col justify-center p-6 sm:p-10">
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-xs font-medium uppercase tracking-widest text-brand-700">
-                      {String(index + 1).padStart(2, "0")}
+                      P-{String(index + 1).padStart(2, "0")}
                     </span>
                     <span className="h-px flex-1 bg-line" />
                     {project.year && (
@@ -85,7 +86,7 @@ export function Projects() {
                     )}
                   </div>
 
-                  <h3 className="mt-4 text-2xl font-semibold text-ink-900 sm:text-3xl">
+                  <h3 className="headline mt-4 text-2xl font-semibold text-ink-900 sm:text-3xl">
                     {project.title}
                   </h3>
                   <p className="mt-1 text-base font-medium text-brand-700">{t(project.tagline)}</p>
@@ -108,7 +109,7 @@ export function Projects() {
                     {project.tech.map((tech) => (
                       <li
                         key={tech}
-                        className="rounded-md bg-paper-soft px-2.5 py-1 font-mono text-xs text-ink-700"
+                        className="border border-line bg-paper-soft px-2.5 py-1 font-mono text-xs text-ink-700"
                       >
                         {tech}
                       </li>
@@ -121,7 +122,7 @@ export function Projects() {
                         href={project.repo}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-2 rounded-full bg-ink-900 px-4 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
+                        className="inline-flex items-center gap-2 rounded-full bg-ink-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-700"
                       >
                         <Github className="h-4 w-4" />
                         {t(ui.sourceCode)}

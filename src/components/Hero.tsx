@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 import {
   motion,
@@ -11,62 +11,45 @@ import {
   useTransform,
   type Variants,
 } from "framer-motion";
-import { ArrowDown, MapPin } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import { profile } from "@/content/profile";
 import { useLang } from "@/lib/i18n";
 import { useIsDesktop } from "@/lib/useIsDesktop";
-import { HeroBackdrop } from "./visuals/HeroBackdrop";
 
 export function Hero() {
   const { t } = useLang();
   const reduce = useReducedMotion();
   const desktop = useIsDesktop();
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
-  // Pause all ambient hero motion (canvas + CSS) once the hero scrolls out of
-  // view, so it doesn't burn frames while the rest of the page is scrolling.
-  const [active, setActive] = useState(true);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => setActive(e.isIntersecting), {
-      rootMargin: "150px",
-    });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  // Scroll-linked exit. The background only FADES (opacity is compositor-cheap);
-  // the content lifts. We never translate the big blurred ray layer on scroll —
-  // that was the source of the jank.
+  // The sheet slides over the sticky cover; fade the cover's content out as it
+  // gets covered so it reads as the file being opened, not just hidden.
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
-  const bgOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
-  const stageY = useTransform(scrollYProgress, [0, 1], [0, -70]);
-  const stageOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
+  const coverOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
+  const coverY = useTransform(scrollYProgress, [0, 1], [0, -46]);
 
-  // Pointer parallax — spring-followed, critically damped. Only the cheap
-  // far layer (canvas + thin grid) moves; the blurred rays stay put.
+  // Cursor: reading light (CSS vars) + a gentle portrait tilt. Desktop only.
   const px = useMotionValue(0);
   const py = useMotionValue(0);
-  const spring = { stiffness: 70, damping: 20, mass: 0.6, restDelta: 0.0005 };
+  const spring = { stiffness: 60, damping: 18, mass: 0.7, restDelta: 0.001 };
   const sx = useSpring(px, spring);
   const sy = useSpring(py, spring);
-  const farX = useTransform(sx, (v) => v * -18);
-  const farY = useTransform(sy, (v) => v * -12);
-  const midX = useTransform(sx, (v) => v * -34);
-  const midY = useTransform(sy, (v) => v * -24);
-  const figX = useTransform(sx, (v) => v * 12);
-  const figY = useTransform(sy, (v) => v * 8);
+  const tiltX = useTransform(sy, (v) => v * -3.5);
+  const tiltY = useTransform(sx, (v) => v * 4.5);
+  const cursorOn = desktop && !reduce;
 
-  const parallaxOn = desktop && !reduce;
   const onMove = (e: React.MouseEvent<HTMLElement>) => {
-    if (!parallaxOn) return;
+    if (!cursorOn) return;
     const r = e.currentTarget.getBoundingClientRect();
-    px.set((e.clientX - r.left) / r.width - 0.5);
-    py.set((e.clientY - r.top) / r.height - 0.5);
+    const nx = (e.clientX - r.left) / r.width;
+    const ny = (e.clientY - r.top) / r.height;
+    px.set(nx - 0.5);
+    py.set(ny - 0.5);
+    e.currentTarget.style.setProperty("--mx", `${(nx * 100).toFixed(2)}%`);
+    e.currentTarget.style.setProperty("--my", `${(ny * 100).toFixed(2)}%`);
   };
   const onLeave = () => {
     px.set(0);
@@ -75,180 +58,188 @@ export function Hero() {
 
   const container: Variants = {
     hidden: {},
-    show: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+    show: { transition: { staggerChildren: 0.05 } },
   };
   const rise: Variants = {
-    hidden: { opacity: 0, y: reduce ? 0 : 22 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
-  };
-  const portraitIn: Variants = {
-    hidden: { opacity: 0, y: reduce ? 0 : 36, scale: reduce ? 1 : 0.97 },
+    hidden: { opacity: 0, y: reduce ? 0 : 18 },
     show: {
       opacity: 1,
       y: 0,
-      scale: 1,
-      transition: { duration: 1, ease: [0.22, 1, 0.36, 1] },
+      transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+    },
+  };
+  const frameIn: Variants = {
+    hidden: { opacity: 0, y: reduce ? 0 : 22 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, delay: 0, ease: [0.22, 1, 0.36, 1] },
     },
   };
 
   return (
-    <section
-      ref={ref}
-      id="top"
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      className={`hero-aurora relative flex min-h-[100svh] flex-col overflow-hidden${
-        active ? "" : " hero-idle"
-      }`}
-    >
-      {/* ---------- Ambient background (full-bleed) ---------- */}
-      <motion.div
-        style={reduce ? undefined : { opacity: bgOpacity }}
-        className="absolute inset-0 z-0"
-        aria-hidden
+    // Desktop: the cover is sticky and the light sheet slides over it.
+    // Mobile: a normal in-flow hero (no cover effect, content may exceed 100svh).
+    <div ref={ref} className="relative z-0 lg:sticky lg:top-0 lg:h-[100svh]">
+      <section
+        id="top"
+        onMouseMove={onMove}
+        onMouseLeave={onLeave}
+        className="relative flex min-h-[100svh] flex-col overflow-hidden bg-night text-night-ink lg:h-full lg:min-h-0"
       >
-        {/* Far layer — data field + perspective grid floor (cheap to translate) */}
+        {/* Cover backdrop */}
+        <div aria-hidden className="absolute inset-0">
+          <div className="cover-wash" />
+          <div className="cover-grid" />
+          {cursorOn && <div className="reading-light" />}
+        </div>
+
         <motion.div
-          style={parallaxOn ? { x: farX, y: farY } : undefined}
-          className="absolute inset-[-6%]"
+          style={reduce ? undefined : { opacity: coverOpacity, y: coverY }}
+          className="mx-container relative z-10 flex flex-1 flex-col"
         >
-          <HeroBackdrop active={active} />
-          <div className="hero-horizon" />
-          <div className="hero-stage-3d">
-            <div className="hero-grid-3d" />
+          {/* Cover content */}
+          <div className="grid flex-1 items-center gap-10 pb-24 pt-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16 lg:pb-16">
+            {/* Identity */}
+            <motion.div variants={container} initial="hidden" animate="show">
+              <motion.p
+                variants={rise}
+                className="font-mono text-[0.65rem] uppercase tracking-[0.24em] text-night-mute sm:text-xs"
+              >
+                {t(profile.eyebrow)}
+              </motion.p>
+
+              <motion.h1
+                variants={rise}
+                className="headline mt-5 text-[clamp(3.4rem,9.5vw,7.75rem)] font-semibold text-white"
+              >
+                Finn
+                <br />
+                Krause
+              </motion.h1>
+
+              <motion.p
+                variants={rise}
+                className="mt-6 max-w-xl text-pretty text-lg font-medium text-night-ink/90 sm:text-xl"
+              >
+                {t(profile.hero.headline)}
+              </motion.p>
+
+              <motion.p
+                variants={rise}
+                className="mt-3 max-w-lg text-pretty text-base leading-relaxed text-night-mute"
+              >
+                {t(profile.hero.lead)}
+              </motion.p>
+
+              <motion.div variants={rise} className="mt-9 flex flex-wrap items-center gap-4">
+                <a
+                  href="#about"
+                  className="group inline-flex items-center gap-2.5 rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-400"
+                >
+                  {t({ de: "Akte durchblättern", en: "Leaf through the file" })}
+                  <ArrowDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" />
+                </a>
+                <a
+                  href="#contact"
+                  className="inline-flex items-center gap-2 rounded-full border border-night-line px-6 py-3 text-sm font-semibold text-night-ink/90 transition-colors duration-300 hover:border-brand-300/60 hover:text-white"
+                >
+                  {t({ de: "Kontakt", en: "Get in touch" })}
+                </a>
+              </motion.div>
+            </motion.div>
+
+            {/* File photo — framed like a document photograph */}
+            <motion.div
+              variants={frameIn}
+              initial="hidden"
+              animate="show"
+              className="flex justify-center pb-4 lg:justify-end lg:pb-0"
+            >
+              <motion.div
+                style={
+                  cursorOn
+                    ? { rotateX: tiltX, rotateY: tiltY, transformPerspective: 900 }
+                    : undefined
+                }
+                className="relative"
+              >
+                <div className="relative w-[min(15rem,62vw)] border border-night-line bg-night-soft/70 lg:w-[clamp(16rem,26vw,22rem)]">
+                  {/* Corner ticks */}
+                  {(["-top-px -left-px border-t border-l", "-top-px -right-px border-t border-r", "-bottom-px -left-px border-b border-l", "-bottom-px -right-px border-b border-r"] as const).map(
+                    (pos) => (
+                      <span
+                        key={pos}
+                        aria-hidden
+                        className={`absolute z-20 h-3.5 w-3.5 border-brand-300/80 ${pos}`}
+                      />
+                    ),
+                  )}
+
+                  <div className="relative overflow-hidden">
+                    <Image
+                      src="/images/finn-portrait-transparent.png"
+                      alt={t({
+                        de: "Finn Krause, Porträt aus der Akte",
+                        en: "Finn Krause, file photograph",
+                      })}
+                      width={1090}
+                      height={1700}
+                      priority
+                      quality={90}
+                      sizes="(max-width: 1024px) 62vw, 22rem"
+                      className="h-auto w-full object-contain [mask-image:linear-gradient(to_bottom,black_88%,transparent)]"
+                    />
+                    {!reduce && <div className="scanline" aria-hidden />}
+                  </div>
+
+                  {/* Caption bar */}
+                  <div className="flex items-center justify-between border-t border-night-line px-3.5 py-2.5 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-night-mute">
+                    <span>{t({ de: "Abb. 01 — F. Krause", en: "Fig. 01 — F. Krause" })}</span>
+                    <span>Erlangen, DE</span>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
           </div>
+
+          {/* Metadata row — quiet, factual, humble */}
+          {/* <div className="absolute inset-x-0 bottom-0 hidden md:block">
+            <div className="h-px w-full bg-night-line" />
+            <dl className="flex flex-wrap items-center gap-x-10 gap-y-2 py-5 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-night-mute">
+              <div className="flex items-center gap-2.5">
+                <dt className="text-brand-300/80">{t({ de: "Standort", en: "Location" })}</dt>
+                <dd>Erlangen, DE</dd>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <dt className="text-brand-300/80">{t({ de: "Studium", en: "Studies" })}</dt>
+                <dd>{t({ de: "Wirtschaftsinformatik, FAU", en: "Information Systems, FAU" })}</dd>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <dt className="text-brand-300/80">{t({ de: "Fokus", en: "Focus" })}</dt>
+                <dd>{t({ de: "Software · Licht · Security", en: "Software · Light · Security" })}</dd>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <dt className="text-brand-300/80">{t({ de: "Notiz", en: "Note" })}</dt>
+                <dd>{t({ de: "Weltmeister, F1 in Schools 2023", en: "World Champion, F1 in Schools 2023" })}</dd>
+              </div>
+            </dl>
+          </div> */}
         </motion.div>
 
-        {/* Eye-catcher — slow drifting aurora beams (kept clear of the navbar) */}
+        {/* Scroll cue */}
         <motion.div
-          style={parallaxOn ? { x: midX, y: midY } : undefined}
-          className="absolute inset-[-4%]"
+          style={reduce ? undefined : { opacity: coverOpacity }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2, duration: 0.8 }}
+          className="pointer-events-none absolute bottom-20 left-1/2 z-10 hidden -translate-x-1/2 lg:block"
         >
-          <div className="aurora-beam aurora-beam--1" />
-          <div className="aurora-beam aurora-beam--2" />
-          <div className="aurora-beam aurora-beam--3" />
-        </motion.div>
-      </motion.div>
-
-      {/* ---------- Content: text left, grounded figure right ---------- */}
-      <motion.div
-        style={reduce ? undefined : { y: stageY, opacity: stageOpacity }}
-        className="mx-container relative z-10 grid flex-1 items-center gap-6 pb-20 pt-28 sm:pt-32 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:pb-16"
-      >
-        {/* Copy */}
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate="show"
-          className="order-2 flex flex-col items-center text-center lg:order-1 lg:items-start lg:text-left"
-        >
-          <motion.div
-            variants={rise}
-            className="inline-flex items-center gap-2.5 rounded-full border border-white/60 bg-white/60 px-4 py-1.5 text-sm text-ink-500 shadow-sm backdrop-blur-md"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500 opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-600" />
-            </span>
-            <span className="font-medium text-ink-700">{t(profile.eyebrow)}</span>
-            <span className="hidden text-ink-300 sm:inline">·</span>
-            <span className="hidden items-center gap-1 sm:inline-flex">
-              <MapPin className="h-3.5 w-3.5 text-brand-600" />
-              Erlangen, DE
-            </span>
-          </motion.div>
-
-          <motion.h1
-            variants={rise}
-            className="headline mt-6 text-[clamp(3rem,7.5vw,5.75rem)] font-bold text-ink-900"
-          >
-            <span className="block">Finn</span>
-            <span className="block text-gradient">Krause</span>
-          </motion.h1>
-
-          <motion.p
-            variants={rise}
-            className="mt-5 max-w-xl text-pretty text-lg font-medium text-ink-700 sm:text-xl"
-          >
-            {t(profile.hero.headline)}
-          </motion.p>
-
-          <motion.p
-            variants={rise}
-            className="mt-3 max-w-lg text-pretty text-base leading-relaxed text-ink-500"
-          >
-            {t(profile.hero.lead)}
-          </motion.p>
-
-          <motion.div
-            variants={rise}
-            className="mt-8 flex flex-col items-center gap-3 sm:flex-row lg:items-start"
-          >
-            <a
-              href="#about"
-              className="group inline-flex items-center gap-2 rounded-full bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_-8px_rgba(38,69,230,0.7)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_16px_38px_-8px_rgba(38,69,230,0.85)]"
-            >
-              {t({ de: "Die Reise beginnen", en: "Start the journey" })}
-              <ArrowDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" />
-            </a>
-            <a
-              href="#contact"
-              className="inline-flex items-center gap-2 rounded-full border border-line bg-white/60 px-6 py-3 text-sm font-semibold text-ink-700 backdrop-blur-sm transition-colors duration-300 hover:border-brand-200 hover:text-brand-700"
-            >
-              {t({ de: "Kontakt", en: "Get in touch" })}
-            </a>
-          </motion.div>
-        </motion.div>
-
-        {/* Grounded figure (no halo) */}
-        <motion.div
-          variants={portraitIn}
-          initial="hidden"
-          animate="show"
-          className="order-1 flex justify-center lg:order-2 lg:justify-end"
-        >
-          <motion.div
-            style={parallaxOn ? { x: figX, y: figY } : undefined}
-            className="relative"
-          >
-            <div className="hero-floor-pool" aria-hidden />
-            <div className={reduce ? "relative z-10" : "relative z-10 float-slow"}>
-              <Image
-                src="/images/finn-portrait-transparent.png"
-                alt={t({
-                  de: "Finn Krause im Anzug, freigestellt",
-                  en: "Finn Krause in a suit, cut out",
-                })}
-                width={1090}
-                height={1700}
-                priority
-                sizes="(max-width: 640px) 74vw, (max-width: 1024px) 48vh, 40vw"
-                className="mx-auto h-[42vh] w-auto max-w-[80vw] object-contain object-bottom [mask-image:linear-gradient(to_bottom,black_85%,transparent)] sm:h-[48vh] lg:h-[60vh]"
-              />
-            </div>
-          </motion.div>
-        </motion.div>
-      </motion.div>
-
-      {/* ---------- Scroll cue ---------- */}
-      <motion.div
-        style={reduce ? undefined : { opacity: stageOpacity }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.6 }}
-        className="pointer-events-none absolute inset-x-0 bottom-6 z-10 hidden justify-center md:flex"
-      >
-        <a
-          href="#about"
-          aria-label={t({ de: "Weiter scrollen", en: "Scroll down" })}
-          className="pointer-events-auto flex flex-col items-center gap-2 text-[0.68rem] font-medium uppercase tracking-[0.22em] text-ink-500 transition-colors hover:text-brand-700"
-        >
-          <span>{t({ de: "Scrollen", en: "Scroll" })}</span>
-          <span className="relative flex h-9 w-px justify-center overflow-hidden rounded-full bg-gradient-to-b from-brand-300 to-transparent">
-            <span className="scroll-dot absolute top-0 h-2 w-px rounded-full bg-brand-600 shadow-[0_0_6px_1px_rgba(38,69,230,0.7)]" />
+          <span className="relative flex h-9 w-px justify-center overflow-hidden rounded-full bg-gradient-to-b from-brand-300/60 to-transparent">
+            <span className="scroll-dot absolute top-0 h-2 w-px rounded-full bg-brand-300" />
           </span>
-        </a>
-      </motion.div>
-    </section>
+        </motion.div>
+      </section>
+    </div>
   );
 }

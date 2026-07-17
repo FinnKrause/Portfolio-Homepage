@@ -66,13 +66,14 @@ export function Gallery({
                   type="button"
                   onClick={() => setOpenIndex(imgIdx)}
                   aria-label={t({ de: "Bild vergrößern", en: "Enlarge image" })}
-                  className="group relative block aspect-[4/3] w-full cursor-pointer overflow-hidden rounded-xl ring-1 ring-black/5 transition-shadow duration-300 hover:shadow-lift"
+                  className="group relative block aspect-[4/3] w-full cursor-pointer overflow-hidden ring-1 ring-black/10 transition-shadow duration-300 hover:shadow-lift"
                 >
                   <Image
                     src={slide.src}
                     alt={slide.alt ? t(slide.alt) : ""}
                     fill
-                    sizes="(max-width: 768px) 50vw, 24rem"
+                    quality={90}
+                    sizes="(max-width: 768px) 50vw, 28rem"
                     className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]"
                   />
                   <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
