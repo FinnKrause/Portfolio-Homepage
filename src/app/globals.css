@@ -119,30 +119,6 @@ body {
   box-shadow: var(--shadow-soft);
 }
 
-/* Faint dotted grid used behind hero / feature blocks */
-.dot-grid {
-  background-image: radial-gradient(circle at center, rgba(38, 69, 230, 0.14) 1px, transparent 1.4px);
-  background-size: 22px 22px;
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 40%, transparent 100%);
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 40%, transparent 100%);
-}
-
-.ring-brand {
-  box-shadow: 0 0 0 1px var(--color-brand-200), 0 0 0 6px rgba(38, 69, 230, 0.06);
-}
-
-/* Soft top-page glow */
-.page-glow::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(60rem 40rem at 78% -8%, rgba(56, 189, 248, 0.14), transparent 60%),
-    radial-gradient(50rem 34rem at 8% 2%, rgba(38, 69, 230, 0.12), transparent 55%);
-  pointer-events: none;
-  z-index: 0;
-}
-
 /* Hero aurora — bold, colourful at the top; fades to clean white deeper down
    so the page visually calms into a professional look as you scroll. */
 .hero-aurora::before {
@@ -175,73 +151,10 @@ body {
 }
 
 /* ============================================================
-   Hero stage — cinematic light + motion system
-   Fills the wide side space on large screens with god-rays and
-   streaming code, and spotlights the portrait in the centre.
+   Hero stage — ambient light + motion system: full-bleed data
+   field, drifting aurora beams, a perspective grid floor, the
+   figure's floor pool, and the scroll cue.
    ============================================================ */
-
-/* ---- God-ray light beams fanning from above the fold ---- */
-.light-rays {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  -webkit-mask-image: radial-gradient(145% 108% at 50% -12%, #000 54%, transparent 96%);
-  mask-image: radial-gradient(145% 108% at 50% -12%, #000 54%, transparent 96%);
-}
-.ray-source {
-  position: absolute;
-  top: -16%;
-  left: 50%;
-  width: min(52rem, 94vw);
-  height: 34rem;
-  transform: translateX(-50%);
-  background:
-    radial-gradient(closest-side, rgba(150, 185, 255, 0.42), transparent 62%),
-    radial-gradient(closest-side, rgba(56, 189, 248, 0.16) 55%, transparent 80%);
-  filter: blur(22px);
-}
-.ray-fan {
-  position: absolute;
-  top: -8%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  transform-origin: top center;
-  display: none;
-  will-change: transform;
-  animation: raySway 22s ease-in-out infinite;
-}
-@media (min-width: 768px) {
-  .ray-fan { display: block; }
-}
-.ray {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 122vh;
-  border-radius: 999px;
-  transform-origin: top center;
-  background: linear-gradient(
-    to bottom,
-    rgba(120, 155, 255, 0.82) 0%,
-    rgba(56, 189, 248, 0.28) 34%,
-    transparent 74%
-  );
-  filter: blur(16px);
-  opacity: var(--ray-min, 0.3);
-  animation: rayBreathe var(--ray-dur, 8s) ease-in-out infinite;
-}
-@keyframes rayBreathe {
-  0%, 100% { opacity: var(--ray-min, 0.3); }
-  50% { opacity: var(--ray-max, 0.72); }
-}
-@keyframes raySway {
-  0%, 100% { transform: rotate(-2.6deg); }
-  50% { transform: rotate(2.6deg); }
-}
-.ray-fan--static { animation: none; }
-.ray-fan--static .ray { animation: none; opacity: 0.4; }
 
 /* ---- Aurora beams: slow drifting blue glows — the hero eye-catcher,
         kept clear of the top navbar. ---- */
@@ -354,11 +267,10 @@ body {
   z-index: 0;
 }
 
-/* Below md the whole 3-D stage + rays are dropped for a clean, light hero. */
+/* Below md the 3-D stage is dropped for a clean, light hero. */
 @media (max-width: 767px) {
   .hero-stage-3d,
-  .hero-horizon,
-  .light-rays .ray-fan {
+  .hero-horizon {
     display: none;
   }
 }
@@ -378,12 +290,6 @@ body {
   100% { transform: translateY(26px); opacity: 0; }
 }
 .scroll-dot { animation: scrollDot 1.9s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
-
-@keyframes scrollcue {
-  0%, 100% { transform: translateY(0); opacity: 0.85; }
-  50% { transform: translateY(7px); opacity: 0.35; }
-}
-.scroll-cue { animation: scrollcue 1.9s ease-in-out infinite; }
 
 /* ---- Scroll-rail travelling shimmer (a single soft light gliding down) ---- */
 .rail-shimmer {
@@ -435,14 +341,12 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .hero-aurora::before,
-  .ray,
   .aurora-beam,
   .hero-grid-3d,
   .float-slow,
   .scroll-dot {
     animation: none !important;
   }
-  .ray { opacity: 0.4; }
 }
 
 /* ---------- APCmini pad-grid chase animation ---------- */

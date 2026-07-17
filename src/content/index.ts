@@ -8,7 +8,7 @@ export {
   PINNED_REPOS,
   EXCLUDED_REPOS,
 } from "./projects";
-export { experience, workExperience, voluntaryExperience } from "./experience";
+export { experience, workExperience } from "./experience";
 export { education } from "./education";
 export { awards, emphasisAward, sideAwards } from "./awards";
 export { skillGroups, languages } from "./skills";

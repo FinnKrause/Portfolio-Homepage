@@ -41,22 +41,8 @@ export const profile = {
     en: "Information Systems · FAU Erlangen-Nürnberg",
   } as Localized,
 
-  role: {
-    de: "Student, (Software-)Entwickler & Veranstaltungstechniker",
-    en: "Student, developer & event engineer",
-  } as Localized,
-
-  lead: {
-    de: "Ich entwickle Software, gestalte Veranstaltungstechnik und denke Sicherheit von Anfang an mit. Am liebsten bringe ich Projekte gemeinsam mit einem starken Team ins Ziel — mit Neugier, Verantwortung und einem Faible fürs Gestalten.",
-    en: "I build software, design live-event technology and treat security as a first-class concern. Most of all I love getting projects across the finish line with a strong team — with curiosity, responsibility and a love for making things.",
-  } as Localized,
-
   // Understated, journey-led hero copy — the site leads with the story, not the name/photo.
   hero: {
-    intro: {
-      de: "Hallo, ich bin Finn Krause",
-      en: "Hi, I'm Finn Krause",
-    } as Localized,
     headline: {
       de: "Student der Wirtschaftsinformatik, Hobby-Softwareentwickler und Lichttechniker.",
       en: "Student of Information Systems, hobby software engineer and lighting technician.",
@@ -67,34 +53,7 @@ export const profile = {
     } as Localized,
   },
 
-  // Slim, understated highlight strip — a blend of achievement, engagement & craft
-  // (deliberately not F1-only).
-  heroHighlights: [
-    {
-      icon: "trophy",
-      label: {
-        de: "F1 in Schools — Weltmeister ’23",
-        en: "F1 in Schools — World Champion ’23",
-      },
-    },
-    {
-      icon: "gavel",
-      label: {
-        de: "Umbruchszeiten — Jurymitglied",
-        en: "Umbruchszeiten — jury member",
-      },
-    },
-    {
-      icon: "lightbulb",
-      label: {
-        de: "Entwickler & Veranstaltungstechniker",
-        en: "Developer & event engineer",
-      },
-    },
-  ] as { icon: string; label: Localized }[],
-
   // About section — character-focused, drawn from the long-form CV.
-  aboutTitle: { de: "Über mich", en: "About me" } as Localized,
   aboutBody: [
     {
       de: "Ab der Grundschule habe ich angefangen, mich für die Gemeinschaft einzusetzen — als Klassensprecher, später als Schüler- und Jahrgangsstufensprecher. Ich vertrat die Schülerschaft in Gremien von Schule und Stadt, leitete Arbeitsgruppen von Fotografie & Film bis zur Theatertechnik und lernte, Menschen für gemeinsame Ziele zu begeistern.",
