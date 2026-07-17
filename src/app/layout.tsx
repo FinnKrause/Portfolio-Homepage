@@ -2,10 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n";
-import { Nav } from "@/components/Nav";
-import { Footer } from "@/components/Footer";
-import { SkipLink } from "@/components/SkipLink";
-import { ScrollRails } from "@/components/ScrollRails";
+import { VERIFICATION_ENABLED } from "@/config/access";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,7 +23,7 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
-export const metadata: Metadata = {
+const publicMetadata: Metadata = {
   metadataBase: new URL("https://finnkrause.com"),
   title: {
     default: "Finn Krause — Wirtschaftsinformatik & F1 in Schools World Champion",
@@ -57,6 +54,22 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+// While the access gate is on, keep the public metadata deliberately sparse so
+// crawlers that only read <head> don't get personal details either. Flip
+// VERIFICATION_ENABLED to false (in @/config/access) to restore the full,
+// indexable metadata along with a fully public site.
+const gatedMetadata: Metadata = {
+  metadataBase: new URL("https://finnkrause.com"),
+  title: "Finn Krause",
+  description:
+    "A personal site — its content is available behind a short access check.",
+  robots: { index: false, follow: false },
+};
+
+export const metadata: Metadata = VERIFICATION_ENABLED
+  ? gatedMetadata
+  : publicMetadata;
+
 export const viewport: Viewport = {
   themeColor: "#ffffff",
   colorScheme: "light",
@@ -66,13 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="de" className={`${inter.variable} ${jetbrains.variable} ${spaceGrotesk.variable}`}>
       <body className="min-h-screen bg-paper antialiased">
-        <LanguageProvider>
-          <SkipLink />
-          <ScrollRails />
-          <Nav />
-          <main id="main">{children}</main>
-          <Footer />
-        </LanguageProvider>
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

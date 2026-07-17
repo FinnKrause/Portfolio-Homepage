@@ -47,17 +47,14 @@ export const engagement: EngagementItem[] = [
     },
     links: [
       {
-        label: {
-          de: "Preisverleihung ansehen",
-          en: "Watch the award ceremony",
-        },
-        href: "https://www.youtube.com/watch?v=Vp_2SyLA4fY&t=2340s",
+        label: { de: "Zu den Wettbewerben", en: "To the awards section" },
+        href: "#awards",
       },
     ],
-    gallery: [
-      { kind: "image", src: "/images/umbruchszeiten-judge-image2.png" },
-      { kind: "image", src: "/images/umbruchszeiten-image1.png" },
-    ],
+    // gallery: [
+    //   { kind: "image", src: "/images/umbruchszeiten-judge-image2.png" },
+    //   { kind: "image", src: "/images/umbruchszeiten-image1.png" },
+    // ],
   },
   {
     id: "schuelersprecher",
