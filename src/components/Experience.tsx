@@ -18,14 +18,10 @@ function ExpEntry({ item }: { item: ExperienceItem }) {
     <li className="relative">
       <span
         className={cn(
-          "absolute -left-[2.1rem] top-1.5 grid h-3.5 w-3.5 place-items-center rounded-full ring-4 ring-paper-soft",
+          "absolute -left-[2.1rem] top-1.5 h-3.5 w-3.5 rounded-full ring-4 ring-paper-soft",
           item.kind === "work" ? "bg-brand-600" : "bg-sky-500",
         )}
-      >
-        {item.current && (
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500 opacity-60" />
-        )}
-      </span>
+      />
 
       <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
         <span className="font-mono text-xs uppercase tracking-wider text-brand-700">

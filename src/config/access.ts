@@ -1,7 +1,5 @@
 export const VERIFICATION_ENABLED = true;
 
-export const ACCESS_STORAGE_KEY = "fk-access-granted";
-
 /**
  * Cookie carrying the "verified" flag. The middleware reads it on the server,
  * so verified visitors receive the full site with the very first response —
