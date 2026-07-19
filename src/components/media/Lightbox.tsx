@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
@@ -25,6 +26,12 @@ export function Lightbox({
   const reduce = useReducedMotion();
   const open = index !== null;
 
+  // Rendered in a portal on <body>: inside the page tree the viewer would be
+  // trapped in the site-sheet's stacking context and end up underneath the
+  // fixed navbar (covering the close button on mobile).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -40,7 +47,9 @@ export function Lightbox({
     };
   }, [open, onClose, onNav]);
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && index !== null && (
         <motion.div
@@ -117,6 +126,7 @@ export function Lightbox({
           )}
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
