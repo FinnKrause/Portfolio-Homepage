@@ -16,11 +16,9 @@ const FINN_IMAGES = [
   { src: "/images/f1-image1.jpeg", alt: { de: "Finn feiert den Weltmeistertitel bei den F1 in Schools World Finals in Singapur.", en: "Finn celebrating the world title at the F1 in Schools World Finals in Singapore." } },
   { src: "/images/f1-podium.jpg", alt: { de: "Recoil Racing als Weltmeister 2023 auf dem Podium in Singapur.", en: "Recoil Racing as 2023 World Champions on the podium in Singapore." } },
   { src: "/images/umbruchszeiten-judge-image2.png", alt: { de: "Finn als Jurymitglied im Interview bei Umbruchszeiten.", en: "Finn as a jury member during an Umbruchszeiten interview." } },
-  { src: "/images/fsi-image3.png", alt: { de: "Finn auf der Bühne bei einer Veranstaltung.", en: "Finn on stage at an event." } },
   { src: "/images/f1-france-image1.png", alt: { de: "Finn (rechts) als Coach beim französischen F1-in-Schools-Finale.", en: "Finn (right) coaching at the French F1 in Schools finals." } },
   { src: "/images/f1-france-image2.png", alt: { de: "Mit dem französischen Team LLP Racing in Avignon.", en: "With the French team LLP Racing in Avignon." } },
   { src: "/images/f1-thailand-image1.png", alt: { de: "Finn zu Besuch im F1-in-Schools-Hauptquartier in Thailand.", en: "Finn visiting the F1 in Schools headquarters in Thailand." } },
-  { src: "/images/finn-portrait2.jpg", alt: { de: "Finn auf Reisen in Paris.", en: "Finn travelling in Paris." } },
   { src: "/images/f1-image2.png", alt: { de: "Team-Selfie am Marina Bay Street Circuit in Singapur.", en: "Team selfie at the Marina Bay Street Circuit in Singapore." } },
 ];
 

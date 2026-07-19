@@ -103,7 +103,8 @@ export function Lightbox({
               alt={images[index].alt}
               fill
               sizes="100vw"
-              quality={95}
+              // Full-screen view → always the untouched original file.
+              unoptimized
               className="object-contain"
               priority
             />

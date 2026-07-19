@@ -116,8 +116,10 @@ export function Carousel({
           <div
             className={cn(
               "pointer-events-none absolute inset-0 flex items-center justify-between px-2",
+              // Hide-until-hover only on devices that can hover; on touch the
+              // arrows stay visible so the carousel is clickable on mobile.
               subtle &&
-                "px-3 opacity-0 transition-opacity duration-300 focus-within:opacity-100 group-hover:opacity-100",
+                "px-3 transition-opacity duration-300 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:focus-within:opacity-100 [@media(hover:hover)]:group-hover:opacity-100",
             )}
           >
             <button

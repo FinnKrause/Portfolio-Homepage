@@ -174,8 +174,8 @@ export function AccessScreen({ onGranted }: { onGranted: () => void }) {
           <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-night-mute/80">
             <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             {tx(
-              "Kein Tracking, keine Analyse, nichts wird über dich gespeichert. In deinem Browser wird nur ein einzelner Haken gesetzt, damit du das nicht noch einmal siehst. Diese Information verlässt nie deinen Browser.",
-              "No tracking, no analytics, nothing is logged about you. Your browser just stores a single flag so you won't see this again. That peace of information is never sent to a server.",
+              "Kein Tracking, keine Analyse, nichts wird über dich gespeichert. Bei korrektem Code setzt dein Browser ein einzelnes Cookie („fk-access“), das bei jedem Aufruf mitgeschickt wird, damit dich der Server direkt durchlässt. Es ist für alle Besucher identisch, enthält keinerlei Daten über dich und lässt sich jederzeit in den Browser-Einstellungen löschen — dann wirst du einfach erneut gefragt.",
+              "No tracking, no analytics, nothing is logged about you. On a correct code your browser sets a single cookie (“fk-access”) that is sent along with each visit so the server lets you straight through. It is identical for every visitor, contains no data about you, and can be deleted in your browser settings at any time — you'll simply be asked again.",
             )}
           </p>
         </motion.div>

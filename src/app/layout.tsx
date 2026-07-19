@@ -1,25 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n";
 import { VERIFICATION_ENABLED } from "@/config/access";
 
+// One typeface for the whole site — weights, size and tracking carry the
+// hierarchy instead of font switches.
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  display: "swap",
-});
-
-const jetbrains = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains",
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-space-grotesk",
   display: "swap",
 });
 
@@ -77,7 +66,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className={`${inter.variable} ${jetbrains.variable} ${spaceGrotesk.variable}`}>
+    <html lang="de" className={inter.variable}>
       <body className="min-h-screen bg-paper antialiased">
         <LanguageProvider>{children}</LanguageProvider>
       </body>

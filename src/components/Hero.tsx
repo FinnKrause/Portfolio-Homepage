@@ -99,12 +99,17 @@ export function Hero() {
           className="mx-container relative z-10 flex flex-1 flex-col"
         >
           {/* Cover content */}
-          <div className="grid flex-1 items-center gap-10 pb-24 pt-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16 lg:pb-16">
-            {/* Identity */}
-            <motion.div variants={container} initial="hidden" animate="show">
+          <div className="grid flex-1 items-center gap-10 pb-24 pt-24 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16 lg:pb-16 lg:pt-20">
+            {/* Identity — centered on mobile, left-aligned on desktop */}
+            <motion.div
+              variants={container}
+              initial="hidden"
+              animate="show"
+              className="flex flex-col items-center text-center lg:items-start lg:text-left"
+            >
               <motion.p
                 variants={rise}
-                className="font-mono text-[0.65rem] uppercase tracking-[0.24em] text-night-mute sm:text-xs"
+                className="text-[0.6rem] font-medium uppercase tracking-[0.16em] text-night-mute sm:text-xs sm:tracking-[0.22em]"
               >
                 {t(profile.eyebrow)}
               </motion.p>
@@ -132,17 +137,20 @@ export function Hero() {
                 {t(profile.hero.lead)}
               </motion.p>
 
-              <motion.div variants={rise} className="mt-9 flex flex-wrap items-center gap-4">
+              <motion.div
+                variants={rise}
+                className="mt-9 flex w-full max-w-xs flex-col items-stretch gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:items-center sm:gap-4"
+              >
                 <a
                   href="#about"
-                  className="group inline-flex items-center gap-2.5 rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-400"
+                  className="group inline-flex items-center justify-center gap-2.5 rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-400"
                 >
                   {t({ de: "Akte durchblättern", en: "Leaf through the file" })}
                   <ArrowDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" />
                 </a>
                 <a
                   href="#contact"
-                  className="inline-flex items-center gap-2 rounded-full border border-night-line px-6 py-3 text-sm font-semibold text-night-ink/90 transition-colors duration-300 hover:border-brand-300/60 hover:text-white"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-night-line px-6 py-3 text-sm font-semibold text-night-ink/90 transition-colors duration-300 hover:border-brand-300/60 hover:text-white"
                 >
                   {t({ de: "Kontakt", en: "Get in touch" })}
                 </a>
@@ -178,7 +186,7 @@ export function Hero() {
 
                   <div className="relative overflow-hidden">
                     <Image
-                      src="/images/finn-portrait-transparent.png"
+                      src="/images/finn-portrait-transparent2.png"
                       alt={t({
                         de: "Finn Krause, Porträt aus der Akte",
                         en: "Finn Krause, file photograph",
@@ -194,9 +202,11 @@ export function Hero() {
                   </div>
 
                   {/* Caption bar */}
-                  <div className="flex items-center justify-between border-t border-night-line px-3.5 py-2.5 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-night-mute">
-                    <span>{t({ de: "Abb. 01 — F. Krause", en: "Fig. 01 — F. Krause" })}</span>
-                    <span>Erlangen, DE</span>
+                  <div className="flex items-center justify-between gap-3 border-t border-night-line px-3.5 py-2.5 text-[0.58rem] font-medium uppercase tracking-[0.12em] text-night-mute lg:text-[0.6rem] lg:tracking-[0.18em]">
+                    <span className="whitespace-nowrap">
+                      {t({ de: "Abb. 01 — F. Krause", en: "Fig. 01 — F. Krause" })}
+                    </span>
+                    <span className="whitespace-nowrap">Erlangen, DE</span>
                   </div>
                 </div>
               </motion.div>

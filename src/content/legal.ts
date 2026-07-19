@@ -101,8 +101,8 @@ export const datenschutz: LegalDocT = {
   slug: "datenschutz",
   title: { de: "Datenschutzerklärung", en: "Privacy Policy" },
   intro: {
-    de: "Der Schutz deiner Daten ist mir wichtig. Diese Website ist bewusst datensparsam gebaut: Es werden keine Cookies zu Tracking-Zwecken gesetzt und es kommt keine Analyse-Software zum Einsatz.",
-    en: "Protecting your data matters to me. This website is deliberately built to be data-minimal: no tracking cookies are set and no analytics software is used.",
+    de: "Der Schutz deiner Daten ist mir wichtig. Diese Website ist bewusst datensparsam gebaut: Es werden keine Cookies zu Tracking-Zwecken gesetzt und es kommt keine Analyse-Software zum Einsatz. Das einzige Cookie ist ein technisch notwendiges Zugangs-Cookie ohne Personenbezug (siehe unten).",
+    en: "Protecting your data matters to me. This website is deliberately built to be data-minimal: no tracking cookies are set and no analytics software is used. The only cookie is a technically necessary access cookie with no personal reference (see below).",
   },
   sections: [
     {
@@ -123,6 +123,18 @@ export const datenschutz: LegalDocT = {
         {
           de: `Diese Website wird selbst gehostet (Self-Hosting; es wird kein externer Hosting-Dienstleister eingesetzt). Beim Aufruf der Seite können technisch bedingt Zugriffsdaten – u. a. IP-Adresse, Datum und Uhrzeit des Zugriffs, aufgerufene Datei, übertragene Datenmenge, Referrer und verwendeter Browser – in Server-Logfiles verarbeitet werden. Diese Logfiles werden nicht dauerhaft gespeichert und nicht regelmäßig manuell gesichert; sie werden spätestens beim Neustart des Servers bzw. Dienstes automatisch gelöscht – in jedem Fall innerhalb von sechs Monaten. Die Verarbeitung dient ausschließlich dem sicheren und stabilen Betrieb der Website. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse).`,
           en: `This website is self-hosted (no external hosting provider is used). For technical reasons, access data – including IP address, date and time of access, the file requested, amount of data transferred, referrer and the browser used – may be processed in server log files. These log files are not permanently stored and are not regularly backed up manually; they are automatically deleted at the latest when the server or service restarts – in any case within six months. Processing serves solely the secure and stable operation of the website. The legal basis is Art. 6 (1) (f) GDPR (legitimate interest).`,
+        },
+      ],
+    },
+    {
+      heading: {
+        de: "Zugangs-Check (Cookie)",
+        en: "Access check (cookie)",
+      },
+      body: [
+        {
+          de: "Die Inhalte dieser Website liegen hinter einem kurzen Zugangscode, damit automatisierte Crawler und Scraper meine persönlichen Daten nicht auslesen. Nach Eingabe eines gültigen Codes (oder Aufruf eines Links, der einen solchen Code enthält) setzt dein Browser ein einzelnes Cookie namens „fk-access“ mit dem festen Wert „1“ (Gültigkeit: 12 Monate). Es wird bei jedem Aufruf dieser Website mitgesendet, damit der Server dir die Inhalte direkt ausliefern kann, ohne erneut zu fragen. Das Cookie ist für alle Besucher identisch, enthält keine personenbezogenen Daten, keine Kennung und dient nicht der Wiedererkennung oder dem Tracking. Zusätzlich merkt sich dein Browser denselben Haken lokal (Local Storage). Rechtsgrundlage ist § 25 Abs. 2 Nr. 2 TDDDG (technisch erforderlich) bzw. Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am Schutz der Inhalte). Du kannst das Cookie jederzeit über die Einstellungen deines Browsers löschen — danach wird lediglich erneut nach dem Code gefragt.",
+          en: "The content of this website sits behind a short access code so that automated crawlers and scrapers cannot harvest my personal data. After entering a valid code (or opening a link containing one), your browser sets a single cookie named “fk-access” with the fixed value “1” (valid for 12 months). It is sent along with each request to this website so the server can deliver the content directly without asking again. The cookie is identical for every visitor, contains no personal data and no identifier, and is not used for recognition or tracking. Your browser additionally remembers the same flag locally (local storage). The legal basis is § 25 (2) no. 2 TDDDG (technically necessary) and Art. 6 (1) (f) GDPR (legitimate interest in protecting the content). You can delete the cookie at any time via your browser settings — you will simply be asked for the code again.",
         },
       ],
     },

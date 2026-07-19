@@ -2,6 +2,15 @@ export const VERIFICATION_ENABLED = true;
 
 export const ACCESS_STORAGE_KEY = "fk-access-granted";
 
+/**
+ * Cookie carrying the "verified" flag. The middleware reads it on the server,
+ * so verified visitors receive the full site with the very first response —
+ * no client-side check, no second JS roundtrip.
+ */
+export const ACCESS_COOKIE = "fk-access";
+
+export const ACCESS_COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // one year
+
 export const ACCESS_URL_PARAM = "code";
 
 const CODE_RE = /^(\d)(\d)(\d)(\d)-(\d)$/;
