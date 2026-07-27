@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 const LEADERBOARD = [
   { rank: 1, title: "Shake It Off", from: "#f472b6", to: "#a855f7" },
-  { rank: 2, title: "KETA UND KRAWALL", from: "#38bdf8", to: "#2563eb" },
+  { rank: 2, title: "In Shape", from: "#38bdf8", to: "#2563eb" },
   { rank: 3, title: "Napoleon Bonnerparty", from: "#34d399", to: "#0ea5e9" },
 ];
 

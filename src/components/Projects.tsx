@@ -48,10 +48,10 @@ export function Projects() {
       <SectionHeading
         index="02"
         eyebrow={t(ui.featured)}
-        title={t({ de: "Projekte, die mir wichtig sind", en: "Projects I care about" })}
+        title={t({ de: "Hier ein paar ausgewählte Projekte", en: "Projects I care about" })}
         intro={t({
-          de: "Zwei ausgewählte Arbeiten, in denen Software und Bühne zusammenkommen — mit durchklickbaren Eindrücken.",
-          en: "Two featured builds where software and stage meet — with a gallery you can click through.",
+          de: "Zwei ausgewählte Projekte, in denen Software und Bühne zusammenkommen",
+          en: "Two featured builds where software and stage meet",
         })}
       />
 
