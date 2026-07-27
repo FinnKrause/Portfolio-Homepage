@@ -2,252 +2,126 @@
 
 import { useRef } from "react";
 import Image from "next/image";
-import {
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-  type Variants,
-} from "framer-motion";
-import { ArrowDown } from "lucide-react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { profile } from "@/content/profile";
 import { useLang } from "@/lib/i18n";
-import { useIsDesktop } from "@/lib/useIsDesktop";
 
 export function Hero() {
   const { t } = useLang();
   const reduce = useReducedMotion();
-  const desktop = useIsDesktop();
   const ref = useRef<HTMLDivElement>(null);
 
-  // The sheet slides over the sticky cover; fade the cover's content out as it
-  // gets covered so it reads as the file being opened, not just hidden.
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
-  const coverOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
-  const coverY = useTransform(scrollYProgress, [0, 1], [0, -46]);
+  const fade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  const drift = useTransform(scrollYProgress, [0, 1], [0, -50]);
 
-  // Cursor: reading light (CSS vars) + a gentle portrait tilt. Desktop only.
-  const px = useMotionValue(0);
-  const py = useMotionValue(0);
-  const spring = { stiffness: 60, damping: 18, mass: 0.7, restDelta: 0.001 };
-  const sx = useSpring(px, spring);
-  const sy = useSpring(py, spring);
-  const tiltX = useTransform(sy, (v) => v * -3.5);
-  const tiltY = useTransform(sx, (v) => v * 4.5);
-  const cursorOn = desktop && !reduce;
-
-  const onMove = (e: React.MouseEvent<HTMLElement>) => {
-    if (!cursorOn) return;
-    const r = e.currentTarget.getBoundingClientRect();
-    const nx = (e.clientX - r.left) / r.width;
-    const ny = (e.clientY - r.top) / r.height;
-    px.set(nx - 0.5);
-    py.set(ny - 0.5);
-    e.currentTarget.style.setProperty("--mx", `${(nx * 100).toFixed(2)}%`);
-    e.currentTarget.style.setProperty("--my", `${(ny * 100).toFixed(2)}%`);
-  };
-  const onLeave = () => {
-    px.set(0);
-    py.set(0);
-  };
-
-  const container: Variants = {
-    hidden: {},
-    show: { transition: { staggerChildren: 0.05 } },
-  };
-  const rise: Variants = {
+  const rise = {
     hidden: { opacity: 0, y: reduce ? 0 : 18 },
-    show: {
+    show: (i: number) => ({
       opacity: 1,
       y: 0,
-      transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
-    },
-  };
-  const frameIn: Variants = {
-    hidden: { opacity: 0, y: reduce ? 0 : 22 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, delay: 0, ease: [0.22, 1, 0.36, 1] },
-    },
+      transition: { duration: 0.7, delay: i * 0.09, ease: [0.22, 1, 0.36, 1] as const },
+    }),
   };
 
   return (
-    // Desktop: the cover is sticky and the light sheet slides over it.
-    // Mobile: a normal in-flow hero (no cover effect, content may exceed 100svh).
     <div ref={ref} className="relative z-0 lg:sticky lg:top-0 lg:h-[100svh]">
       <section
         id="top"
-        onMouseMove={onMove}
-        onMouseLeave={onLeave}
-        className="relative flex min-h-[100svh] flex-col overflow-hidden bg-night text-night-ink lg:h-full lg:min-h-0"
+        className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#03050c] text-night-ink lg:h-full lg:min-h-0"
       >
-        {/* Cover backdrop */}
-        <div aria-hidden className="absolute inset-0">
-          <div className="cover-wash" />
-          <div className="cover-grid" />
-          {cursorOn && <div className="reading-light" />}
+        {/* Light */}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[radial-gradient(60rem_44rem_at_50%_18%,rgba(30,51,207,0.3),transparent_64%),radial-gradient(50rem_38rem_at_50%_100%,rgba(9,60,140,0.18),transparent_66%)]"
+        />
+
+        {/* The portrait sits behind the type — present, but only just */}
+        {/* Dropped below the navbar so the figure sits fully inside the frame */}
+        {/* <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 top-[12%]">
+          <div className="relative mx-auto h-full w-full max-w-4xl">
+            <Image
+              src="/images/finn-portrait-transparent.png"
+              alt=""
+              fill
+              priority
+              quality={90}
+              sizes="(max-width: 1024px) 100vw, 56rem"
+              className="object-contain object-bottom opacity-[0.12] [mask-image:linear-gradient(to_bottom,black_78%,transparent)] lg:opacity-[0.16]"
+            />
+          </div>
+        </div> */}
+
+        {/* Grain + vignette */}
+        <div aria-hidden className="grain absolute inset-0 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_45%,transparent_30%,rgba(3,5,12,0.45)_72%,rgba(3,5,12,0.9)_100%)]" />
         </div>
 
+        {/* Centred type */}
         <motion.div
-          style={reduce ? undefined : { opacity: coverOpacity, y: coverY }}
-          className="mx-container relative z-10 flex flex-1 flex-col"
+          style={reduce ? undefined : { opacity: fade, y: drift }}
+          className="mx-container relative z-10 flex flex-col items-center py-24 text-center"
         >
-          {/* Cover content */}
-          <div className="grid flex-1 items-center gap-10 pb-24 pt-24 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16 lg:pb-16 lg:pt-20">
-            {/* Identity — centered on mobile, left-aligned on desktop */}
-            <motion.div
-              variants={container}
-              initial="hidden"
-              animate="show"
-              className="flex flex-col items-center text-center lg:items-start lg:text-left"
+          <motion.p
+            custom={0}
+            variants={rise}
+            initial="hidden"
+            animate="show"
+            className="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-white/55"
+          >
+            {profile.name}
+          </motion.p>
+
+          <motion.h1
+            custom={1}
+            variants={rise}
+            initial="hidden"
+            animate="show"
+            className="headline mt-7 max-w-[16ch] text-balance text-[clamp(2.75rem,7vw,6rem)] font-medium leading-[1.02] text-white"
+          >
+            {t({
+              de: "Willkommen auf meiner Homepage",
+              en: "Welcome to my homepage",
+            })}
+          </motion.h1>
+
+          <motion.p
+            custom={2}
+            variants={rise}
+            initial="hidden"
+            animate="show"
+            className="mt-8 max-w-xl text-pretty text-base leading-relaxed text-night-ink/85 sm:text-lg"
+          >
+            {t(profile.hero.headline)}
+          </motion.p>
+
+          <motion.p
+            custom={3}
+            variants={rise}
+            initial="hidden"
+            animate="show"
+            className="mt-3 max-w-lg text-pretty text-sm leading-relaxed text-night-mute"
+          >
+            {t(profile.hero.lead)}
+          </motion.p>
+
+          <motion.div custom={4} variants={rise} initial="hidden" animate="show">
+            <a
+              href="#about"
+              className="group mt-10 inline-flex items-center gap-3 text-sm font-medium text-white/90 transition-colors hover:text-white"
             >
-              <motion.p
-                variants={rise}
-                className="text-[0.6rem] font-medium uppercase tracking-[0.16em] text-night-mute sm:text-xs sm:tracking-[0.22em]"
-              >
-                {t(profile.eyebrow)}
-              </motion.p>
-
-              <motion.h1
-                variants={rise}
-                className="headline mt-5 text-[clamp(3.4rem,9.5vw,7.75rem)] font-semibold text-white"
-              >
-                Finn
-                <br />
-                Krause
-              </motion.h1>
-
-              <motion.p
-                variants={rise}
-                className="mt-6 max-w-xl text-pretty text-lg font-medium text-night-ink/90 sm:text-xl"
-              >
-                {t(profile.hero.headline)}
-              </motion.p>
-
-              <motion.p
-                variants={rise}
-                className="mt-3 max-w-lg text-pretty text-base leading-relaxed text-night-mute"
-              >
-                {t(profile.hero.lead)}
-              </motion.p>
-
-              <motion.div
-                variants={rise}
-                className="mt-9 flex w-full max-w-xs flex-col items-stretch gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:items-center sm:gap-4"
-              >
-                <a
-                  href="#about"
-                  className="group inline-flex items-center justify-center gap-2.5 rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-400"
-                >
-                  {t({ de: "Akte durchblättern", en: "Leaf through the file" })}
-                  <ArrowDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" />
-                </a>
-                <a
-                  href="#contact"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-night-line px-6 py-3 text-sm font-semibold text-night-ink/90 transition-colors duration-300 hover:border-brand-300/60 hover:text-white"
-                >
-                  {t({ de: "Kontakt", en: "Get in touch" })}
-                </a>
-              </motion.div>
-            </motion.div>
-
-            {/* File photo — framed like a document photograph */}
-            <motion.div
-              variants={frameIn}
-              initial="hidden"
-              animate="show"
-              className="flex justify-center pb-4 lg:justify-end lg:pb-0"
-            >
-              <motion.div
-                style={
-                  cursorOn
-                    ? { rotateX: tiltX, rotateY: tiltY, transformPerspective: 900 }
-                    : undefined
-                }
-                className="relative"
-              >
-                <div className="relative w-[min(15rem,62vw)] border border-night-line bg-night-soft/70 lg:w-[clamp(16rem,26vw,22rem)]">
-                  {/* Corner ticks */}
-                  {(["-top-px -left-px border-t border-l", "-top-px -right-px border-t border-r", "-bottom-px -left-px border-b border-l", "-bottom-px -right-px border-b border-r"] as const).map(
-                    (pos) => (
-                      <span
-                        key={pos}
-                        aria-hidden
-                        className={`absolute z-20 h-3.5 w-3.5 border-brand-300/80 ${pos}`}
-                      />
-                    ),
-                  )}
-
-                  <div className="relative overflow-hidden">
-                    <Image
-                      src="/images/finn-portrait-transparent2.png"
-                      alt={t({
-                        de: "Finn Krause, Porträt aus der Akte",
-                        en: "Finn Krause, file photograph",
-                      })}
-                      width={1090}
-                      height={1700}
-                      priority
-                      quality={90}
-                      sizes="(max-width: 1024px) 62vw, 22rem"
-                      className="h-auto w-full object-contain [mask-image:linear-gradient(to_bottom,black_88%,transparent)]"
-                    />
-                    {!reduce && <div className="scanline" aria-hidden />}
-                  </div>
-
-                  {/* Caption bar */}
-                  <div className="flex items-center justify-between gap-3 border-t border-night-line px-3.5 py-2.5 text-[0.58rem] font-medium uppercase tracking-[0.12em] text-night-mute lg:text-[0.6rem] lg:tracking-[0.18em]">
-                    <span className="whitespace-nowrap">
-                      {t({ de: "Abb. 01 — F. Krause", en: "Fig. 01 — F. Krause" })}
-                    </span>
-                    <span className="whitespace-nowrap">Erlangen, DE</span>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          </div>
-
-          {/* Metadata row — quiet, factual, humble */}
-          {/* <div className="absolute inset-x-0 bottom-0 hidden md:block">
-            <div className="h-px w-full bg-night-line" />
-            <dl className="flex flex-wrap items-center gap-x-10 gap-y-2 py-5 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-night-mute">
-              <div className="flex items-center gap-2.5">
-                <dt className="text-brand-300/80">{t({ de: "Standort", en: "Location" })}</dt>
-                <dd>Erlangen, DE</dd>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <dt className="text-brand-300/80">{t({ de: "Studium", en: "Studies" })}</dt>
-                <dd>{t({ de: "Wirtschaftsinformatik, FAU", en: "Information Systems, FAU" })}</dd>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <dt className="text-brand-300/80">{t({ de: "Fokus", en: "Focus" })}</dt>
-                <dd>{t({ de: "Software · Licht · Security", en: "Software · Light · Security" })}</dd>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <dt className="text-brand-300/80">{t({ de: "Notiz", en: "Note" })}</dt>
-                <dd>{t({ de: "Weltmeister, F1 in Schools 2023", en: "World Champion, F1 in Schools 2023" })}</dd>
-              </div>
-            </dl>
-          </div> */}
-        </motion.div>
-
-        {/* Scroll cue */}
-        <motion.div
-          style={reduce ? undefined : { opacity: coverOpacity }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2, duration: 0.8 }}
-          className="pointer-events-none absolute bottom-20 left-1/2 z-10 hidden -translate-x-1/2 lg:block"
-        >
-          <span className="relative flex h-9 w-px justify-center overflow-hidden rounded-full bg-gradient-to-b from-brand-300/60 to-transparent">
-            <span className="scroll-dot absolute top-0 h-2 w-px rounded-full bg-brand-300" />
-          </span>
+              <span className="relative">
+                {t({ de: "Weiterlesen", en: "Read on" })}
+                <span className="absolute -bottom-1 left-0 h-px w-full origin-left bg-white/40 transition-transform duration-500 group-hover:scale-x-0" />
+              </span>
+              <span className="translate-y-px text-white/50 transition-transform duration-500 group-hover:translate-y-1.5">
+                ↓
+              </span>
+            </a>
+          </motion.div>
         </motion.div>
       </section>
     </div>

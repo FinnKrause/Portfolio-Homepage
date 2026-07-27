@@ -1,20 +1,13 @@
 import type { Localized } from "./types";
 
 /**
- * ⚠️ BEFORE GOING LIVE — fill in the two placeholders below.
- * A German Impressum (§ 5 DDG) legally requires a real, reachable postal
- * address (no P.O. box). It is intentionally NOT pre-filled with a home
- * address. Add yours here (this is the only place you need to edit it).
+ * Single source of truth for the legal pages. A German Impressum (§ 5 DDG)
+ * requires a real, reachable postal address — it lives here and nowhere else.
  */
 export const legalConfig = {
   name: "Finn Krause",
   addressLines: ["Bernhard-Plettner-Ring 29", "91052 Erlangen"],
   email: "mail@finnkrause.com",
-  phone: "+49 176 21443001", // optional, e.g. "+49 …"
-  // The company that hosts the site (processes server logs). Update to match
-
-  // your actual host, e.g. "Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA".
-  hostingProvider: "Self-Hosting",
   updated: { de: "Juli 2026", en: "July 2026" } as Localized,
 };
 
@@ -207,5 +200,3 @@ export const datenschutz: LegalDocT = {
     },
   ],
 };
-
-export const legalDocs = { impressum, datenschutz };

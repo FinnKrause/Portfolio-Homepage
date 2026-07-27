@@ -1,7 +1,8 @@
 "use client";
 
-import type { ReactNode } from "react";
-import { ArrowUpRight, Check, Github } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpRight, Github, X } from "lucide-react";
 import { featuredProjects } from "@/content/projects";
 import type { Project } from "@/content/types";
 import { ui } from "@/content/ui";
@@ -20,17 +21,9 @@ const VISUALS: Record<string, ReactNode> = {
   "festival-community-stage-portal": <StagePortalVisual />,
 };
 
-const ACCENT_PANEL: Record<NonNullable<Project["accent"]>, string> = {
-  brand: "from-brand-50 to-paper-soft",
-  sky: "from-sky-50 to-paper-soft",
-  violet: "from-violet-50 to-paper-soft",
-  emerald: "from-emerald-50 to-paper-soft",
-  amber: "from-amber-50 to-paper-soft",
-};
-
 function slidesFor(project: Project): ReactNode[] {
   const slides: ReactNode[] = [
-    <div key="visual" className="flex h-full w-full items-center justify-center p-4 sm:p-6">
+    <div key="visual" className="flex h-full w-full items-center justify-center p-6 sm:p-10">
       <div className="w-full max-w-sm">{VISUALS[project.slug]}</div>
     </div>,
   ];
@@ -40,119 +33,196 @@ function slidesFor(project: Project): ReactNode[] {
   return slides;
 }
 
+/**
+ * Zero-height disclosure: the marker sits on the meta line, and the note
+ * itself fades in over the project's own image. Nothing below it moves.
+ */
+function AiOverlay({
+  note,
+  open,
+  onClose,
+}: {
+  note: string;
+  open: boolean;
+  onClose: () => void;
+}) {
+  const { t } = useLang();
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25 }}
+          className="absolute inset-0 z-10 flex flex-col justify-between bg-ink-900/95 p-6 backdrop-blur-sm sm:p-8"
+        >
+          <div className="min-h-0 overflow-y-auto">
+            <p className="text-[0.66rem] font-semibold uppercase tracking-[0.18em] text-brand-300">
+              {t({ de: "KI im Einsatz", en: "AI involvement" })}
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-white/80">{note}</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="mt-4 inline-flex w-fit items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-white/60 transition-colors hover:text-white"
+          >
+            <X className="h-3.5 w-3.5" />
+            {t({ de: "Schließen", en: "Close" })}
+          </button>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 export function Projects() {
   const { t } = useLang();
+  const [openAi, setOpenAi] = useState<string | null>(null);
 
   return (
-    <Section id="projects" className="bg-paper-soft">
+    <Section id="projects">
       <SectionHeading
         index="02"
         eyebrow={t(ui.featured)}
-        title={t({ de: "Hier ein paar ausgewählte Projekte", en: "Projects I care about" })}
+        title={t({
+          de: "Hier ein paar ausgewählte Projekte",
+          en: "Projects I care about",
+        })}
         intro={t({
           de: "Zwei ausgewählte Projekte, in denen Software und Bühne zusammenkommen",
           en: "Two featured builds where software and stage meet",
         })}
       />
 
-      {/* Featured */}
-      <div className="mt-12 space-y-8">
-        {featuredProjects.map((project, index) => (
-          <Reveal key={project.slug} delay={index * 0.05}>
-            <article className="overflow-hidden border border-line bg-white shadow-soft transition-shadow duration-300 hover:shadow-lift">
-              <div className="grid lg:grid-cols-2">
-                {/* Visual carousel — media fills the panel edge-to-edge */}
-                <div
-                  className={cn(
-                    "relative overflow-hidden border-line bg-gradient-to-br max-lg:border-b lg:border-r",
-                    ACCENT_PANEL[project.accent ?? "brand"],
-                    index % 2 === 1 && "lg:order-last lg:border-l lg:border-r-0",
-                  )}
-                >
-                  <div className="relative aspect-[4/3] w-full sm:aspect-[16/10] lg:absolute lg:inset-0 lg:aspect-auto lg:h-full">
-                    <Carousel fill className="h-full" ariaLabel={project.title} slides={slidesFor(project)} />
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="flex flex-col justify-center p-6 sm:p-10">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-medium uppercase tracking-widest text-brand-700">
-                      P-{String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span className="h-px flex-1 bg-line" />
-                    {project.year && (
-                      <span className="font-mono text-xs text-ink-500">{project.year}</span>
+      {/* Featured — each project is one self-contained band. */}
+      <div className="mt-10 space-y-6">
+        {featuredProjects.map((project, index) => {
+          const flipped = index % 2 === 1;
+          const aiOpen = openAi === project.slug;
+          return (
+            <Reveal key={project.slug}>
+              <article className="overflow-hidden border border-line bg-white shadow-soft transition-shadow duration-300 hover:shadow-lift">
+                <div className="grid lg:grid-cols-2">
+                  {/* Media fills its half edge to edge */}
+                  <div
+                    className={cn(
+                      "relative overflow-hidden border-line bg-paper-soft max-lg:border-b lg:border-r",
+                      flipped && "lg:order-last lg:border-l lg:border-r-0",
                     )}
+                  >
+                    <div className="relative aspect-[4/3] w-full sm:aspect-[16/10] lg:absolute lg:inset-0 lg:aspect-auto lg:h-full">
+                      <Carousel
+                        fill
+                        subtle
+                        className="h-full"
+                        ariaLabel={project.title}
+                        slides={slidesFor(project)}
+                      />
+                      {project.aiUsage && (
+                        <AiOverlay
+                          note={t(project.aiUsage)}
+                          open={aiOpen}
+                          onClose={() => setOpenAi(null)}
+                        />
+                      )}
+                    </div>
                   </div>
 
-                  <h3 className="headline mt-4 text-2xl font-semibold text-ink-900 sm:text-3xl">
+                  {/* Content */}
+                  <div className="flex flex-col justify-center p-6 sm:p-8">
+                    <div className="flex items-center gap-3 text-[0.68rem] uppercase tracking-[0.16em] text-ink-500">
+                      <span>P-{String(index + 1).padStart(2, "0")}</span>
+                      <span className="h-px flex-1 bg-line" aria-hidden />
+                      {project.year && <span>{project.year}</span>}
+                      {project.aiUsage && (
+                        <>
+                          <span className="h-px w-4 bg-line" aria-hidden />
+                          <button
+                            type="button"
+                            onClick={() => setOpenAi(aiOpen ? null : project.slug)}
+                            aria-expanded={aiOpen}
+                            className="uppercase tracking-[0.16em] text-ink-500 underline decoration-ink-300 underline-offset-4 transition-colors hover:text-brand-700 hover:decoration-brand-400"
+                          >
+                            {t({ de: "KI-Einsatz", en: "AI use" })}
+                          </button>
+                        </>
+                      )}
+                    </div>
+
+                  <h3 className="headline mt-4 text-2xl font-medium text-ink-900 sm:text-3xl">
                     {project.title}
                   </h3>
-                  <p className="mt-1 text-base font-medium text-brand-700">{t(project.tagline)}</p>
-                  <p className="mt-4 text-sm leading-relaxed text-ink-500 sm:text-base">
+                  <p className="mt-2 text-base font-medium text-brand-700">
+                    {t(project.tagline)}
+                  </p>
+                  <p className="mt-5 text-[0.95rem] leading-relaxed text-ink-700">
                     {t(project.description)}
                   </p>
 
                   {project.highlights && (
-                    <ul className="mt-5 space-y-2">
+                    <ul className="mt-6 space-y-2.5">
                       {project.highlights.map((h, i) => (
-                        <li key={i} className="flex items-start gap-2.5 text-sm text-ink-700">
-                          <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-600" />
+                        <li
+                          key={i}
+                          className="flex gap-3 text-sm leading-relaxed text-ink-500"
+                        >
+                          <span className="mt-2 h-px w-4 shrink-0 bg-brand-400" aria-hidden />
                           {t(h)}
                         </li>
                       ))}
                     </ul>
                   )}
 
-                  <ul className="mt-6 flex flex-wrap gap-2">
-                    {project.tech.map((tech) => (
-                      <li
-                        key={tech}
-                        className="border border-line bg-paper-soft px-2.5 py-1 font-mono text-xs text-ink-700"
-                      >
-                        {tech}
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="mt-6 text-xs leading-relaxed text-ink-500">
+                    {project.tech.join(" · ")}
+                  </p>
 
                   {project.repo && (
-                    <div className="mt-7 flex flex-wrap gap-3">
+                    <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
                       <a
                         href={project.repo}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-2 rounded-full bg-ink-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-700"
+                        className="group inline-flex items-center gap-2 text-sm font-semibold text-ink-900 transition-colors hover:text-brand-700"
                       >
                         <Github className="h-4 w-4" />
-                        {t(ui.sourceCode)}
+                        <span className="border-b border-ink-300 pb-0.5 transition-colors group-hover:border-brand-400">
+                          {t(ui.sourceCode)}
+                        </span>
                       </a>
                       {project.demo && (
                         <a
                           href={project.demo}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-2 rounded-full border border-line px-4 py-2.5 text-sm font-semibold text-ink-900 transition-colors hover:border-brand-300 hover:text-brand-700"
+                          className="group inline-flex items-center gap-1.5 text-sm font-semibold text-ink-900 transition-colors hover:text-brand-700"
                         >
-                          {t(ui.liveDemo)}
+                          <span className="border-b border-ink-300 pb-0.5 transition-colors group-hover:border-brand-400">
+                            {t(ui.liveDemo)}
+                          </span>
                           <ArrowUpRight className="h-4 w-4" />
                         </a>
                       )}
                     </div>
                   )}
+                  </div>
                 </div>
-              </div>
-            </article>
-          </Reveal>
-        ))}
+              </article>
+            </Reveal>
+          );
+        })}
       </div>
 
-      {/* More projects — smaller, loaded live from GitHub */}
+      {/* More projects — loaded live from GitHub */}
       <div className="mt-14">
-        <div className="mb-5 flex items-end justify-between gap-4">
+        <div className="mb-5 flex items-end justify-between gap-4 border-t border-line pt-5">
           <div>
-            <h3 className="text-base font-semibold text-ink-900">{t(ui.moreProjects)}</h3>
-            <p className="mt-0.5 text-sm text-ink-500">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-ink-900">
+              {t(ui.moreProjects)}
+            </h3>
+            <p className="mt-1 text-sm text-ink-500">
               {t({ de: "Live von GitHub geladen.", en: "Loaded live from GitHub." })}
             </p>
           </div>

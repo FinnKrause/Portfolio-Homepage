@@ -11,43 +11,69 @@ interface SectionProps {
 
 export function Section({ id, children, className, containerClassName }: SectionProps) {
   return (
-    <section id={id} className={cn("relative py-20 md:py-28", className)}>
+    <section id={id} className={cn("relative py-16 md:py-20", className)}>
       <div className={cn("mx-container relative", containerClassName)}>{children}</div>
     </section>
   );
 }
 
 interface SectionHeadingProps {
-  /** Dossier index, e.g. "01" — rendered as a mono label above the title. */
   index: string;
   eyebrow: string;
   title: string;
   intro?: string;
-  /** On dark sections, flips label & text colors. */
   dark?: boolean;
 }
 
-export function SectionHeading({ index, eyebrow, title, intro, dark = false }: SectionHeadingProps) {
+/**
+ * One heading treatment for every section: same left edge, same rhythm.
+ * Character comes from type scale and colour, not from moving things around.
+ */
+export function SectionHeading({
+  index,
+  eyebrow,
+  title,
+  intro,
+  dark = false,
+}: SectionHeadingProps) {
   return (
     <Reveal>
-      <div className="flex items-baseline gap-4">
-        <span className={cn("index-label", dark && "index-label--dark")}>
-          {index} — {eyebrow}
+      <div className="flex items-center gap-3">
+        <span
+          className={cn(
+            "text-xs font-semibold tabular-nums",
+            dark ? "text-brand-300" : "text-brand-700",
+          )}
+        >
+          {index}
         </span>
-        <span className={cn("h-px flex-1", dark ? "bg-night-line" : "bg-line")} aria-hidden />
+        <span
+          aria-hidden
+          className={cn("h-px w-6", dark ? "bg-white/25" : "bg-ink-300")}
+        />
+        <p
+          className={cn(
+            "text-[0.7rem] font-semibold uppercase tracking-[0.16em]",
+            dark ? "text-brand-300" : "text-brand-700",
+          )}
+        >
+          {eyebrow}
+        </p>
       </div>
+
       <h2
         className={cn(
-          "headline mt-5 max-w-3xl text-4xl font-semibold sm:text-5xl md:text-[3.4rem]",
+          "headline mt-4 max-w-[20ch] text-4xl font-medium sm:text-5xl md:text-[3.4rem]",
           dark ? "text-white" : "text-ink-900",
         )}
       >
         {title}
       </h2>
+
       {intro ? (
         <p
           className={cn(
-            "mt-4 max-w-2xl text-lg leading-relaxed",
+            "mt-4 max-w-2xl text-base leading-relaxed sm:text-lg",
             dark ? "text-night-mute" : "text-ink-500",
           )}
         >

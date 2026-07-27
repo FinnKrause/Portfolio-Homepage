@@ -1,6 +1,8 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight, Car, Plane } from "lucide-react";
 import { profile } from "@/content/profile";
 import { useLang } from "@/lib/i18n";
@@ -24,6 +26,15 @@ const FINN_IMAGES = [
 
 export function About() {
   const { t } = useLang();
+  const reduce = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+
+  // The images start level with the text and drift downwards as you read.
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const drift = useTransform(scrollYProgress, [0, 1], [0, 150]);
 
   return (
     <Section id="about">
@@ -36,38 +47,39 @@ export function About() {
         })}
       />
 
-      <div className="mt-12 grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+      <div ref={ref} className="mt-10 grid gap-10 lg:grid-cols-12 lg:gap-12">
         {/* Text */}
-        <div>
+        <div className="lg:col-span-6">
           <div className="space-y-4">
             {profile.aboutBody.map((para, i) => (
               <Reveal key={i} delay={0.05 * i}>
-                <p className="text-base leading-relaxed text-ink-700 sm:text-lg">{t(para)}</p>
+                <p className="text-base leading-relaxed text-ink-700 sm:text-[1.05rem]">
+                  {t(para)}
+                </p>
               </Reveal>
             ))}
           </div>
 
-          {/* What I do — compact, text only */}
-          <Reveal className="mt-10">
-            <dl className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
-              {profile.pillars.map((pillar, i) => (
-                <div key={pillar.key} className="border-t border-line pt-4">
-                  <dt className="flex items-baseline gap-2.5 text-sm font-semibold text-ink-900">
-                    <span className="font-mono text-[0.62rem] text-brand-600">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    {t(pillar.title)}
-                  </dt>
-                  <dd className="mt-1.5 text-sm leading-relaxed text-ink-500">{t(pillar.body)}</dd>
+          {/* What I do */}
+          <Reveal className="mt-8">
+            <dl className="grid gap-x-10 gap-y-5 sm:grid-cols-2">
+              {profile.pillars.map((pillar) => (
+                <div key={pillar.key}>
+                  <dt className="text-sm font-semibold text-ink-900">{t(pillar.title)}</dt>
+                  <dd className="mt-1.5 text-sm leading-relaxed text-ink-500">
+                    {t(pillar.body)}
+                  </dd>
                 </div>
               ))}
             </dl>
           </Reveal>
 
           {/* Hobbies */}
-          <Reveal className="mt-10">
-            <p className="index-label">{t(profile.hobbies.title)}</p>
-            <div className="mt-3 flex flex-wrap gap-2">
+          <Reveal className="mt-8">
+            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-ink-500">
+              {t(profile.hobbies.title)}
+            </p>
+            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-3">
               {profile.hobbies.items.map((h) => {
                 const Icon = HOBBY_ICONS[h.key] ?? Car;
                 return (
@@ -76,10 +88,12 @@ export function About() {
                     href={h.link.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="group inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-1.5 text-sm font-medium text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700"
+                    className="group inline-flex items-center gap-2 text-sm font-medium text-ink-700 transition-colors hover:text-brand-700"
                   >
                     <Icon className="h-4 w-4 text-brand-600" />
-                    {t(h.title)}
+                    <span className="border-b border-ink-300 pb-0.5 transition-colors group-hover:border-brand-400">
+                      {t(h.title)}
+                    </span>
                     <ArrowUpRight className="h-3.5 w-3.5 text-ink-300 transition-colors group-hover:text-brand-600" />
                   </a>
                 );
@@ -88,36 +102,33 @@ export function About() {
           </Reveal>
         </div>
 
-        {/* Click-through gallery of Finn in action — framed like file evidence */}
-        <Reveal>
-          <div className="lg:sticky lg:top-24">
-            <div className="border border-line bg-white p-2 shadow-soft">
-              <div className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[4/3] lg:aspect-[4/5]">
-                <Carousel
-                  fill
-                  subtle
-                  ariaLabel={t({ de: "Eindrücke von Finn", en: "Impressions of Finn" })}
-                  slides={FINN_IMAGES.map((img) => (
-                    <div key={img.src} className="relative h-full w-full">
-                      <Image
-                        src={img.src}
-                        alt={t(img.alt)}
-                        fill
-                        quality={90}
-                        sizes="(max-width: 1024px) 100vw, 40rem"
-                        className="object-cover"
-                      />
-                      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
-                    </div>
-                  ))}
-                />
-              </div>
-              <p className="flex items-center justify-between px-2 pb-1 pt-2.5 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-ink-500">
-                <span>{t({ de: "Anlagen — Eindrücke", en: "Exhibits — impressions" })}</span>
-                <span aria-hidden>—</span>
-              </p>
+        {/* Images — start level with the text, then drift down past it */}
+        <Reveal className="lg:col-span-5 lg:col-start-8">
+          <motion.div style={reduce ? undefined : { y: drift }}>
+            <div className="relative aspect-[4/5] w-full overflow-hidden bg-paper-soft sm:aspect-[16/10] lg:aspect-[4/5]">
+              <Carousel
+                fill
+                subtle
+                ariaLabel={t({ de: "Eindrücke von Finn", en: "Impressions of Finn" })}
+                slides={FINN_IMAGES.map((img) => (
+                  <div key={img.src} className="relative h-full w-full">
+                    <Image
+                      src={img.src}
+                      alt={t(img.alt)}
+                      fill
+                      quality={90}
+                      sizes="(max-width: 1024px) 100vw, 40rem"
+                      className="object-cover"
+                    />
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+                  </div>
+                ))}
+              />
             </div>
-          </div>
+            <p className="mt-3 text-[0.68rem] uppercase tracking-[0.16em] text-ink-500">
+              {t({ de: "Eindrücke", en: "Impressions" })}
+            </p>
+          </motion.div>
         </Reveal>
       </div>
     </Section>

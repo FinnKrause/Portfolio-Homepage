@@ -60,11 +60,11 @@ export const profile = {
       en: "I started getting involved for my community back in primary school — first as class representative, later as student and year representative. I represented the student body in school and city committees, led groups from photography & film to stage technology, and learned how to get people excited about a shared goal.",
     },
     {
-      de: "Parallel dazu treibt mich die Technik: Ich entwickle leidenschaftlich gerne Software, beschäftige mich mit Cybersicherheit und stehe regelmäßig an den Lichtpulten verschiedenster Veranstaltungen.",
+      de: "Parallel dazu motiviert mich die Technik: Ich entwickle leidenschaftlich gerne Software, beschäftige mich mit Cybersicherheit und stehe regelmäßig an den Lichtpulten verschiedenster Veranstaltungen.",
       en: "In parallel, technology drives me: I build software, work on cybersecurity and I regularly run the lighting desks of various events. ",
     },
     {
-      de: "Meine Energie ziehe ich vor allem darin mein Wissen zu teilen und Werte wie Gemeinschaft und Verantwortung aktiv zu leben. Ob im deutsch-französischen Austausch, als Delegierter bei Model United Nations oder heute als Mitglied der Fachschaft im Studium der Wirtschaftsinformatik — ich möchte etwas bewegen und dabei stetig Neues lernen.",
+      de: "Meine Energie ziehe ich vor allem daraus mein Wissen zu teilen und Werte wie Gemeinschaft und Verantwortung aktiv zu leben. Ob im deutsch-französischen Austausch, als Delegierter bei Model United Nations oder heute als Mitglied der Fachschaft im Studium der Wirtschaftsinformatik — ich möchte etwas bewegen und dabei stetig Neues lernen.",
       en: "Most of my energy comes from sharing my knowledge and actively living values like community and responsibility. Whether on a German-French exchange, as a delegate at Model United Nations, or today as an active member of numerous working groups alongside my studies of Information Systems — I want to make a difference and keep learning along the way.",
     },
   ] as Localized[],
@@ -201,7 +201,6 @@ export const profile = {
       en: "Recoil Racing on the podium of the F1 in Schools World Finals 2023 with the German flag.",
     } as Localized,
     galleryTitle: { de: "Impressionen", en: "Impressions" } as Localized,
-    // Replace these placeholders with real photos (drop files in /public/images).
     gallery: [
       {
         kind: "image",
@@ -216,58 +215,6 @@ export const profile = {
         src: "/images/f1-podium.jpg",
       },
     ] as MediaSlide[],
-    videosTitle: { de: "Videos", en: "Videos" } as Localized,
-    videos: [
-      { kind: "video", youtube: "IW4Tb8JDNNA" },
-      { kind: "video", youtube: "J-vTb7qopDI" },
-      { kind: "video", youtube: "slCk5LKnrCA" },
-      { kind: "video", youtube: "TvUDUW9OsAQ" },
-    ] as MediaSlide[],
-    // The story didn't end with the title — kept small & expandable.
-    journeyTitle: {
-      de: "Wie es weiterging",
-      en: "Where the journey went next",
-    } as Localized,
-    chapters: [
-      {
-        id: "france",
-        title: {
-          de: "2025 · Als Coach in Frankreich",
-          en: "2025 · Coaching in France",
-        },
-        summary: {
-          de: "Ein französisches Team bis zum Vize-Meister begleitet.",
-          en: "Mentored a French team all the way to runner-up.",
-        },
-        body: {
-          de: "2025 reiste ich mit meinem Teamkollegen Timon nach Avignon, um LLP Racing vom Lycée Louis Pasteur zu coachen. Bei den französischen National-Finals am Circuit Paul Ricard erreichte das Team den 2. Platz. Es war besonders schön, das Gelernte weiterzugeben und noch einmal den Thrill der Competition zu erleben, ohne selbst abliefern zu müssen.",
-          en: "In 2025 I travelled to Avignon with my teammate Timon to coach LLP Racing from Lycée Louis Pasteur. At the French National Finals held at Circuit Paul Ricard, the team finished 2nd. Passing on what I'd learned was especially rewarding and being able to re-live the thrill of the competition without actually participating was amazing.",
-        },
-        gallery: [
-          { kind: "image", src: "/images/f1-france-image1.png" },
-          { kind: "image", src: "/images/f1-france-image2.png" },
-        ],
-      },
-      {
-        id: "thailand",
-        title: { de: "Besuch im Thai-HQ", en: "Visiting the Thai HQ" },
-        summary: {
-          de: "Zu Gast im F1-in-Schools-Hauptquartier in Thailand.",
-          en: "A guest at the F1 in Schools headquarters in Thailand.",
-        },
-        body: {
-          de: "Auf einer Reise besuchte ich das thailändische F1-in-Schools-Hauptquartier und lernet die dortigen Teilnehmer und Verantwortlichen kennen. Eine ganz andere Welt, wunderbare Menschen und ein toller, ereignisreicher Tag.",
-          en: "On a trip I visited the Thai F1 in Schools headquarters and had the chance to get to know some participants and the director of F1-in-Schools Thailand. A totally different world with the most amazing people behind and a very exciting and interesing day spent together.",
-        },
-        gallery: [{ kind: "image", src: "/images/f1-thailand-image1.png" }],
-      },
-    ] as {
-      id: string;
-      title: Localized;
-      summary: Localized;
-      body: Localized;
-      gallery: MediaSlide[];
-    }[],
   },
 
   // Contact — deliberately understated. Reachable, but not the point of the page.

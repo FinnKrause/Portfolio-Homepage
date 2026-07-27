@@ -49,10 +49,10 @@ export function Engagement() {
       />
 
       <Reveal className="mt-10">
-        <div className="gap-5 md:columns-2 [&>*]:mb-5 [&>*]:break-inside-avoid">
+        <div className="gap-5 md:columns-2 [&>*]:mb-4 [&>*]:break-inside-avoid">
           {engagement.map((item) => (
-            <article key={item.id} className="border border-line bg-white p-5 shadow-soft sm:p-6">
-              <span className="font-mono text-xs text-brand-600">{t(item.periodLabel)}</span>
+            <article key={item.id} className="border-t border-line pt-5">
+              <span className="text-xs font-medium text-brand-600">{t(item.periodLabel)}</span>
 
               <h3 className="mt-2 text-lg font-semibold text-ink-900">{t(item.title)}</h3>
               {item.org ? <p className="text-sm text-ink-500">{item.org}</p> : null}

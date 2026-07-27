@@ -4,10 +4,8 @@ import Image from "next/image";
 import type { MediaSlide } from "@/content/types";
 import { useLang } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
-import { Placeholder } from "./Placeholder";
-import { YouTubeEmbed } from "./YouTubeEmbed";
 
-/** Renders any MediaSlide. `fill` makes it fill its parent (used in carousels). */
+/** Renders a media slide. `fill` makes it fill its parent (used in carousels). */
 export function MediaView({
   slide,
   fill = false,
@@ -18,33 +16,34 @@ export function MediaView({
   className?: string;
 }) {
   const { t } = useLang();
+  const alt = slide.alt ? t(slide.alt) : "";
 
-  if (slide.kind === "image") {
-    if (fill) {
-      // Fill a media panel while keeping the whole image visible (screenshots).
-      return (
-        <div className={cn("relative h-full w-full", className)}>
-          <Image
-            src={slide.src}
-            alt={slide.alt ? t(slide.alt) : ""}
-            fill
-            quality={90}
-            sizes="(max-width: 768px) 100vw, 40rem"
-            className="object-contain"
-          />
-        </div>
-      );
-    }
+  if (fill) {
+    // Fill a media panel while keeping the whole image visible (screenshots).
     return (
-      <div className={cn("relative overflow-hidden", className)} style={{ aspectRatio: "4 / 3" }}>
-        <Image src={slide.src} alt={slide.alt ? t(slide.alt) : ""} fill quality={90} sizes="(max-width: 768px) 100vw, 40rem" className="object-cover" />
+      <div className={cn("relative h-full w-full", className)}>
+        <Image
+          src={slide.src}
+          alt={alt}
+          fill
+          quality={90}
+          sizes="(max-width: 768px) 100vw, 40rem"
+          className="object-contain"
+        />
       </div>
     );
   }
 
-  if (slide.kind === "video") {
-    return <YouTubeEmbed youtube={slide.youtube} title={slide.title ? t(slide.title) : undefined} fill={fill} className={className} />;
-  }
-
-  return <Placeholder label={slide.label ? t(slide.label) : undefined} aspect={slide.aspect} fill={fill} className={className} />;
+  return (
+    <div className={cn("relative overflow-hidden", className)} style={{ aspectRatio: "4 / 3" }}>
+      <Image
+        src={slide.src}
+        alt={alt}
+        fill
+        quality={90}
+        sizes="(max-width: 768px) 100vw, 40rem"
+        className="object-cover"
+      />
+    </div>
+  );
 }

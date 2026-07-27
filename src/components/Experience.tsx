@@ -24,7 +24,7 @@ function ExpEntry({ item }: { item: ExperienceItem }) {
       />
 
       <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-        <span className="font-mono text-xs uppercase tracking-wider text-brand-700">
+        <span className="text-xs font-medium uppercase tracking-wider text-brand-700">
           {t(item.period)}
         </span>
         {item.current && (
@@ -78,8 +78,8 @@ function ExpEntry({ item }: { item: ExperienceItem }) {
 
 function ColumnHeader({ icon: Icon, label }: { icon: typeof Briefcase; label: string }) {
   return (
-    <div className="mb-6 flex items-center gap-2.5">
-      <span className="grid h-8 w-8 place-items-center border border-line bg-brand-50 text-brand-700">
+    <div className="mb-5 flex items-center gap-2.5">
+      <span className="grid h-8 w-8 place-items-center bg-brand-50 text-brand-700">
         <Icon className="h-4 w-4" />
       </span>
       <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-700">{label}</h3>
@@ -102,11 +102,11 @@ export function Experience() {
         })}
       />
 
-      <div className="mt-12 grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div className="mt-10 grid gap-10 lg:grid-cols-2 lg:gap-14">
         {/* Professional work */}
         <Reveal>
           <ColumnHeader icon={Briefcase} label={t({ de: "Berufserfahrung", en: "Professional work" })} />
-          <ol className="relative ml-1.5 space-y-8 border-l border-line pl-7">
+          <ol className="relative ml-1.5 space-y-6 border-l border-line pl-7">
             {workExperience.map((item, i) => (
               <ExpEntry key={i} item={item} />
             ))}
@@ -121,14 +121,14 @@ export function Experience() {
               <RevealItem key={i}>
                 <div
                   className={cn(
-                    "flex flex-col border p-5",
+                    "flex flex-col border-t pt-5",
                     edu.upcoming
-                      ? "border-dashed border-brand-200 bg-brand-50/40"
-                      : "border-line bg-white shadow-sm",
+                      ? "border-brand-300"
+                      : "border-line",
                   )}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs uppercase tracking-wider text-brand-700">
+                    <span className="text-xs font-medium uppercase tracking-wider text-brand-700">
                       {t(edu.period)}
                     </span>
                     {edu.upcoming && (

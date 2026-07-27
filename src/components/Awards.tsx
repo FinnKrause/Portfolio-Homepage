@@ -7,6 +7,10 @@ import { useLang } from "@/lib/i18n";
 import { Section, SectionHeading } from "./Section";
 import { Reveal } from "./motion/Reveal";
 import { Gallery } from "./media/Gallery";
+import { cn } from "@/lib/utils";
+
+/** Recoil Racing green — shared with the championship chapter. */
+const RECOIL = "#097b41";
 
 function sideIcon(award: Award) {
   if (award.title.en.includes("F1")) return Trophy;
@@ -56,16 +60,16 @@ export function Awards() {
         title={t({ de: "Anerkennung & Wettbewerbe", en: "Recognition & competitions" })}
       />
 
-      <div className="mt-12 grid gap-5 lg:grid-cols-[1.35fr_1fr]">
+      <div className="mt-10 grid gap-5 lg:grid-cols-[1.35fr_1fr]">
         {/* Showcase: Umbruchszeiten */}
         {emphasisAward && (
           <Reveal>
-            <article className="flex h-full flex-col border border-brand-200 bg-gradient-to-br from-brand-50 via-white to-paper-soft p-6 shadow-soft sm:p-8">
+            <article className="flex h-full flex-col border-t-2 border-brand-600 bg-paper-soft p-6 sm:p-8">
               <div className="flex items-center gap-3">
-                <span className="grid h-11 w-11 place-items-center bg-brand-600 text-white">
+                <span className="grid h-10 w-10 place-items-center bg-brand-600 text-white">
                   <Gavel className="h-5 w-5" />
                 </span>
-                <span className="font-mono text-sm font-semibold text-brand-700">
+                <span className="text-sm font-semibold text-brand-700">
                   {emphasisAward.year}
                 </span>
               </div>
@@ -91,16 +95,35 @@ export function Awards() {
           <div className="flex h-full flex-col gap-5">
             {sideAwards.map((award, i) => {
               const Icon = sideIcon(award);
+              // The F1 title carries Recoil Racing's green, so the eye ties it
+              // back to the championship chapter further up the page.
+              const isF1 = award.title.en.includes("F1");
               return (
                 <article
                   key={i}
-                  className="flex flex-1 flex-col border border-line bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-lift"
+                  className={cn(
+                    "flex flex-1 flex-col pt-5 transition-colors duration-300",
+                    isF1 ? "border-t-2" : "border-t border-line",
+                  )}
+                  style={isF1 ? { borderTopColor: RECOIL } : undefined}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="grid h-9 w-9 place-items-center border border-line bg-brand-50 text-brand-700">
+                    <span
+                      className="grid h-9 w-9 place-items-center bg-brand-50 text-brand-700"
+                      style={
+                        isF1
+                          ? { backgroundColor: "rgba(9,123,65,0.1)", color: RECOIL }
+                          : undefined
+                      }
+                    >
                       <Icon className="h-4 w-4" />
                     </span>
-                    <span className="font-mono text-xs font-semibold text-brand-700">{award.year}</span>
+                    <span
+                      className="text-xs font-semibold text-brand-700"
+                      style={isF1 ? { color: RECOIL } : undefined}
+                    >
+                      {award.year}
+                    </span>
                   </div>
                   <h3 className="mt-3 text-base font-semibold text-ink-900">{t(award.title)}</h3>
                   <p className="mt-0.5 text-sm text-ink-500">{award.org}</p>

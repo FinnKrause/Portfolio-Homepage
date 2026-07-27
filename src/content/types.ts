@@ -16,16 +16,11 @@ export interface LinkItem {
 }
 
 /**
- * A single visual slide. Used by the project carousel, the championship
- * gallery, and (optionally) experience/award entries.
- * - `image`       → drop a file in /public and reference it here.
- * - `video`       → a YouTube video id or full URL (lazy-loaded facade).
- * - `placeholder` → an empty, labelled frame to fill in later.
+ * A single image used by the project carousel, the championship gallery and
+ * experience/award entries. Drop a file in /public and reference it here.
+ * (Videos live on the F1 timeline — see src/content/journey.ts.)
  */
-export type MediaSlide =
-  | { kind: "image"; src: string; alt?: Localized }
-  | { kind: "video"; youtube: string; title?: Localized }
-  | { kind: "placeholder"; label?: Localized; aspect?: string };
+export type MediaSlide = { kind: "image"; src: string; alt?: Localized };
 
 export interface Project {
   slug: string;
@@ -44,6 +39,12 @@ export interface Project {
   /** Visual identity for the small grid cards. */
   accent?: "brand" | "sky" | "violet" | "emerald" | "amber";
   year?: string;
+  /**
+   * Honest note on where AI was involved in building this project.
+   * Omit entirely when there is nothing to disclose — an empty note would
+   * imply a claim that hasn't been made.
+   */
+  aiUsage?: Localized;
 }
 
 export type ExperienceKind = "work" | "voluntary";

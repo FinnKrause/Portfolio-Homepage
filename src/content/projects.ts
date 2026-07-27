@@ -37,6 +37,10 @@ export const projects: Project[] = [
     featured: true,
     accent: "brand",
     year: "2025",
+    aiUsage: {
+      de: "Fast alles hier ist von Hand geschrieben — KI-Werkzeuge gehörten damals schlicht noch nicht zu meinem Arbeitsalltag. Unterstützt hat mich KI nur beim PDF-Feature. Es existiert inzwischen eine vollständig mit KI neu geschriebene Fassung dieser Software; ich zeige hier bewusst diese Version, weil sie zeigt, was ich tatsächlich selbst kann.",
+      en: "Almost all of this is hand-written — AI tools simply weren't part of how I worked back then. The only place AI helped was the PDF feature. A completely AI-rewritten version of this software exists by now; I deliberately show this one, because it reflects what I can actually do myself.",
+    },
   },
   {
     slug: "festival-community-stage-portal",
@@ -80,6 +84,10 @@ export const projects: Project[] = [
     featured: true,
     accent: "violet",
     year: "2026",
+    aiUsage: {
+      de: "Das war mein erster Versuch, ein Projekt komplett mit KI zu beginnen. Ich habe damit angefangen und so lange weitergearbeitet, bis die Grenzen des Modells manuelle Entwicklung nötig machten — ab diesem Punkt ist die Logik von Hand entstanden. Später kam KI ein zweites Mal zum Einsatz: ChatGPT hat sämtliche TSX-Returns neu geschrieben, also das komplette Aussehen des Front-Ends. An der Logik wurde dabei nichts verändert.",
+      en: "This was my first attempt at starting a project entirely with AI. I began that way and kept going until the model's limits made manual development necessary — from that point on the logic was written by hand. AI came back a second time later: ChatGPT rewrote all of the TSX returns, meaning the entire look of the front-end. None of the logic was touched in the process.",
+    },
   },
   {
     slug: "pmtool-umbruchszeiten",
