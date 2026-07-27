@@ -60,8 +60,8 @@ export const profile = {
       en: "I started getting involved for my community back in primary school — first as class representative, later as student and year representative. I represented the student body in school and city committees, led groups from photography & film to stage technology, and learned how to get people excited about a shared goal.",
     },
     {
-      de: "Parallel dazu motiviert mich die Technik: Ich entwickle leidenschaftlich gerne Software, beschäftige mich mit Cybersicherheit und stehe regelmäßig an den Lichtpulten verschiedenster Veranstaltungen.",
-      en: "In parallel, technology drives me: I build software, work on cybersecurity and I regularly run the lighting desks of various events. ",
+      de: "Parallel dazu motiviert mich Technik: Ich entwickle leidenschaftlich gerne Software, beschäftige mich mit Cybersicherheit und stehe regelmäßig an den Lichtpulten verschiedenster Veranstaltungen.",
+      en: "At the same time tech interests and motivates me everyday: I love to build software, work on cybersecurity and I regularly run the lighting desks of various events. ",
     },
     {
       de: "Meine Energie ziehe ich vor allem daraus mein Wissen zu teilen und Werte wie Gemeinschaft und Verantwortung aktiv zu leben. Ob im deutsch-französischen Austausch, als Delegierter bei Model United Nations oder heute als Mitglied der Fachschaft im Studium der Wirtschaftsinformatik — ich möchte etwas bewegen und dabei stetig Neues lernen.",
