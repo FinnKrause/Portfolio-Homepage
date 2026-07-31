@@ -31,3 +31,7 @@ next-env.d.ts
 .vscode/
 .idea/
 .claude/
+
+# macOS / editor sidecars
+.DS_Store
+*.xmp

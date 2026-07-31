@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
     // Optimize gently: inline images are served at quality 90 (the default 75
     // visibly degraded the photography). Full-screen views (lightbox) bypass
     // the optimizer per-image and show the original file.
-    qualities: [75, 90],
+    qualities: [75, 90, 95],
     remotePatterns: [
       { protocol: "https", hostname: "media.formula1.com" },
       { protocol: "https", hostname: "raw.githubusercontent.com" },

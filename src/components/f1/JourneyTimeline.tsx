@@ -10,7 +10,7 @@ import {
   useTransform,
   type MotionValue,
 } from "framer-motion";
-import { ArrowUpRight, Play } from "lucide-react";
+import { ArrowDown, ArrowUpRight, ChevronDown, Play } from "lucide-react";
 import { journey, type JourneyPoint } from "@/content/journey";
 import { useLang } from "@/lib/i18n";
 import { useIsDesktop } from "@/lib/useIsDesktop";
@@ -276,6 +276,17 @@ export function JourneyTimeline() {
   const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number } | null>(
     null,
   );
+  // Off the immersive rail (mobile, reduced motion) the timeline starts folded
+  // away so it never stands between you and the rest of the page.
+  const [listOpen, setListOpen] = useState(false);
+
+  /** Jump straight past the pinned rail to whatever comes next. */
+  const skip = () => {
+    const el = ref.current;
+    if (!el) return;
+    const end = el.getBoundingClientRect().bottom + window.scrollY;
+    window.scrollTo({ top: end, behavior: "instant" as ScrollBehavior });
+  };
 
   const immersive = desktop && !reduce;
   const count = journey.length;
@@ -329,18 +340,33 @@ export function JourneyTimeline() {
         <div className={cn(immersive && "sticky top-0 flex h-screen flex-col overflow-hidden")}>
           {/* Heading — kept tight so the timeline gets the height */}
           <div className={cn("mx-container shrink-0", immersive ? "pt-24" : "pt-4")}>
-            <div className="flex items-center gap-3">
-              <span aria-hidden className="h-px w-6" style={{ backgroundColor: RECOIL }} />
-              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-white/70">
-                {t({ de: "Wie es weiterging", en: "How it unfolded" })}
-              </p>
+            <div className="flex items-start justify-between gap-6">
+              <div>
+                <div className="flex items-center gap-3">
+                  <span aria-hidden className="h-px w-6" style={{ backgroundColor: RECOIL }} />
+                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-white/70">
+                    {t({ de: "Wie es weiterging", en: "How it unfolded" })}
+                  </p>
+                </div>
+                <h3 className="headline mt-2 max-w-[24ch] text-2xl font-medium text-white sm:text-3xl">
+                  {t({
+                    de: "Vom ersten Auto bis zum Mentor",
+                    en: "From the first car to being a mentor",
+                  })}
+                </h3>
+              </div>
+
+              {immersive && (
+                <button
+                  type="button"
+                  onClick={skip}
+                  className="mt-1 inline-flex shrink-0 items-center gap-2 border border-white/25 px-3.5 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-white/60 transition-colors hover:border-white/50 hover:text-white"
+                >
+                  {t({ de: "Zeitstrahl überspringen", en: "Skip the timeline" })}
+                  <ArrowDown className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
-            <h3 className="headline mt-2 max-w-[24ch] text-2xl font-medium text-white sm:text-3xl">
-              {t({
-                de: "Vom ersten Auto bis zur Weitergabe",
-                en: "From the first car to passing it on",
-              })}
-            </h3>
           </div>
 
           {immersive ? (
@@ -372,20 +398,43 @@ export function JourneyTimeline() {
               ))}
             </div>
           ) : (
-            /* Mobile & reduced-motion: a plain list, no scroll hijacking */
-            <div className="mx-container mt-8 pb-4">
-              <ol className="relative space-y-8 border-l border-white/20 pl-6">
-                {journey.map((point) => (
-                  <li key={point.id} className="relative">
-                    <span
-                      aria-hidden
-                      className="absolute -left-[1.6rem] top-2 h-1.5 w-1.5 rounded-full"
-                      style={{ backgroundColor: toneColor(point.tone) }}
-                    />
-                    <CardContent point={point} onOpenImage={onOpenImage} />
-                  </li>
-                ))}
-              </ol>
+            /* Mobile & reduced-motion: folded away, opens into a plain list */
+            <div className="mx-container mt-6 pb-2">
+              <button
+                type="button"
+                onClick={() => setListOpen((o) => !o)}
+                aria-expanded={listOpen}
+                className="flex w-full items-center justify-between gap-4 border-y border-white/20 py-4 text-left"
+              >
+                <span className="text-sm font-medium text-white/85">
+                  {listOpen
+                    ? t({ de: "Zeitstrahl ausblenden", en: "Hide the timeline" })
+                    : t({ de: "Zeitstrahl ansehen", en: "View the timeline" })}
+                  <span className="ml-2 text-white/45">{journey.length}</span>
+                </span>
+                <ChevronDown
+                  className={cn(
+                    "h-4 w-4 shrink-0 transition-transform duration-300",
+                    listOpen && "rotate-180",
+                  )}
+                  style={{ color: RECOIL }}
+                />
+              </button>
+
+              {listOpen && (
+                <ol className="relative mt-8 space-y-8 border-l border-white/20 pl-6">
+                  {journey.map((point) => (
+                    <li key={point.id} className="relative">
+                      <span
+                        aria-hidden
+                        className="absolute -left-[1.6rem] top-2 h-1.5 w-1.5 rounded-full"
+                        style={{ backgroundColor: toneColor(point.tone) }}
+                      />
+                      <CardContent point={point} onOpenImage={onOpenImage} />
+                    </li>
+                  ))}
+                </ol>
+              )}
             </div>
           )}
         </div>

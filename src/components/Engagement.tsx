@@ -41,10 +41,10 @@ export function Engagement() {
       <SectionHeading
         index="04"
         eyebrow={t({ de: "Engagement", en: "Involvement" })}
-        title={t({ de: "Neben dem Studium", en: "Alongside my studies" })}
+        title={t({ de: "Neben dem Alltag", en: "Alongside my every-day life" })}
         intro={t({
-          de: "Wo man mich schon alles sehen und finden konnte.",
-          en: "Everything that happend along-side.",
+          de: "Wo man mich schon alles sehen und finden konnte",
+          en: "Everything that happend along-side",
         })}
       />
 

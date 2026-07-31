@@ -3,7 +3,10 @@ import type { EducationItem } from "./types";
 /** Study + what's next. `upcoming: true` gets a subtle "planned" treatment. */
 export const education: EducationItem[] = [
   {
-    title: { de: "B.Sc. Wirtschaftsinformatik", en: "B.Sc. Information Systems" },
+    title: {
+      de: "B.Sc. Wirtschaftsinformatik",
+      en: "B.Sc. Information Systems",
+    },
     org: "FAU Erlangen-Nürnberg",
     period: { de: "seit 2024", en: "since 2024" },
   },
@@ -13,8 +16,8 @@ export const education: EducationItem[] = [
     period: { de: "Aug. 2026 – Jan. 2027", en: "Aug 2026 – Jan 2027" },
     upcoming: true,
     description: {
-      de: "Ein Semester an der Kyonggi University in Suwon — neue Perspektiven, Sprache und Kultur.",
-      en: "A semester at Kyonggi University in Suwon — new perspectives, language and culture.",
+      de: "Ein Semester an der Kyonggi University in Suwon mit hoffentlich vielen neue Perspektiven, Sprache und Kultur.",
+      en: "A semester at Kyonggi University in Suwon with new perspectives, language and culture.",
     },
   },
   {

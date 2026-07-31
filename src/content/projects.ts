@@ -14,7 +14,7 @@ export const projects: Project[] = [
       en: "Turning a MIDI controller into a lighting desk",
     },
     description: {
-      de: "Desktop-Software, die einen AKAI APCmini in ein vollwertiges Steuerpult für meine eigentliche Lichtsoftware verwandelt. Die Software fungiert dabei als Vermittler zwischen beiden Systemen und ermöglicht nicht nur deren Kommunikation, sondern auch die Konfiguration, das Speichern von Einstellungen, Pultsperren, den Ausdruck des Layouts und vieles mehr. Damit habe ich ein sehr nischiges Problem gelöst.",
+      de: "Desktop-Software, die einen AKAI APCmini in ein vollwertiges Steuerpult für meine eigentliche Lichtsoftware verwandelt. Die Software fungiert dabei als Vermittler zwischen beiden Systemen und ermöglicht nicht nur deren Kommunikation, sondern auch die Konfiguration, das Speichern von Einstellungen, Pultsperren, den Ausdruck des Layouts und vieles mehr.",
       en: "Desktop software that transforms an AKAI APCmini into a fully featured control surface for my lighting software. Acting as a bridge between both systems, it enables not only communication but also configuration, saving settings, console locking, printing layouts, and much more. It solves a highly niche problem that I was able to address with this software.",
     },
     highlights: [
@@ -32,7 +32,32 @@ export const projects: Project[] = [
       },
     ],
     tech: ["JavaScript", "Node.js", "Electron", "MIDI", "DMX"],
-    gallery: [{ kind: "image", src: "/images/apc-image1.png" }],
+    gallery: [
+      {
+        kind: "image",
+        src: "/images/Coding-Projects/APC-Mini-Middleware/apc-software_interface-image1.png",
+        alt: {
+          de: "Oberfläche der APCmini-Middleware",
+          en: "The APCmini Middleware interface",
+        },
+      },
+      {
+        kind: "image",
+        src: "/images/Coding-Projects/APC-Mini-Middleware/apc-reallife_desk-image2.png",
+        alt: {
+          de: "Der APCmini im Einsatz am Lichtpult",
+          en: "The APCmini in use at the lighting desk",
+        },
+      },
+      {
+        kind: "image",
+        src: "/images/Coding-Projects/APC-Mini-Middleware/apc-reallife_desk-image3.png",
+        alt: {
+          de: "Aufbau mit APCmini und Lichtsoftware",
+          en: "Setup with the APCmini and the lighting software",
+        },
+      },
+    ],
     repo: "https://github.com/FinnKrause/APCmini-Middleware",
     featured: true,
     accent: "brand",
@@ -76,17 +101,26 @@ export const projects: Project[] = [
       "Docker",
     ],
     gallery: [
-      { kind: "image", src: "/images/fsi-image1.png" },
-      { kind: "image", src: "/images/fsi-image2.png" },
-      { kind: "image", src: "/images/fsi-image3.png" },
+      {
+        kind: "image",
+        src: "/images/Coding-Projects/FSI-Songreq/fsi-image1.png",
+      },
+      {
+        kind: "image",
+        src: "/images/Coding-Projects/FSI-Songreq/fsi-image2.png",
+      },
+      {
+        kind: "image",
+        src: "/images/Coding-Projects/FSI-Songreq/fsi-image3.png",
+      },
     ],
     repo: "https://github.com/FinnKrause/Festival-Community-Stage-Portal",
     featured: true,
     accent: "violet",
     year: "2026",
     aiUsage: {
-      de: "Das war mein erster Versuch, ein Projekt komplett mit KI zu beginnen. Ich habe damit angefangen und so lange weitergearbeitet, bis die Grenzen des Modells manuelle Entwicklung nötig machten — ab diesem Punkt ist die Logik von Hand entstanden. Später kam KI ein zweites Mal zum Einsatz: ChatGPT hat sämtliche TSX-Returns neu geschrieben, also das komplette Aussehen des Front-Ends. An der Logik wurde dabei nichts verändert.",
-      en: "This was my first attempt at starting a project entirely with AI. I began that way and kept going until the model's limits made manual development necessary — from that point on the logic was written by hand. AI came back a second time later: ChatGPT rewrote all of the TSX returns, meaning the entire look of the front-end. None of the logic was touched in the process.",
+      de: "Das war mein erster Versuch, ein Projekt komplett mit KI zu beginnen. Ich habe damit angefangen und so lange weitergearbeitet, bis die Grenzen des Modells manuelle Entwicklung nötig machten — ab diesem Punkt ist die Logik von Hand entstanden. Später kam KI ein zweites Mal zum Einsatz wo es sämtliche Komponenten-Return-Statements neu geschrieben hat, also das komplette Aussehen des Front-Ends. An der Logik wurde dabei nichts verändert.",
+      en: "This was my first attempt at starting a project entirely with AI. I began that way and kept going until the model's limits made manual development necessary. From that point on the logic was partially re-written and extended by hand. AI came back a second time later where it rewrote all of the components' return statements, meaning the entire look of the front-end. None of the logic was touched in the process.",
     },
   },
   {

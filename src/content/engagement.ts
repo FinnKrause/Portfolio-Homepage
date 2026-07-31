@@ -18,18 +18,31 @@ export interface EngagementItem {
 
 export const engagement: EngagementItem[] = [
   {
-    id: "f1",
-    title: { de: "F1 in Schools", en: "F1 in Schools" },
-    org: "Recoil Racing",
-    periodLabel: { de: "Sep. 2022 – Sep. 2023", en: "Sep 2022 – Sep 2023" },
+    id: "schuelersprecher",
+    title: {
+      de: "Schüler- & Jahrgangsstufensprecher",
+      en: "Student & year representative",
+    },
+    org: "Marie-Therese-Gymnasium · Erlangen",
+    periodLabel: { de: "2022 – 2024", en: "2022 – 2024" },
     description: {
-      de: "Aufbau eines eigenen Teams samt Unternehmen — bis zum Weltmeistertitel in Singapur. Die ganze Reise (inkl. 2025 als Coach in Frankreich und Besuch des Thai-HQ) gibt es in der eigenen Sektion.",
-      en: "Building our own team and company — all the way to the world title in Singapore. The full journey (incl. coaching in France in 2025 and visiting the Thai HQ) has its own section.",
+      de: "Gewählter Vertreter der Schülerschaft in Gremien von Schule und Stadt. Leitung mehrerer AGs und AKs (Theatertechnik, Fotografie & Film, etc.)",
+      en: "Elected representative of the student body in school and city committees. Led several clubs (stage tech, photography & film, etc.)",
     },
     links: [
       {
-        label: { de: "Zur F1-Reise", en: "See the F1 journey" },
-        href: "#championship",
+        label: { de: "Abiballrede ansehen", en: "Watch the graduation speech" },
+        href: "https://www.youtube.com/watch?v=6jGw9T6-SdU",
+      },
+    ],
+    gallery: [
+      {
+        kind: "image",
+        src: "/images/General-Impressions/finn-rede-image1.jpeg",
+        alt: {
+          de: "Finn bei einer Rede vor der Schülerschaft.",
+          en: "Finn giving a speech to the student body.",
+        },
       },
     ],
   },
@@ -52,26 +65,45 @@ export const engagement: EngagementItem[] = [
       },
     ],
     // gallery: [
-    //   { kind: "image", src: "/images/umbruchszeiten-judge-image2.png" },
-    //   { kind: "image", src: "/images/umbruchszeiten-image1.png" },
+    //   {
+    //     kind: "image",
+    //     src: "/images/Competitions/Umbruchszeiten/umbruchszeiten-image1.png",
+    //     alt: {
+    //       de: "Bei der Preisverleihung in Berlin.",
+    //       en: "At the award ceremony in Berlin.",
+    //     },
+    //   },
+    //   {
+    //     kind: "image",
+    //     src: "/images/Competitions/Umbruchszeiten/umbruchszeiten-image2.jpeg",
+    //     alt: {
+    //       de: "Bei der Preisverleihung in Berlin.",
+    //       en: "At the award ceremony in Berlin.",
+    //     },
+    //   },
+    //   {
+    //     kind: "image",
+    //     src: "/images/Competitions/Umbruchszeiten/umbruchszeiten-judge-image2.png",
+    //     alt: {
+    //       de: "Finn als Jurymitglied im Interview.",
+    //       en: "Finn being interviewed as a juror.",
+    //     },
+    //   },
     // ],
   },
   {
-    id: "schuelersprecher",
-    title: {
-      de: "Schüler- & Jahrgangsstufensprecher",
-      en: "Student & year representative",
-    },
-    org: "Marie-Therese-Gymnasium · Erlangen",
-    periodLabel: { de: "2022 – 2024", en: "2022 – 2024" },
+    id: "f1",
+    title: { de: "F1 in Schools", en: "F1 in Schools" },
+    org: "Recoil Racing",
+    periodLabel: { de: "Sep. 2022 – Sep. 2023", en: "Sep 2022 – Sep 2023" },
     description: {
-      de: "Gewählter Vertreter der Schülerschaft in Gremien von Schule und Stadt. Leitung mehrerer AGs und AKs (Theatertechnik, Fotografie & Film, etc.)",
-      en: "Elected representative of the student body in school and city committees. Led several clubs (stage tech, photography & film, etc.)",
+      de: "Aufbau eines eigenen Teams samt Unternehmen — bis zum Weltmeistertitel in Singapur. Die ganze Reise (inkl. 2025 als Coach in Frankreich und Besuch des Thai-HQ) gibt es in der eigenen Sektion.",
+      en: "Building our own team and company — all the way to the world title in Singapore. The full journey (incl. coaching in France in 2025 and visiting the Thai HQ) has its own section.",
     },
     links: [
       {
-        label: { de: "Abiballrede ansehen", en: "Watch the graduation speech" },
-        href: "https://www.youtube.com/watch?v=6jGw9T6-SdU",
+        label: { de: "Zur F1-Reise", en: "See the F1 journey" },
+        href: "#championship",
       },
     ],
   },
@@ -81,8 +113,8 @@ export const engagement: EngagementItem[] = [
     org: "Lycée Jeanne d'Arc · Nancy, Frankreich",
     periodLabel: { de: "März 2024", en: "March 2024" },
     description: {
-      de: "Teilnahme als Delegierter an einer zweitägigen UN-Sitzungssimulation — Debatte, Resolutionen und ein Eindruck wie Diplomatie funktioniert.",
-      en: "Took part as a delegate in a two-day UN simulation — debate, resolutions and a first impression of how diplomacy works.",
+      de: "Teilnahme als Delegierter an einer zweitägigen UN-Sitzungssimulation mit Debatten, Resolutionen und einem Eindruck wie Diplomatie funktioniert.",
+      en: "Took part as a delegate in a two-day UN simulation with numerous debates, resolutions and a first impression of how diplomacy works.",
     },
   },
   {
@@ -107,8 +139,8 @@ export const engagement: EngagementItem[] = [
     org: "FAU Erlangen-Nürnberg",
     periodLabel: { de: "seit Nov. 2024", en: "since Nov 2024" },
     description: {
-      de: "Leitung der Arbeitskreise „Website“ und „WiWi-Meisterschaften“ (inkl. Festivalbühne für mehrere hundert Gäste). Bei den Hochschulwahlen auf der FSI-WiSo-Liste für die Studierendenvertretung angetreten — 4. Platz.",
-      en: "Leading the “Website” and “WiWi-Meisterschaften” working groups (incl. a festival stage for several hundred guests). Ran on the FSI WiSo list for the student representation in the elections — 4th place.",
+      de: "Leitung der Arbeitskreise „Website“ und „WiWi-Meisterschaften“ (inkl. Festivalbühne für mehrere hundert Gäste). Bei den Hochschulwahlen auf der FSI-WiSo-Liste für die Studierendenvertretung als 4. Platz angetreten.",
+      en: "Leading the “Website” and “WiWi-Meisterschaften” working groups (incl. a festival stage for several hundred guests). Ran on the FSI WiSo list for the student representation in the elections as 4th place.",
     },
   },
 ];

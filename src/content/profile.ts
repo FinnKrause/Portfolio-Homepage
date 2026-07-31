@@ -56,16 +56,16 @@ export const profile = {
   // About section — character-focused, drawn from the long-form CV.
   aboutBody: [
     {
-      de: "Ab der Grundschule habe ich angefangen, mich für die Gemeinschaft einzusetzen — als Klassensprecher, später als Schüler- und Jahrgangsstufensprecher. Ich vertrat die Schülerschaft in Gremien von Schule und Stadt, leitete Arbeitsgruppen von Fotografie & Film bis zur Theatertechnik und lernte, Menschen für gemeinsame Ziele zu begeistern.",
-      en: "I started getting involved for my community back in primary school — first as class representative, later as student and year representative. I represented the student body in school and city committees, led groups from photography & film to stage technology, and learned how to get people excited about a shared goal.",
+      de: "Ab der Grundschule habe ich angefangen, mich für die Gemeinschaft einzusetzen. Zuerst als Klassensprecher, später als Schüler- und Jahrgangsstufensprecher. Ich vertrat die Schülerschaft in Gremien von Schule und Stadt, leitete Arbeitsgruppen von Fotografie & Film bis zur Theatertechnik und lernte, Menschen für gemeinsame Ziele zu begeistern.",
+      en: "I started getting involved for my community back in primary school. First as class representative, later as student and year representative. I represented the student body in school and city committees, led groups from photography & film to stage technology, and learned how to get people excited about a shared goal.",
     },
     {
       de: "Parallel dazu motiviert mich Technik: Ich entwickle leidenschaftlich gerne Software, beschäftige mich mit Cybersicherheit und stehe regelmäßig an den Lichtpulten verschiedenster Veranstaltungen.",
       en: "At the same time tech interests and motivates me everyday: I love to build software, work on cybersecurity and I regularly run the lighting desks of various events. ",
     },
     {
-      de: "Meine Energie ziehe ich vor allem daraus mein Wissen zu teilen und Werte wie Gemeinschaft und Verantwortung aktiv zu leben. Ob im deutsch-französischen Austausch, als Delegierter bei Model United Nations oder heute als Mitglied der Fachschaft im Studium der Wirtschaftsinformatik — ich möchte etwas bewegen und dabei stetig Neues lernen.",
-      en: "Most of my energy comes from sharing my knowledge and actively living values like community and responsibility. Whether on a German-French exchange, as a delegate at Model United Nations, or today as an active member of numerous working groups alongside my studies of Information Systems — I want to make a difference and keep learning along the way.",
+      de: "Meine Energie ziehe ich vor allem daraus mein Wissen zu teilen und Werte wie Gemeinschaft und Verantwortung aktiv zu leben. Ob im deutsch-französischen Austausch, als Delegierter bei Model United Nations oder heute als Mitglied der Fachschaft im Studium der Wirtschaftsinformatik: Ich möchte etwas bewegen und dabei stetig Neues lernen.",
+      en: "Most of my energy comes from sharing my knowledge and actively living values like community and responsibility. Whether on a German-French exchange, as a delegate at Model United Nations, or today as an active member of numerous working groups alongside my studies of Information Systems: I want to make a difference and keep learning along the way.",
     },
   ] as Localized[],
 
@@ -121,7 +121,7 @@ export const profile = {
         },
         link: {
           label: { de: "Clip ansehen", en: "Watch a clip" },
-          href: "/images/rc-cars-image1.mov",
+          href: "/images/Hobbies/rc-cars-image1.mov",
         },
       },
       {
@@ -151,8 +151,8 @@ export const profile = {
     } as Localized,
     body: [
       {
-        de: "Mit dem Team Recoil Racing vom Marie-Therese-Gymnasium Erlangen habe ich 2023 den Weltmeistertitel bei den Aramco F1 in Schools World Finals in Singapur gewonnen — im weltweit größten multidisziplinären Technologiewettbewerb für Schüler mit jährlich über einer Million Teilnehmern.",
-        en: "With team Recoil Racing from Marie-Therese-Gymnasium in Erlangen, we won the 2023 world title at the Aramco F1 in Schools World Finals in Singapore — the world's largest multidisciplinary student technology competition, with over a million participants every year.",
+        de: "Mit dem Team Recoil Racing vom Marie-Therese-Gymnasium Erlangen habe ich 2023 den Weltmeistertitel bei den Aramco F1 in Schools World Finals in Singapur gewonnen: dem weltweit größten multidisziplinären Technologiewettbewerb für Schüler mit jährlich über einer Million Teilnehmern.",
+        en: "With team Recoil Racing from Marie-Therese-Gymnasium in Erlangen, we won the 2023 world title at the Aramco F1 in Schools World Finals in Singapore: the world's largest multidisciplinary student technology competition, with over a million participants every year.",
       },
       {
         de: "Wir setzten uns gegen 67 weitere National-Teams aus 26 Ländern durch, nachdem wir zuvor die bayerische und die deutsche Meisterschaft gewonnen hatten. Das Projekt war weit mehr als ein Miniatur-Rennwagen: Wir gründeten ein eigenes Unternehmen mit Sponsoring, Management, CAD-/CFD-Konstruktion und Content-Creation.",
@@ -204,15 +204,23 @@ export const profile = {
     gallery: [
       {
         kind: "image",
-        src: "/images/f1-image1.jpeg",
+        src: "/images/Competitions/F1/f1-image1.jpeg",
       },
       {
         kind: "image",
-        src: "/images/f1-image2.png",
+        src: "/images/Competitions/F1/f1-image2.png",
       },
       {
         kind: "image",
-        src: "/images/f1-podium.jpg",
+        src: "/images/Competitions/F1/f1-podium.jpg",
+      },
+      {
+        kind: "image",
+        src: "/images/Competitions/F1/f1-team-image1.JPG",
+      },
+      {
+        kind: "image",
+        src: "/images/Competitions/F1/f1-team-image2.jpg",
       },
     ] as MediaSlide[],
   },

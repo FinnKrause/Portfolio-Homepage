@@ -44,7 +44,7 @@ export function Hero() {
         {/* <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 top-[12%]">
           <div className="relative mx-auto h-full w-full max-w-4xl">
             <Image
-              src="/images/finn-portrait-transparent.png"
+              src="/images/Portraits/finn-portrait-transparent.png"
               alt=""
               fill
               priority

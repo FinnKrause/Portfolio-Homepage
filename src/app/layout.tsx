@@ -36,7 +36,7 @@ const publicMetadata: Metadata = {
     title: "Finn Krause — Developer, Event Engineer & F1 in Schools World Champion",
     description:
       "Portfolio of Finn Krause: Information Systems student at FAU, developer, event engineer and 2023 F1 in Schools World Champion.",
-    images: [{ url: "/images/finn-portrait.jpg", width: 768, height: 1024, alt: "Finn Krause" }],
+    images: [{ url: "/images/Portraits/finn-portrait.jpg", width: 768, height: 1024, alt: "Finn Krause" }],
     locale: "de_DE",
     alternateLocale: "en_US",
   },

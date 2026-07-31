@@ -55,7 +55,7 @@ export function RaceFilm({ posterAlt }: { posterAlt: string }) {
         ref={videoRef}
         className="absolute inset-0 h-full w-full object-cover"
         src="/videos/f1.webm"
-        poster="/images/f1-podium2.jpg"
+        poster="/images/Competitions/F1/f1-podium2.JPG"
         aria-label={posterAlt}
         autoPlay={!reduce}
         muted

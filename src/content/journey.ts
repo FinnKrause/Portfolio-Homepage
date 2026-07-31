@@ -52,7 +52,7 @@ export const journey: JourneyPoint[] = [
     },
     blurb: {
       de: "Reaktionszeit-Tests um den Fahrer des Autos zu ermitteln",
-      en: "We conducted tests to find out who has the quickest reaction time",
+      en: "We conducted tests to find out who had the fastest reaction time",
     },
     youtube: "6DoCXlyAYPE",
   },
@@ -88,8 +88,8 @@ export const journey: JourneyPoint[] = [
       en: "Car reveal: Racing Reptile",
     },
     blurb: {
-      de: "Für die nationale Ebene wurde das Auto komplett neu gedacht.",
-      en: "For the national stage the car was rethought from scratch.",
+      de: "Für die nationale Ebene wurde das Auto perfektioniert",
+      en: "For the national stage the car was made perfect",
     },
     youtube: "8xdQAl8Dqsw",
   },
@@ -100,8 +100,8 @@ export const journey: JourneyPoint[] = [
     tone: "red",
     title: { de: "Deutsche Meisterschaft", en: "German championship" },
     blurb: {
-      de: "Deutscher Meister und damit die Qualifikation für die World Finals",
-      en: "German champions and with it qualification for the World Finals",
+      de: "Deutscher Meister und damit die Qualifikation für die Weltmeisterschaft in Singapur",
+      en: "German champions and with it the qualification for the World Finals",
     },
     youtube: "BYCRcr6ljUI",
   },
@@ -174,11 +174,11 @@ export const journey: JourneyPoint[] = [
     },
     body: {
       de: "Mit meinem Teamkollegen Timon reiste ich nach Avignon, um LLP Racing vom Lycée Louis Pasteur zu coachen, das Gelernte weiterzugeben und den Thrill der Competition noch einmal zu erleben, ohne selbst abliefern zu müssen",
-      en: "I travelled to Avignon with my teammate Timon to coach LLP Racing from Lycée Louis Pasteur. Passing on what we'd learned and re-living the thrill of the competition without having to deliver myself was especially rewarding.",
+      en: "I travelled to Avignon with my teammate Timon to coach LLP Racing from Lycée Louis Pasteur. Passing on what we'd learned and re-living the thrill of the competition without having to deliver ourselves was especially cool",
     },
     gallery: [
-      { kind: "image", src: "/images/f1-france-image1.png" },
-      { kind: "image", src: "/images/f1-france-image2.png" },
+      { kind: "image", src: "/images/Competitions/F1/f1-france-image1.png" },
+      { kind: "image", src: "/images/Competitions/F1/f1-france-image2.png" },
     ],
   },
   {
@@ -194,7 +194,9 @@ export const journey: JourneyPoint[] = [
       de: "Ich lernte dort die Teilnehmer und den Verantwortlichen von F1 in Schools Thailand kennen. Eine ganz andere Welt, wunderbare Menschen und ein ereignisreicher Tag.",
       en: "I got to know the participants and the director of F1 in Schools Thailand. A totally different world, wonderful people and an eventful day.",
     },
-    gallery: [{ kind: "image", src: "/images/f1-thailand-image1.png" }],
+    gallery: [
+      { kind: "image", src: "/images/Competitions/F1/f1-thailand-image1.png" },
+    ],
   },
   {
     id: "teaching",
