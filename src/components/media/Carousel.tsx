@@ -61,6 +61,17 @@ export function Carousel({
 
   if (count === 0) return null;
 
+  /**
+   * Only the current slide and its immediate neighbours are mounted. Rendering
+   * every slide meant a carousel of 11 photos fired 11 image requests at once
+   * and starved whatever else the page still needed. Neighbours stay mounted so
+   * they are already decoded before the crossfade reaches them.
+   */
+  const near = (i: number) => {
+    const d = Math.abs(i - index);
+    return Math.min(d, count - d) <= 1;
+  };
+
   return (
     <div
       ref={rootRef}
@@ -79,7 +90,7 @@ export function Carousel({
             )}
             aria-hidden={index !== i}
           >
-            {node}
+            {near(i) ? node : null}
           </div>
         ))
       ) : (

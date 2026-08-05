@@ -200,7 +200,7 @@ export const profile = {
       de: "Recoil Racing auf dem Podium der F1 in Schools World Finals 2023 mit der deutschen Flagge.",
       en: "Recoil Racing on the podium of the F1 in Schools World Finals 2023 with the German flag.",
     } as Localized,
-    galleryTitle: { de: "Impressionen", en: "Impressions" } as Localized,
+    galleryTitle: { de: "Ein paar Bilder", en: "Impressions" } as Localized,
     gallery: [
       {
         kind: "image",
@@ -214,14 +214,10 @@ export const profile = {
         kind: "image",
         src: "/images/Competitions/F1/f1-podium.jpg",
       },
-      {
-        kind: "image",
-        src: "/images/Competitions/F1/f1-team-image1.JPG",
-      },
-      {
-        kind: "image",
-        src: "/images/Competitions/F1/f1-team-image2.jpg",
-      },
+      // {
+      //   kind: "image",
+      //   src: "/images/Competitions/F1/f1-team-image2.jpg",
+      // },
     ] as MediaSlide[],
   },
 

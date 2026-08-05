@@ -114,19 +114,24 @@ export function About() {
                 fill
                 subtle
                 ariaLabel={t({ de: "Eindrücke von Finn", en: "Impressions of Finn" })}
-                slides={FINN_IMAGES.map((img) => (
+                slides={FINN_IMAGES.map((img, i) => (
                   <div key={img.src} className="relative h-full w-full">
                     <Image
                       src={img.src}
                       alt={t(img.alt)}
                       fill
                       quality={95}
-                      /* The frame is portrait (4/5) but most of these photos are
-                         landscape: object-cover paints them ~2x wider than the
-                         frame and crops the sides, so the browser needs a much
-                         larger intrinsic image than the frame width suggests.
-                         Declaring the frame width here was what made them soft. */
-                      sizes="(max-width: 1024px) 250vw, 1200px"
+                      /* The first slide is the one you actually arrive at, so
+                         it gets to load ahead of everything below the fold. */
+                      priority={i === 0}
+                      /* The frame is portrait (4/5) but most of these photos
+                         are landscape: object-cover paints them ~2x wider than
+                         the frame and crops the sides, so the browser needs a
+                         far larger intrinsic image than the frame width
+                         suggests — declaring the frame width was what made them
+                         soft. Tuned to land on the 1920 variant at 2x rather
+                         than 3840, which is 24% lighter and indistinguishable. */
+                      sizes="(max-width: 1024px) 200vw, 950px"
                       className="object-cover"
                     />
                     <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
