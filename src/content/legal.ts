@@ -94,8 +94,8 @@ export const datenschutz: LegalDocT = {
   slug: "datenschutz",
   title: { de: "Datenschutzerklärung", en: "Privacy Policy" },
   intro: {
-    de: "Der Schutz deiner Daten ist mir wichtig. Diese Website ist bewusst datensparsam gebaut: Es werden keine Cookies zu Tracking-Zwecken gesetzt und es kommt keine Analyse-Software zum Einsatz. Das einzige Cookie ist ein technisch notwendiges Zugangs-Cookie ohne Personenbezug (siehe unten).",
-    en: "Protecting your data matters to me. This website is deliberately built to be data-minimal: no tracking cookies are set and no analytics software is used. The only cookie is a technically necessary access cookie with no personal reference (see below).",
+    de: "Diese Erklärung beschreibt, welche personenbezogenen Daten beim Besuch dieser Website verarbeitet werden. Analyse-Software von Drittanbietern wird nicht eingesetzt.",
+    en: "This policy describes which personal data is processed when you visit this website. No third-party analytics software is used.",
   },
   sections: [
     {
@@ -121,13 +121,21 @@ export const datenschutz: LegalDocT = {
     },
     {
       heading: {
-        de: "Zugangs-Check (Cookie)",
-        en: "Access check (cookie)",
+        de: "Zugangscode und Cookies",
+        en: "Access code and cookies",
       },
       body: [
         {
-          de: "Die Inhalte dieser Website liegen hinter einem kurzen Zugangscode, damit automatisierte Crawler und Scraper meine persönlichen Daten nicht auslesen. Nach Eingabe eines gültigen Codes (oder Aufruf eines Links, der einen solchen Code enthält) setzt dein Browser ein einzelnes Cookie namens „fk-access“ mit dem festen Wert „1“ (Gültigkeit: 12 Monate). Es wird bei jedem Aufruf dieser Website mitgesendet, damit der Server dir die Inhalte direkt ausliefern kann, ohne erneut zu fragen. Das Cookie ist für alle Besucher identisch, enthält keine personenbezogenen Daten, keine Kennung und dient nicht der Wiedererkennung oder dem Tracking. Rechtsgrundlage ist § 25 Abs. 2 Nr. 2 TDDDG (technisch erforderlich) bzw. Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am Schutz der Inhalte). Du kannst das Cookie jederzeit über die Einstellungen deines Browsers löschen — danach wird lediglich erneut nach dem Code gefragt.",
-          en: "The content of this website sits behind a short access code so that automated crawlers and scrapers cannot harvest my personal data. After entering a valid code (or opening a link containing one), your browser sets a single cookie named “fk-access” with the fixed value “1” (valid for 12 months). It is sent along with each request to this website so the server can deliver the content directly without asking again. The cookie is identical for every visitor, contains no personal data and no identifier, and is not used for recognition or tracking. The legal basis is § 25 (2) no. 2 TDDDG (technically necessary) and Art. 6 (1) (f) GDPR (legitimate interest in protecting the content). You can delete the cookie at any time via your browser settings — you will simply be asked for the code again.",
+          de: "Die Inhalte dieser Website liegen hinter einem Zugangscode. Nach Eingabe eines gültigen Codes setzt diese Website zwei eigene Cookies (keine Drittanbieter): „fk-access“ (Laufzeit 12 Monate, fester Wert „1“) verhindert die erneute Abfrage des Codes; „fk-visitor“ (Laufzeit 6 Monate) enthält eine zufällige Kennung, mit der Zugriffe demselben Gerät zugeordnet werden.",
+          en: "The content of this website sits behind an access code. After a valid code is entered, this website sets two first-party cookies (no third parties): “fk-access” (12-month lifetime, fixed value “1”) prevents the code being requested again; “fk-visitor” (6-month lifetime) holds a random identifier used to attribute accesses to the same device.",
+        },
+        {
+          de: "Gespeichert werden dabei: Zeitpunkt, verwendeter Zugangscode, die Kennung aus „fk-visitor“, Browser, Betriebssystem und Gerätetyp, die verweisende Website sowie bei abgelehnten Eingaben der eingegebene Code. Zweck ist die Reichweitenmessung der von mir ausgegebenen Zugangscodes und der Schutz der Inhalte vor automatisiertem Auslesen.",
+          en: "The following is stored: time, access code used, the identifier from “fk-visitor”, browser, operating system and device type, the referring website, and for rejected entries the code that was typed. The purpose is to measure the reach of the access codes I hand out and to protect the content from automated harvesting.",
+        },
+        {
+          de: "Rechtsgrundlage ist deine Einwilligung (§ 25 Abs. 1 TDDDG, Art. 6 Abs. 1 lit. a DSGVO). Die Daten werden nicht an Dritte weitergegeben und nach sechs Monaten automatisch gelöscht. Du kannst deine Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen, indem du die Cookies dieser Website in deinem Browser löschst.",
+          en: "The legal basis is your consent (§ 25 (1) TDDDG, Art. 6 (1) (a) GDPR). The data is not shared with third parties and is deleted automatically after six months. You can withdraw your consent at any time with effect for the future by deleting this site's cookies in your browser.",
         },
       ],
     },

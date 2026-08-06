@@ -1,8 +1,18 @@
-version: "3"
-
 services:
   homepage-nextjs-app:
     build: .
     ports:
       - "8070:3000"
     restart: unless-stopped
+    environment:
+      # Where the access-token database lives inside the container.
+      FK_DB_PATH: /app/data/access.db
+      # Used for the links encoded into downloaded QR codes.
+      FK_PUBLIC_ORIGIN: https://finnkrause.com
+    volumes:
+      # Keeps tokens and statistics across rebuilds and redeploys.
+      # Without this, every deploy would start from an empty database.
+      - homepage-data:/app/data
+
+volumes:
+  homepage-data:

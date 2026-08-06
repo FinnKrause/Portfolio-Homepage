@@ -35,3 +35,6 @@ next-env.d.ts
 # macOS / editor sidecars
 .DS_Store
 *.xmp
+
+# local access-token database
+data/

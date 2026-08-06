@@ -13,12 +13,14 @@ import { Awards } from "./Awards";
 import { Skills } from "./Skills";
 import { Contact } from "./Contact";
 import { useLang } from "@/lib/i18n";
+import { VisitBeacon } from "./access/VisitBeacon";
 
 export function SiteContent() {
   const { t } = useLang();
 
   return (
     <>
+      <VisitBeacon />
       <SkipLink />
       <Nav />
       <main id="main">
