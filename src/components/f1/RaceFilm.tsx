@@ -8,7 +8,7 @@ import { useLang } from "@/lib/i18n";
 
 const RECOIL_BRIGHT = "#19d982";
 const F1_RED = "#e10600";
-const CLIP = "/videos/f1.webm";
+const CLIP = "/videos/f1-web.webm"; // web transcode; f1.webm is the 68 MB master
 
 /**
  * The championship clip.

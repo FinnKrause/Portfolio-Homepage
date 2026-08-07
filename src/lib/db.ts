@@ -48,7 +48,8 @@ export function db(): Database.Database {
       browser        TEXT,
       os             TEXT,
       device         TEXT,
-      referrer       TEXT
+      referrer       TEXT,
+      source         TEXT                   -- granted only: gate | link
     );
 
     -- A device belongs to exactly one code: the one it entered with. Clearing
@@ -65,6 +66,13 @@ export function db(): Database.Database {
     CREATE INDEX IF NOT EXISTS idx_events_token    ON events(token_id);
     CREATE INDEX IF NOT EXISTS idx_events_visitor  ON events(visitor_id);
   `);
+
+  // Added after the first deploy: tells a typed entry apart from a QR/link
+  // entry. Without it the gate bounce rate compares populations that never
+  // overlap (link arrivals never see the gate).
+  const hasSource = (conn.prepare(`PRAGMA table_info(events)`).all() as { name: string }[])
+    .some((c) => c.name === "source");
+  if (!hasSource) conn.exec(`ALTER TABLE events ADD COLUMN source TEXT`);
 
   instance = conn;
   pruneOldEvents();
@@ -107,6 +115,7 @@ export interface EventRow {
   os: string | null;
   device: string | null;
   referrer: string | null;
+  source: "gate" | "link" | null;
 }
 
 export interface VisitorRow {

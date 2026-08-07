@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { profile } from "@/content/profile";
 import { useLang } from "@/lib/i18n";
@@ -38,22 +37,6 @@ export function Hero() {
           aria-hidden
           className="absolute inset-0 bg-[radial-gradient(60rem_44rem_at_50%_18%,rgba(30,51,207,0.3),transparent_64%),radial-gradient(50rem_38rem_at_50%_100%,rgba(9,60,140,0.18),transparent_66%)]"
         />
-
-        {/* The portrait sits behind the type — present, but only just */}
-        {/* Dropped below the navbar so the figure sits fully inside the frame */}
-        {/* <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 top-[12%]">
-          <div className="relative mx-auto h-full w-full max-w-4xl">
-            <Image
-              src="/images/Portraits/finn-portrait-transparent.png"
-              alt=""
-              fill
-              priority
-              quality={90}
-              sizes="(max-width: 1024px) 100vw, 56rem"
-              className="object-contain object-bottom opacity-[0.12] [mask-image:linear-gradient(to_bottom,black_78%,transparent)] lg:opacity-[0.16]"
-            />
-          </div>
-        </div> */}
 
         {/* Grain + vignette */}
         <div aria-hidden className="grain absolute inset-0 overflow-hidden">

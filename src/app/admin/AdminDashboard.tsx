@@ -44,9 +44,12 @@ interface Stats {
     gateViews: number;
     uniqueVisitors: number;
     returningDevices: number;
+    typedEntries: number;
+    linkEntries: number;
   };
   perDay: Record<string, number | string>[];
   bounced: Record<string, number | string>[];
+  arrival: { typed: number; link: number; unknown: number };
   tokenEngagement: {
     name: string;
     code: string;
@@ -220,7 +223,9 @@ export function AdminDashboard() {
   const totals = stats?.totals;
   const bounceRate = useMemo(() => {
     if (!totals || !totals.gateViews) return null;
-    const got = totals.grants;
+    // Only a typed entry can resolve a gate view; QR/link arrivals never
+    // render the gate, so counting them here would deflate the rate.
+    const got = totals.typedEntries;
     return Math.max(0, Math.round(((totals.gateViews - got) / totals.gateViews) * 100));
   }, [totals]);
 
@@ -445,7 +450,9 @@ export function AdminDashboard() {
               </BarChart>
             </ResponsiveContainer>
             {bounceRate !== null && (
-              <p className="mt-2 text-xs tabular-nums text-ink-500">{bounceRate}% without entry</p>
+              <p className="mt-2 text-xs tabular-nums text-ink-500">
+                {bounceRate}% of gate views ended without a code being entered
+              </p>
             )}
           </Card>
 
@@ -461,6 +468,33 @@ export function AdminDashboard() {
             </ResponsiveContainer>
           </Card>
 
+        </div>
+
+        {/* How people arrive: scanning a code vs typing one. Tells you
+            whether the QR links are doing the work or the printed codes are. */}
+        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+          <Card title="How entries arrive">
+            <div className="flex gap-8">
+              <div>
+                <p className="text-2xl font-semibold tabular-nums" style={{ color: BRAND }}>
+                  {stats?.arrival.link ?? 0}
+                </p>
+                <p className="mt-1 text-sm text-ink-500">QR or shared link</p>
+              </div>
+              <div>
+                <p className="text-2xl font-semibold tabular-nums">{stats?.arrival.typed ?? 0}</p>
+                <p className="mt-1 text-sm text-ink-500">Code typed at the gate</p>
+              </div>
+              {!!stats?.arrival.unknown && (
+                <div>
+                  <p className="text-2xl font-semibold tabular-nums text-ink-500">
+                    {stats.arrival.unknown}
+                  </p>
+                  <p className="mt-1 text-sm text-ink-500">Before this was tracked</p>
+                </div>
+              )}
+            </div>
+          </Card>
         </div>
 
         {/* Breakdowns */}

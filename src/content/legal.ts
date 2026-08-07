@@ -134,8 +134,8 @@ export const datenschutz: LegalDocT = {
           en: "The following is stored: time, access code used, the identifier from “fk-visitor”, browser, operating system and device type, the referring website, and for rejected entries the code that was typed. The purpose is to measure the reach of the access codes I hand out and to protect the content from automated harvesting.",
         },
         {
-          de: "Rechtsgrundlage ist deine Einwilligung (§ 25 Abs. 1 TDDDG, Art. 6 Abs. 1 lit. a DSGVO). Die Daten werden nicht an Dritte weitergegeben und nach sechs Monaten automatisch gelöscht. Du kannst deine Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen, indem du die Cookies dieser Website in deinem Browser löschst.",
-          en: "The legal basis is your consent (§ 25 (1) TDDDG, Art. 6 (1) (a) GDPR). The data is not shared with third parties and is deleted automatically after six months. You can withdraw your consent at any time with effect for the future by deleting this site's cookies in your browser.",
+          de: "Rechtsgrundlage für die Cookies und die daran gebundene Auswertung ist deine Einwilligung (§ 25 Abs. 1 TDDDG, Art. 6 Abs. 1 lit. a DSGVO); für die Protokollierung abgelehnter Eingaben ist es Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am Schutz der Inhalte). Die Daten werden nicht an Dritte weitergegeben und nach sechs Monaten automatisch gelöscht. Du kannst deine Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen, indem du die Cookies dieser Website in deinem Browser löschst.",
+          en: "The legal basis for the cookies and the analysis tied to them is your consent (§ 25 (1) TDDDG, Art. 6 (1) (a) GDPR); for logging rejected entries it is Art. 6 (1) (f) GDPR (legitimate interest in protecting the content). The data is not shared with third parties and is deleted automatically after six months. You can withdraw your consent at any time with effect for the future by deleting this site's cookies in your browser.",
         },
       ],
     },

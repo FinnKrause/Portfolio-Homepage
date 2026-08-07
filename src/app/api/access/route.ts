@@ -48,7 +48,7 @@ function grant(res: NextResponse, visitorId: string, isNewVisitor: boolean) {
   return res;
 }
 
-function handle(req: NextRequest, rawCode: string) {
+function handle(req: NextRequest, rawCode: string, source: "gate" | "link") {
   const facts = readRequestFacts(req.headers);
   const visitor = req.cookies.get(VISITOR_COOKIE)?.value;
   const code = formatAccessCode(rawCode);
@@ -90,6 +90,7 @@ function handle(req: NextRequest, rawCode: string) {
     tokenId: check.token.id,
     visitorId,
     isNew: isNewVisitor,
+    source,
   });
   return { status: "granted" as const, facts, visitor, code, visitorId, isNewVisitor };
 }
@@ -97,7 +98,7 @@ function handle(req: NextRequest, rawCode: string) {
 /** QR / shared-link path: validate, then land the visitor on the site. */
 export async function GET(req: NextRequest) {
   const raw = req.nextUrl.searchParams.get(ACCESS_URL_PARAM) ?? "";
-  const result = handle(req, raw);
+  const result = handle(req, raw, "link");
 
   if (result.status === "granted") {
     return grant(
@@ -120,7 +121,7 @@ export async function POST(req: NextRequest) {
     raw = "";
   }
 
-  const result = handle(req, raw);
+  const result = handle(req, raw, "gate");
 
   if (result.status === "granted") {
     return grant(NextResponse.json({ ok: true }), result.visitorId, result.isNewVisitor);

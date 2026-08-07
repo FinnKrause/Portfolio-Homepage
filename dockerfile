@@ -6,7 +6,9 @@ RUN apk add --no-cache python3 make g++
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+# `ci` builds exactly the lockfile, so a deploy can't silently pick up a
+# different dependency tree than the one this was tested against.
+RUN npm ci
 
 COPY . .
 

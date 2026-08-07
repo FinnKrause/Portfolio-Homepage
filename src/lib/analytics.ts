@@ -119,6 +119,8 @@ export interface RecordArgs {
   reason?: string | null;
   visitorId?: string | null;
   isNew?: boolean | null;
+  /** How a granted entry arrived: the gate form, or a QR / shared link. */
+  source?: "gate" | "link" | null;
 }
 
 /** A device is bound to the code it entered with. */
@@ -151,8 +153,8 @@ export function recordEvent(a: RecordArgs): void {
       .prepare(
         `INSERT INTO events
            (ts, kind, token_id, attempted_code, reason, visitor_id, is_new,
-            browser, os, device, referrer)
-         VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+            browser, os, device, referrer, source)
+         VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
       )
       .run(
         new Date().toISOString(),
@@ -166,6 +168,7 @@ export function recordEvent(a: RecordArgs): void {
         a.facts.os,
         a.facts.device,
         a.facts.referrer,
+        a.source ?? null,
       );
   } catch {
     // Analytics must never take the site down.

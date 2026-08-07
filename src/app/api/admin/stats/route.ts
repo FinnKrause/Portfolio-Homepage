@@ -54,6 +54,7 @@ export async function GET(req: NextRequest) {
       `SELECT substr(ts,1,10) AS day,
               COUNT(DISTINCT visitor_id)                     AS visitors,
               SUM(kind = 'granted')                          AS entries,
+              SUM(kind = 'granted' AND source = 'gate')       AS entries_typed,
               SUM(kind = 'visit')                            AS visits,
               SUM(kind = 'gate_view')                        AS gate_views,
               SUM(kind = 'rejected')                         AS rejected
@@ -65,7 +66,7 @@ export async function GET(req: NextRequest) {
      Gate views that did not turn into an entry that day. */
   const bounced = (perDay as Row[]).map((r) => ({
     day: r.day as string,
-    bounced: Math.max(0, Number(r.gate_views ?? 0) - Number(r.entries ?? 0)),
+    bounced: Math.max(0, Number(r.gate_views ?? 0) - Number(r.entries_typed ?? 0)),
     gate_views: Number(r.gate_views ?? 0),
   }));
 
@@ -100,6 +101,30 @@ export async function GET(req: NextRequest) {
       lastActive: (r.last_active as string) ?? null,
     };
   });
+
+  /* --------- how entries arrived ---------
+     A QR/link arrival never renders the gate, so it can never be part of a
+     gate bounce rate. Keeping the two apart is what makes both numbers mean
+     something — and it answers which distribution channel actually works. */
+  const arrival = d
+    .prepare(
+      `SELECT COALESCE(source, 'unknown') AS label, COUNT(*) AS n
+         FROM events WHERE kind = 'granted' AND ts >= ?
+        GROUP BY label`,
+    )
+    .all(from) as Row[];
+  const typedEntries = Number(
+    (arrival.find((r) => r.label === "gate")?.n as number) ?? 0,
+  );
+  const linkEntries = Number(
+    (arrival.find((r) => r.label === "link")?.n as number) ?? 0,
+  );
+  // Entries recorded before `source` existed. Surfaced rather than dropped, so
+  // the split always reconciles with the Entries headline. Ages out with
+  // retention.
+  const unknownEntries = Number(
+    (arrival.find((r) => r.label === "unknown")?.n as number) ?? 0,
+  );
 
   /* ---------------- failed attempts ---------------- */
   const failedCodes = d
@@ -171,15 +196,19 @@ export async function GET(req: NextRequest) {
       gateViews: Number(totals.gate_views ?? 0),
       uniqueVisitors: Number(totals.unique_visitors ?? 0),
       returningDevices: Number(returning.n ?? 0),
+      typedEntries,
+      linkEntries,
     },
     perDay: byDaySeries(perDay as never, days, [
       "visitors",
       "entries",
+      "entries_typed",
       "visits",
       "gate_views",
       "rejected",
     ]),
     bounced: byDaySeries(bounced as never, days, ["bounced", "gate_views"]),
+    arrival: { typed: typedEntries, link: linkEntries, unknown: unknownEntries },
     tokenEngagement,
     failedCodes,
     byDevice: breakdown("device"),
