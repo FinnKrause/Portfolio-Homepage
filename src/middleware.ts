@@ -1,5 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { ACCESS_COOKIE, ACCESS_URL_PARAM, VERIFICATION_ENABLED } from "@/config/access";
+import {
+  ACCESS_COOKIE,
+  ACCESS_URL_PARAM,
+  SECTION_URL_PARAM,
+  VERIFICATION_ENABLED,
+} from "@/config/access";
 
 /**
  * Server-side access gate.
@@ -17,9 +22,13 @@ export function middleware(req: NextRequest) {
   // the attempt and set the cookies.
   const code = url.searchParams.get(ACCESS_URL_PARAM);
   if (code) {
-    const to = new URL("/api/access", req.url);
-    to.searchParams.set(ACCESS_URL_PARAM, code);
-    return NextResponse.redirect(to);
+    const target = new URL("/api/access", req.url);
+    target.searchParams.set(ACCESS_URL_PARAM, code);
+    // Carry the requested section through. It is validated in the route, not
+    // here — the edge runtime should stay free of anything but the cookie check.
+    const section = url.searchParams.get(SECTION_URL_PARAM);
+    if (section) target.searchParams.set(SECTION_URL_PARAM, section);
+    return NextResponse.redirect(target);
   }
 
   if (req.cookies.get(ACCESS_COOKIE)?.value === "1") return NextResponse.next();

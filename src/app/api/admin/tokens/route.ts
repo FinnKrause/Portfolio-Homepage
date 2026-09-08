@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { db, type TokenRow } from "@/lib/db";
 import { generateCode, isWellFormedCode } from "@/config/access";
+import { isKnownSection } from "@/content/ui";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -55,9 +56,10 @@ export async function POST(req: NextRequest) {
   const name = String(body.name ?? "").trim();
   if (!name) return NextResponse.json({ error: "A name is required." }, { status: 400 });
 
-  const description = String(body.description ?? "").trim();
-  const note = String(body.note ?? "").trim();
   const expires_at = body.expires_at ? String(body.expires_at) : null;
+  // "top" is stored as NULL — it is the same thing as no section, and keeping
+  // one representation means the link builder has one branch instead of two.
+  const section = isKnownSection(body.section) && body.section !== "top" ? body.section : null;
 
   // Use the code we were given, or find a free one.
   let code = String(body.code ?? "").trim();
@@ -80,10 +82,10 @@ export async function POST(req: NextRequest) {
   try {
     db()
       .prepare(
-        `INSERT INTO tokens (code, name, description, note, enabled, expires_at, created_at)
-         VALUES (?,?,?,?,1,?,?)`,
+        `INSERT INTO tokens (code, name, section, enabled, expires_at, created_at)
+         VALUES (?,?,?,1,?,?)`,
       )
-      .run(code, name, description, note, expires_at, new Date().toISOString());
+      .run(code, name, section, expires_at, new Date().toISOString());
   } catch {
     return NextResponse.json({ error: "That code already exists." }, { status: 409 });
   }
@@ -98,7 +100,7 @@ export async function PATCH(req: NextRequest) {
 
   const sets: string[] = [];
   const values: unknown[] = [];
-  for (const field of ["name", "description", "note"] as const) {
+  for (const field of ["name"] as const) {
     if (typeof body[field] === "string") {
       sets.push(`${field} = ?`);
       values.push(String(body[field]).trim());
@@ -111,6 +113,10 @@ export async function PATCH(req: NextRequest) {
   if ("expires_at" in body) {
     sets.push("expires_at = ?");
     values.push(body.expires_at ? String(body.expires_at) : null);
+  }
+  if ("section" in body) {
+    sets.push("section = ?");
+    values.push(isKnownSection(body.section) && body.section !== "top" ? body.section : null);
   }
   if (!sets.length) return NextResponse.json({ error: "Nothing to update." }, { status: 400 });
 

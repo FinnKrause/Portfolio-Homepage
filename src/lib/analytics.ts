@@ -1,6 +1,7 @@
 import "server-only";
 
 import { db, type TokenRow } from "./db";
+import { isExpired } from "@/config/access";
 
 /* ------------------------------------------------------------ request info */
 
@@ -9,6 +10,19 @@ export interface RequestFacts {
   os: string;
   device: string;
   referrer: string | null;
+}
+
+const OWN_DOMAIN = "finnkrause.com";
+
+/**
+ * Our own site, so the visit isn't logged as having been referred by anyone.
+ *
+ * The subdomain check is anchored on a dot: a plain `endsWith` also matches
+ * `notfinnkrause.com`, which would quietly hide exactly the referrer worth
+ * knowing about — somebody else linking to the site under a lookalike domain.
+ */
+function isOwnHost(host: string): boolean {
+  return host === OWN_DOMAIN || host.endsWith(`.${OWN_DOMAIN}`);
 }
 
 /**
@@ -46,8 +60,8 @@ export function readRequestFacts(headers: Headers): RequestFacts {
   const raw = headers.get("referer");
   if (raw) {
     try {
-      const host = new URL(raw).hostname;
-      referrer = host && !host.endsWith("finnkrause.com") ? host : null;
+      const host = new URL(raw).hostname.toLowerCase();
+      referrer = host && !isOwnHost(host) ? host : null;
     } catch {
       referrer = null;
     }
@@ -103,9 +117,7 @@ export function checkToken(code: string): TokenCheck {
 
   if (!token) return { ok: false, reason: "unknown" };
   if (!token.enabled) return { ok: false, reason: "disabled", token };
-  if (token.expires_at && new Date(token.expires_at).getTime() < Date.now()) {
-    return { ok: false, reason: "expired", token };
-  }
+  if (isExpired(token.expires_at)) return { ok: false, reason: "expired", token };
   return { ok: true, token };
 }
 
@@ -123,32 +135,71 @@ export interface RecordArgs {
   source?: "gate" | "link" | null;
 }
 
-/** A device is bound to the code it entered with. */
+/**
+ * A device is bound to the code it entered with, and its entry counter ticks.
+ *
+ * The counter is incremented here rather than derived from `events` because
+ * events are deleted after six months: anything counted from them shrinks over
+ * time, so the all-time figure would quietly fall as history aged out. This
+ * only ever goes up.
+ */
 export function bindVisitorToToken(visitorId: string, tokenId: number): void {
   const now = new Date().toISOString();
   db()
     .prepare(
-      `INSERT INTO visitors (visitor_id, token_id, first_seen, last_seen)
-       VALUES (?,?,?,?)
-       ON CONFLICT(visitor_id) DO UPDATE SET token_id = excluded.token_id, last_seen = excluded.last_seen`,
+      `INSERT INTO visitors (visitor_id, token_id, first_seen, last_seen, total_entries, total_visits)
+       VALUES (?,?,?,?,1,0)
+       ON CONFLICT(visitor_id) DO UPDATE SET
+         token_id      = excluded.token_id,
+         last_seen     = excluded.last_seen,
+         total_entries = total_entries + 1`,
     )
     .run(visitorId, tokenId, now, now);
 }
 
-/** The one code this device came in with — so return visits are attributable. */
+/**
+ * The one code this device came in with — so return visits are attributable.
+ * Also moves `last_seen` and ticks the visit counter, which is what makes the
+ * rolling cookie window meaningful: a device that keeps coming back keeps
+ * being recognised.
+ */
 export function tokenForVisitor(visitorId: string): number | null {
   const row = db()
     .prepare(`SELECT token_id FROM visitors WHERE visitor_id = ?`)
     .get(visitorId) as { token_id: number | null } | undefined;
-  if (row) {
-    db().prepare(`UPDATE visitors SET last_seen = ? WHERE visitor_id = ?`)
-      .run(new Date().toISOString(), visitorId);
-  }
-  return row?.token_id ?? null;
+  if (!row) return null;
+
+  db()
+    .prepare(
+      `UPDATE visitors
+          SET last_seen = ?, total_visits = total_visits + 1
+        WHERE visitor_id = ?`,
+    )
+    .run(new Date().toISOString(), visitorId);
+  return row.token_id;
+}
+
+/**
+ * All-time counter for an event kind that carries no device id.
+ *
+ * `gate_view` and `rejected` happen before any cookie exists, so there is no
+ * visitors row to hang a counter on — without this, both become unanswerable
+ * once the events age out, and bounce rate loses its history entirely.
+ */
+function bumpTotal(key: "gate_views" | "rejected"): void {
+  db()
+    .prepare(
+      `INSERT INTO totals (key, n) VALUES (?, 1)
+       ON CONFLICT(key) DO UPDATE SET n = n + 1`,
+    )
+    .run(key);
 }
 
 export function recordEvent(a: RecordArgs): void {
   try {
+    if (a.kind === "gate_view") bumpTotal("gate_views");
+    else if (a.kind === "rejected") bumpTotal("rejected");
+
     db()
       .prepare(
         `INSERT INTO events

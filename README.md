@@ -43,8 +43,11 @@ Open `http://localhost:3000/?code=<the code>`. The admin dashboard is at
 ## Three things to know before changing anything
 
 **The admin surface has no authentication of its own.** A reverse proxy is
-responsible for `/admin` *and* `/api/admin/*`. Never expose the container
-directly. → [operations](docs/operations.md#the-admin-surface-has-no-lock-of-its-own)
+responsible for `/admin` *and* `/api/admin/*`. That now includes a SQL console
+at `/api/admin/query` that runs free-form **read and write** queries against the
+live database — so a misconfigured proxy is a remote `DROP TABLE`. Never expose
+the container directly.
+→ [operations](docs/operations.md#the-admin-surface-has-no-lock-of-its-own)
 
 **The `homepage-data` volume is the database.** Without it, every redeploy
 starts from zero codes and zero statistics. → [operations](docs/operations.md#the-volume-is-the-data)

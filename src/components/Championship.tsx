@@ -9,10 +9,8 @@ import { Gallery } from "./media/Gallery";
 import { ReactionTest } from "./f1/ReactionTest";
 import { JourneyTimeline } from "./f1/JourneyTimeline";
 import { RaceFilm } from "./f1/RaceFilm";
+import { RECOIL_BRIGHT, F1_RED } from "@/content/theme";
 
-const RECOIL = "#097b41";      // the team's green — solid fills
-const RECOIL_BRIGHT = "#19d982"; // lifted variant for type and rules
-const F1_RED = "#e10600";
 
 export function Championship() {
   const { t } = useLang();

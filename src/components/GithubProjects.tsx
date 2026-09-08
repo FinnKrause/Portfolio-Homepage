@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowUpRight, Star } from "lucide-react";
 import { PINNED_REPOS, EXCLUDED_REPOS, gridProjects } from "@/content/projects";
 import { useLang } from "@/lib/i18n";
-import { cn } from "@/lib/utils";
 
 interface Repo {
   id: number | string;
@@ -66,18 +65,20 @@ export function GithubProjects() {
     };
   }, []);
 
-  // Static fallback if the GitHub API is unavailable / rate-limited.
-  const fallback: Repo[] = gridProjects.map((p) => ({
-    id: p.slug,
-    name: p.title,
-    description: t(p.tagline),
-    html_url: p.repo ?? "https://github.com/FinnKrause",
-    language: p.tech[0] ?? null,
-    stargazers_count: 0,
-    pushed_at: "",
-  }));
-
-  const list: Repo[] | null = failed ? fallback : repos;
+  // Static fallback if the GitHub API is unavailable / rate-limited. Built only
+  // when it is actually needed — the happy path never touches it.
+  const list: Repo[] | null = useMemo(() => {
+    if (!failed) return repos;
+    return gridProjects.map((p) => ({
+      id: p.slug,
+      name: p.title,
+      description: t(p.tagline),
+      html_url: p.repo ?? "https://github.com/FinnKrause",
+      language: p.tech[0] ?? null,
+      stargazers_count: 0,
+      pushed_at: "",
+    }));
+  }, [failed, repos, t]);
 
   if (!list) {
     // Loading skeletons
@@ -124,7 +125,7 @@ export function GithubProjects() {
           </div>
           <h4 className="mt-2.5 text-sm font-semibold text-ink-900">{prettyName(repo.name)}</h4>
           {repo.description ? (
-            <p className={cn("mt-1 line-clamp-2 text-xs leading-relaxed text-ink-500")}>
+            <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-ink-500">
               {repo.description}
             </p>
           ) : null}

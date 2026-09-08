@@ -25,9 +25,9 @@ export const awards: Award[] = [
       },
     ],
     gallery: [
-      { kind: "image", src: "/images/Competitions/Umbruchszeiten/umbruchszeiten-image1.png" },
-      { kind: "image", src: "/images/Competitions/Umbruchszeiten/umbruchszeiten-judge-image2.png" },
-      { kind: "image", src: "/images/Competitions/Umbruchszeiten/umbruchszeiten-image2.jpeg" },
+      { src: "/images/Competitions/Umbruchszeiten/umbruchszeiten-image1.png" },
+      { src: "/images/Competitions/Umbruchszeiten/umbruchszeiten-judge-image2.png" },
+      { src: "/images/Competitions/Umbruchszeiten/umbruchszeiten-image2.jpeg" },
     ],
   },
   {

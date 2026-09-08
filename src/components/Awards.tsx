@@ -8,9 +8,7 @@ import { Section, SectionHeading } from "./Section";
 import { Reveal } from "./motion/Reveal";
 import { Gallery } from "./media/Gallery";
 import { cn } from "@/lib/utils";
-
-/** Recoil Racing green — shared with the championship chapter. */
-const RECOIL = "#097b41";
+import { RECOIL } from "@/content/theme";
 
 function sideIcon(award: Award) {
   if (award.title.en.includes("F1")) return Trophy;

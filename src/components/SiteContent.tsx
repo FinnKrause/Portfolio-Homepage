@@ -13,10 +13,14 @@ import { Awards } from "./Awards";
 import { Skills } from "./Skills";
 import { Contact } from "./Contact";
 import { useLang } from "@/lib/i18n";
+import { useHashScroll } from "@/lib/useHashScroll";
 import { VisitBeacon } from "./access/VisitBeacon";
 
 export function SiteContent() {
   const { t } = useLang();
+  // A code can carry a section; /api/access turns it into a fragment on the
+  // final redirect, and this is what makes the page actually land there.
+  useHashScroll();
 
   return (
     <>

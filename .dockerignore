@@ -14,9 +14,6 @@ build
 # image layer.
 data
 
-# Source media project files — not part of the site.
-VideoEdits
-
 .git
 .gitignore
 .dockerignore

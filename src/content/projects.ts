@@ -34,7 +34,6 @@ export const projects: Project[] = [
     tech: ["JavaScript", "Node.js", "Electron", "MIDI", "DMX"],
     gallery: [
       {
-        kind: "image",
         src: "/images/Coding-Projects/APC-Mini-Middleware/apc-software_interface-image1.png",
         alt: {
           de: "Oberfläche der APCmini-Middleware",
@@ -42,7 +41,6 @@ export const projects: Project[] = [
         },
       },
       {
-        kind: "image",
         src: "/images/Coding-Projects/APC-Mini-Middleware/apc-reallife_desk-image2.png",
         alt: {
           de: "Der APCmini im Einsatz am Lichtpult",
@@ -50,7 +48,6 @@ export const projects: Project[] = [
         },
       },
       {
-        kind: "image",
         src: "/images/Coding-Projects/APC-Mini-Middleware/apc-reallife_desk-image3.png",
         alt: {
           de: "Aufbau mit APCmini und Lichtsoftware",
@@ -60,7 +57,6 @@ export const projects: Project[] = [
     ],
     repo: "https://github.com/FinnKrause/APCmini-Middleware",
     featured: true,
-    accent: "brand",
     year: "2025",
     aiUsage: {
       de: "Fast alles hier ist von Hand geschrieben — KI-Werkzeuge gehörten damals schlicht noch nicht zu meinem Arbeitsalltag. Unterstützt hat mich KI nur beim PDF-Feature. Es existiert inzwischen eine vollständig mit KI neu geschriebene Fassung dieser Software; ich zeige hier bewusst diese Version, weil sie zeigt, was ich tatsächlich selbst kann.",
@@ -102,21 +98,17 @@ export const projects: Project[] = [
     ],
     gallery: [
       {
-        kind: "image",
         src: "/images/Coding-Projects/FSI-Songreq/fsi-image1.png",
       },
       {
-        kind: "image",
         src: "/images/Coding-Projects/FSI-Songreq/fsi-image2.png",
       },
       {
-        kind: "image",
         src: "/images/Coding-Projects/FSI-Songreq/fsi-image3.png",
       },
     ],
     repo: "https://github.com/FinnKrause/Festival-Community-Stage-Portal",
     featured: true,
-    accent: "violet",
     year: "2026",
     aiUsage: {
       de: "Das war mein erster Versuch, ein Projekt komplett mit KI zu beginnen. Ich habe damit angefangen und so lange weitergearbeitet, bis die Grenzen des Modells manuelle Entwicklung nötig machten — ab diesem Punkt ist die Logik von Hand entstanden. Später kam KI ein zweites Mal zum Einsatz wo es sämtliche Komponenten-Return-Statements neu geschrieben hat, also das komplette Aussehen des Front-Ends. An der Logik wurde dabei nichts verändert.",
@@ -136,7 +128,6 @@ export const projects: Project[] = [
     },
     tech: ["TypeScript", "React Native"],
     repo: "https://github.com/FinnKrause/PMTool_Umbruchszeiten2020",
-    accent: "amber",
     year: "2024",
   },
   {
@@ -152,7 +143,6 @@ export const projects: Project[] = [
     },
     tech: ["Python", "Discord API"],
     repo: "https://github.com/FinnKrause/WoL-Dc-Mc-Integration",
-    accent: "brand",
     year: "2025",
   },
 ];

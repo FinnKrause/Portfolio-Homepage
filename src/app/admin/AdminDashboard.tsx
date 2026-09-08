@@ -18,6 +18,7 @@ import {
   Copy,
   Download,
   Loader2,
+  Play,
   Plus,
   QrCode,
   RefreshCw,
@@ -25,6 +26,8 @@ import {
   X,
 } from "lucide-react";
 import type { TokenWithStats } from "@/app/api/admin/tokens/route";
+import { isExpired, ACCESS_URL_PARAM, SECTION_URL_PARAM } from "@/config/access";
+import { sectionOptions } from "@/content/ui";
 import { cn } from "@/lib/utils";
 
 const BRAND = "#2645e6";
@@ -35,11 +38,8 @@ const GREY = "#94a3b8";
 const RANGES = [7, 30, 90, 182] as const;
 
 interface Stats {
-  days: number;
-  retentionDays: number;
   totals: {
     grants: number;
-    visits: number;
     rejected: number;
     gateViews: number;
     uniqueVisitors: number;
@@ -60,6 +60,21 @@ interface Stats {
     perDevice: number | null;
     lastActive: string | null;
   }[];
+  allTime: {
+    devices: number;
+    visits: number;
+    perDevice: number | null;
+    gateViews: number;
+    rejected: number;
+    since: string | null;
+    perToken: {
+      code: string;
+      name: string;
+      devices: number;
+      visits: number;
+      lastActive: string | null;
+    }[];
+  };
   failedCodes: { code: string; reason: string; tries: number; last_try: string }[];
   byDevice: { label: string; n: number }[];
   byBrowser: { label: string; n: number }[];
@@ -188,12 +203,22 @@ export function AdminDashboard() {
     return res.ok;
   };
 
-  const linkFor = (code: string) => `${origin}/?code=${encodeURIComponent(code)}`;
+  /** The shareable link, including the code's landing section when it has one. */
+  const linkFor = (tk: { code: string; section: string | null }) => {
+    const u = new URL("/", origin || "http://localhost");
+    u.searchParams.set(ACCESS_URL_PARAM, tk.code);
+    if (tk.section) u.searchParams.set(SECTION_URL_PARAM, tk.section);
+    return u.toString();
+  };
 
-  const copy = async (code: string) => {
-    await navigator.clipboard.writeText(linkFor(code));
-    setCopied(code);
-    window.setTimeout(() => setCopied((c) => (c === code ? null : c)), 1600);
+  const qrHref = (tk: { code: string; section: string | null }) =>
+    `/api/admin/qr?${ACCESS_URL_PARAM}=${encodeURIComponent(tk.code)}` +
+    (tk.section ? `&${SECTION_URL_PARAM}=${encodeURIComponent(tk.section)}` : "");
+
+  const copy = async (tk: { code: string; section: string | null }) => {
+    await navigator.clipboard.writeText(linkFor(tk));
+    setCopied(tk.code);
+    window.setTimeout(() => setCopied((c) => (c === tk.code ? null : c)), 1600);
   };
 
   const shownEvents = useMemo(() => {
@@ -307,13 +332,12 @@ export function AdminDashboard() {
             <p className="text-sm text-ink-500">No codes.</p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[64rem] border-collapse text-sm">
+              <table className="w-full min-w-[60rem] border-collapse text-sm">
                 <thead>
                   <tr className="border-b border-line text-left text-xs uppercase tracking-wide text-ink-500">
                     <th className="py-2 pr-3 font-medium">Code</th>
                     <th className="py-2 pr-3 font-medium">Name</th>
-                    <th className="py-2 pr-3 font-medium">Description</th>
-                    <th className="py-2 pr-3 font-medium">Note</th>
+                    <th className="py-2 pr-3 font-medium">Lands on</th>
                     <th className="py-2 pr-3 text-right font-medium">Uses</th>
                     <th className="py-2 pr-3 text-right font-medium">Devices</th>
                     <th className="py-2 pr-3 font-medium">Last seen</th>
@@ -324,16 +348,32 @@ export function AdminDashboard() {
                 </thead>
                 <tbody>
                   {tokens.map((tk) => {
-                    const expired =
-                      tk.expires_at && new Date(tk.expires_at).getTime() < Date.now();
+                    const expired = isExpired(tk.expires_at);
                     return (
                       <tr key={tk.id} className="border-b border-line/70 align-top">
                         <td className="py-3 pr-3 font-mono font-semibold text-ink-900">
                           {tk.code}
                         </td>
                         <td className="py-3 pr-3 text-ink-900">{tk.name}</td>
-                        <td className="max-w-[16rem] py-3 pr-3 text-ink-500">{tk.description}</td>
-                        <td className="max-w-[12rem] py-3 pr-3 text-ink-500">{tk.note}</td>
+                        <td className="py-3 pr-3">
+                          <select
+                            value={tk.section ?? "top"}
+                            onChange={(e) =>
+                              void mutate({
+                                method: "PATCH",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ id: tk.id, section: e.target.value }),
+                              })
+                            }
+                            className="border border-line bg-white px-1.5 py-1 text-xs text-ink-700"
+                          >
+                            {sectionOptions.map((o) => (
+                              <option key={o.id} value={o.id}>
+                                {o.label.en}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
                         <td className="py-3 pr-3 text-right tabular-nums">{tk.uses}</td>
                         <td className="py-3 pr-3 text-right tabular-nums">{tk.unique_visitors}</td>
                         <td className="py-3 pr-3 text-xs text-ink-500">
@@ -359,7 +399,7 @@ export function AdminDashboard() {
                         <td className="py-3">
                           <div className="flex flex-wrap items-center gap-1.5">
                             <button
-                              onClick={() => void copy(tk.code)}
+                              onClick={() => void copy(tk)}
                               title="Copy access link"
                               className="inline-flex items-center gap-1 border border-line px-2 py-1 text-xs hover:border-brand-300"
                             >
@@ -371,7 +411,7 @@ export function AdminDashboard() {
                               Link
                             </button>
                             <a
-                              href={`/api/admin/qr?code=${encodeURIComponent(tk.code)}`}
+                              href={qrHref(tk)}
                               title="QR code as PNG"
                               className="inline-flex items-center gap-1 border border-line px-2 py-1 text-xs hover:border-brand-300"
                             >
@@ -456,7 +496,13 @@ export function AdminDashboard() {
             )}
           </Card>
 
-          <Card title="Devices reached per code">
+        </div>
+
+        {/* Second row, paired so neither card sits next to dead space: the
+            per-code bar chart is tall, "how entries arrive" is three numbers,
+            so the short one gets the narrower half. */}
+        <div className="mt-4 grid gap-4 lg:grid-cols-3">
+          <Card className="lg:col-span-2" title="Devices reached per code">
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={stats?.tokenEngagement ?? []} layout="vertical">
                 <CartesianGrid stroke="#eef1f6" horizontal={false} />
@@ -468,13 +514,10 @@ export function AdminDashboard() {
             </ResponsiveContainer>
           </Card>
 
-        </div>
-
-        {/* How people arrive: scanning a code vs typing one. Tells you
-            whether the QR links are doing the work or the printed codes are. */}
-        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+          {/* Scanning a code vs typing one — whether the QR links are doing the
+              work or the printed codes are. */}
           <Card title="How entries arrive">
-            <div className="flex gap-8">
+            <div className="grid gap-4">
               <div>
                 <p className="text-2xl font-semibold tabular-nums" style={{ color: BRAND }}>
                   {stats?.arrival.link ?? 0}
@@ -496,6 +539,67 @@ export function AdminDashboard() {
             </div>
           </Card>
         </div>
+
+        {/* All time — read from the running counters, not from events.
+            Events are deleted after six months, so every other number on this
+            page describes the selected window only. These do not move when
+            history ages out, which makes them the only figures here that can
+            answer "did this code ever land". */}
+        <Card
+          className="mt-4"
+          title="All time"
+          right={
+            <span className="text-xs text-ink-500">
+              {stats?.allTime.since ? `since ${fmt(stats.allTime.since)}` : "no devices yet"}
+            </span>
+          }
+        >
+          {/* No "Entries" tile: a device is granted once and then just visits,
+              so all-time entries only differs from "Devices ever" when someone
+              re-opens a ?code= link on a device that already has cookies. Two
+              tiles showing the same number teach you nothing. The underlying
+              counter is still there for the SQL console. */}
+          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            <Stat label="Devices ever" value={stats?.allTime.devices ?? 0} tone={BRAND} />
+            <Stat label="Page views" value={stats?.allTime.visits ?? 0} />
+            <div className="border border-line bg-white p-4">
+              <div className="text-2xl font-semibold tabular-nums" style={{ color: GREEN }}>
+                {stats?.allTime.perDevice ?? "—"}
+              </div>
+              <div className="mt-1 text-xs text-ink-500">Views per device</div>
+            </div>
+            <Stat label="Gate views" value={stats?.allTime.gateViews ?? 0} tone={GREY} />
+            <Stat label="Rejected" value={stats?.allTime.rejected ?? 0} tone={RED} />
+          </div>
+
+          {stats?.allTime.perToken.length ? (
+            <table className="mt-5 w-full border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-line text-left text-xs uppercase tracking-wide text-ink-500">
+                  <th className="py-2 pr-3 font-medium">Code</th>
+                  <th className="py-2 pr-3 text-right font-medium">Devices</th>
+                  <th className="py-2 pr-3 text-right font-medium">Page views</th>
+                  <th className="py-2 font-medium">Last active</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stats.allTime.perToken.map((r) => (
+                  <tr key={r.code} className="border-b border-line/60">
+                    <td className="py-2 pr-3">
+                      <span className="font-mono text-xs">{r.code}</span>
+                      <span className="ml-2 text-ink-500">{r.name}</span>
+                    </td>
+                    <td className="py-2 pr-3 text-right tabular-nums">{r.devices}</td>
+                    <td className="py-2 pr-3 text-right tabular-nums">{r.visits}</td>
+                    <td className="py-2 text-xs text-ink-500">
+                      {r.lastActive ? fmt(r.lastActive) : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : null}
+        </Card>
 
         {/* Breakdowns */}
         <div className="mt-4 grid gap-4 sm:grid-cols-3">
@@ -576,7 +680,7 @@ export function AdminDashboard() {
                       {f.reason === "disabled"
                         ? "disabled"
                         : f.reason === "expired"
-                          ? "abgelaufen"
+                          ? "expired"
                           : "unknown"}{" "}
                       · {f.tries}× · {fmt(f.last_try)}
                     </span>
@@ -649,7 +753,7 @@ export function AdminDashboard() {
           }
         >
           <div className="max-h-[30rem] overflow-y-auto">
-            <table className="w-full min-w-[52rem] border-collapse text-sm">
+            <table className="w-full min-w-[60rem] border-collapse text-sm">
               <thead className="sticky top-0 bg-white">
                 <tr className="border-b border-line text-left text-xs uppercase tracking-wide text-ink-500">
                   <th className="py-2 pr-3 font-medium">Time</th>
@@ -700,6 +804,7 @@ export function AdminDashboard() {
           </div>
         </Card>
 
+        <SqlConsole />
       </div>
 
       {openEvent && <EventDetail e={openEvent} onClose={() => setOpenEvent(null)} />}
@@ -784,14 +889,15 @@ function NewToken({
 }) {
   const [form, setForm] = useState({
     name: "",
-    description: "",
-    note: "",
     code: "",
+    section: "top",
     expires_at: "",
   });
 
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm((f) => ({ ...f, [k]: e.target.value }));
+  const set =
+    (k: keyof typeof form) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+      setForm((f) => ({ ...f, [k]: e.target.value }));
 
   return (
     <form
@@ -822,23 +928,6 @@ function NewToken({
           />
         </label>
         <label className="text-xs font-medium text-ink-700">
-          Description
-          <input
-            value={form.description}
-            onChange={set("description")}
-            placeholder="What is this code for?"
-            className="mt-1 w-full border border-line bg-white px-3 py-2 text-sm"
-          />
-        </label>
-        <label className="text-xs font-medium text-ink-700">
-          Note (private)
-          <input
-            value={form.note}
-            onChange={set("note")}
-            className="mt-1 w-full border border-line bg-white px-3 py-2 text-sm"
-          />
-        </label>
-        <label className="text-xs font-medium text-ink-700">
           Code (blank = random)
           <input
             value={form.code}
@@ -846,6 +935,20 @@ function NewToken({
             placeholder="1234-5"
             className="mt-1 w-full border border-line bg-white px-3 py-2 font-mono text-sm"
           />
+        </label>
+        <label className="text-xs font-medium text-ink-700">
+          Lands on
+          <select
+            value={form.section}
+            onChange={set("section")}
+            className="mt-1 w-full border border-line bg-white px-3 py-2 text-sm"
+          >
+            {sectionOptions.map((o) => (
+              <option key={o.id} value={o.id}>
+                {o.label.en}
+              </option>
+            ))}
+          </select>
         </label>
         <label className="text-xs font-medium text-ink-700">
           Expires on (optional)
@@ -875,5 +978,193 @@ function NewToken({
         </button>
       </div>
     </form>
+  );
+}
+
+/* ------------------------------------------------------------ SQL console */
+
+interface TableInfo {
+  name: string;
+  columns: string[];
+  rows: number;
+}
+
+type QueryResult =
+  | { kind: "rows"; columns: string[]; rows: Record<string, unknown>[]; rowCount: number; ms: number }
+  | { kind: "write"; changes: number; lastInsertRowid: number; readOnly: boolean; ms: number };
+
+/** Anything that isn't a plain read gets a confirm() first. */
+const READ_ONLY = /^\s*(?:select|with|pragma|explain)\b/i;
+
+const cell = (v: unknown) => {
+  if (v === null || v === undefined) return "—";
+  if (typeof v === "object") return JSON.stringify(v);
+  return String(v);
+};
+
+/**
+ * Free-form SQL against the live database — read *and* write.
+ *
+ * There is no row limit and no statement timeout, by choice: this is a
+ * single-user dashboard on a low-traffic site, and being able to prune or
+ * correct data by hand without shelling into the container is the point.
+ * The confirm() below is a guard against slips, not against an attacker —
+ * anyone who can reach this component can post to the endpoint directly.
+ */
+function SqlConsole() {
+  const [tables, setTables] = useState<TableInfo[] | null>(null);
+  const [sql, setSql] = useState("SELECT * FROM visitors ORDER BY last_seen DESC;");
+  const [result, setResult] = useState<QueryResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    void fetch("/api/admin/query")
+      .then((r) => r.json())
+      .then((j) => setTables(j.tables ?? []))
+      .catch(() => setTables([]));
+  }, []);
+
+  const run = async () => {
+    const trimmed = sql.trim();
+    if (!trimmed) return;
+    if (!READ_ONLY.test(trimmed)) {
+      const ok = confirm(
+        `This is not a read-only query. It will modify the live database and cannot be undone.\n\n${trimmed}\n\nRun it?`,
+      );
+      if (!ok) return;
+    }
+    setBusy(true);
+    setError(null);
+    setResult(null);
+    try {
+      const res = await fetch("/api/admin/query", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sql: trimmed }),
+      });
+      const json = await res.json();
+      if (!res.ok) setError(json.error ?? "Query failed.");
+      else setResult(json);
+    } catch {
+      setError("Could not reach the server.");
+    }
+    setBusy(false);
+  };
+
+  return (
+    <Card
+      className="mt-4"
+      title="SQL"
+      right={
+        <span className="text-xs text-ink-500">
+          read &amp; write · no row limit · not undoable
+        </span>
+      }
+    >
+      {/* Table picker — straight from sqlite_master, so it can't drift from
+          the real schema. Clicking one writes a starter query. */}
+      <div className="flex flex-wrap gap-1.5">
+        {tables === null ? (
+          <span className="text-xs text-ink-500">Loading tables…</span>
+        ) : (
+          tables.map((t) => (
+            <button
+              key={t.name}
+              type="button"
+              onClick={() => setSql(`SELECT * FROM ${t.name} LIMIT 100;`)}
+              title={t.columns.join("\n")}
+              className="border border-line px-2 py-1 font-mono text-xs text-ink-700 hover:border-brand-300 hover:text-brand-700"
+            >
+              {t.name}
+              <span className="ml-1.5 tabular-nums text-ink-300">{t.rows}</span>
+            </button>
+          ))
+        )}
+      </div>
+
+      <textarea
+        value={sql}
+        onChange={(e) => setSql(e.target.value)}
+        onKeyDown={(e) => {
+          // Cmd/Ctrl+Enter runs; plain Enter stays a newline so multi-line
+          // queries are actually writable.
+          if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+            e.preventDefault();
+            void run();
+          }
+        }}
+        spellCheck={false}
+        rows={4}
+        className="mt-3 w-full resize-y border border-line bg-paper-soft p-3 font-mono text-xs text-ink-900"
+      />
+
+      <div className="mt-2 flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => void run()}
+          disabled={busy}
+          className="inline-flex items-center gap-2 bg-brand-600 px-3 py-2 text-xs font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
+        >
+          {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Play className="h-3.5 w-3.5" />}
+          Run
+        </button>
+        <span className="text-xs text-ink-300">⌘/Ctrl + Enter</span>
+        {result && (
+          <span className="ml-auto text-xs tabular-nums text-ink-500">
+            {result.kind === "rows"
+              ? `${result.rowCount} row${result.rowCount === 1 ? "" : "s"} · ${result.ms} ms`
+              : `${result.changes} row${result.changes === 1 ? "" : "s"} changed · ${result.ms} ms`}
+          </span>
+        )}
+      </div>
+
+      {error && (
+        <p className="mt-3 border border-red-200 bg-red-50 px-3 py-2 font-mono text-xs text-red-700">
+          {error}
+        </p>
+      )}
+
+      {result?.kind === "rows" && (
+        <div className="mt-3 max-h-[28rem] overflow-auto border border-line">
+          <table className="w-full border-collapse text-xs">
+            <thead className="sticky top-0 bg-white">
+              <tr className="border-b border-line text-left uppercase tracking-wide text-ink-500">
+                {result.columns.map((c) => (
+                  <th key={c} className="whitespace-nowrap px-2 py-1.5 font-medium">
+                    {c}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {result.rows.map((row, i) => (
+                <tr key={i} className="border-b border-line/60">
+                  {result.columns.map((c) => (
+                    <td key={c} className="whitespace-nowrap px-2 py-1.5 font-mono text-ink-700">
+                      {cell(row[c])}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+              {!result.rows.length && (
+                <tr>
+                  <td colSpan={Math.max(1, result.columns.length)} className="px-2 py-3 text-ink-500">
+                    No rows.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {result?.kind === "write" && (
+        <p className="mt-3 border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+          {result.changes} row{result.changes === 1 ? "" : "s"} changed.
+          {result.lastInsertRowid > 0 && ` Last insert rowid: ${result.lastInsertRowid}.`}
+        </p>
+      )}
+    </Card>
   );
 }

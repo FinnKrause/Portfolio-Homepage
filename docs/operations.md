@@ -78,12 +78,34 @@ docker compose up -d --build
 
 Container listens on `3000`, published as `8070`.
 
+### The build is two stages
+
+`better-sqlite3` is a native module, so building it needs `python3 make g++`.
+Those are build tools: the `builder` stage installs them, compiles, builds the
+site and then runs `npm prune --omit=dev`; the `runner` stage copies the result
+and carries none of them.
+
+**Both stages must sit on the identical base image.** The `.node` binary
+compiled in `builder` is copied verbatim into `runner`; change one base without
+the other and you get a binary the runtime cannot load — and it fails at
+container start, not at build time.
+
+`runner` copies exactly five things: `node_modules`, `.next`, `public`,
+`package.json` and **`next.config.ts`**. That last one is easy to forget because
+it looks like build-time config, but `next start` reads it, and the image
+optimizer needs its `images.qualities` list — omit it and pages render with an
+empty body.
+
+Dependencies install with `npm ci`, not `npm install`: `ci` installs exactly what
+`package-lock.json` pins and fails if the lockfile is out of sync, so an image
+built today matches one built months from now.
+
 ### `.dockerignore` is load-bearing
 
-The image installs and **compiles `better-sqlite3` for linux-musl** in an early
-layer. `COPY . .` comes later. Without `.dockerignore` excluding `node_modules`,
-that copy drops a host-built (darwin/win32) `node_modules` on top of the Linux
-one and **the container fails to start** with a native-module error.
+The image compiles `better-sqlite3` for linux-musl in the builder stage before
+`COPY . .` runs. Without `.dockerignore` excluding `node_modules`, that copy
+drops a host-built (darwin/win32) `node_modules` on top of the Linux one and
+**the container fails to start** with a native-module error.
 
 It also keeps `data/` out of the image, so local analytics never end up baked
 into a layer.
@@ -149,7 +171,10 @@ stale database. This is the most likely way to lose data here.
 ### Retention
 
 Events older than 182 days are deleted automatically (`pruneOldEvents()`, run on
-every DB open and in the stats route). Tokens and visitor bindings are kept.
+every DB open and in the stats route). `tokens`, `visitors` and `totals` are
+kept — `visitors` and `totals` carry the running counters behind the **All time**
+card, which is the only part of the dashboard that survives event pruning. See
+[access-and-analytics](access-and-analytics.md#retention).
 
 ---
 
@@ -162,7 +187,7 @@ Through `/admin`, or directly:
 curl -s localhost:3000/api/admin/tokens
 curl -s -X POST localhost:3000/api/admin/tokens \
   -H 'Content-Type: application/json' \
-  -d '{"name":"Business card","description":"Batch printed 2026-08"}'
+  -d '{"name":"Business card — printed 2026-08","section":"championship"}'
 
 # enable / disable
 curl -s -X PATCH localhost:3000/api/admin/tokens \

@@ -161,6 +161,139 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
+/* ============================================================
+   The gate — the one page every stranger loads.
+   Everything here is CSS: no animation library, no images, no
+   extra font. The page must stay at its ~106 kB baseline.
+   ============================================================ */
+.gate {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  /* Tight top padding on phones: the whole page cannot fit a small handset, so
+     the budget goes to getting "where you'd have a code from" above the fold —
+     that is the one thing a visitor without a code needs. The two remaining
+     blocks are allowed to fall below it. */
+  padding: 2rem 1.25rem 2.5rem;
+  color: #fff;
+  background:
+    radial-gradient(48rem 32rem at 50% 0%, rgba(38, 69, 230, 0.28), transparent 62%),
+    radial-gradient(40rem 30rem at 85% 100%, rgba(30, 51, 207, 0.16), transparent 66%),
+    #0a0d16;
+}
+
+/* Same grain the rest of the site uses; this only positions it. */
+.gate::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.2;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+/* One column, read top to bottom: what this is, where a code comes from, then
+   the field. Narrow on purpose — the measure has to stay readable, and the
+   whole thing has to clear 768px of viewport height. */
+.gate-col {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 34rem;
+  margin-inline: auto;
+}
+
+@media (min-width: 40rem) {
+  .gate {
+    padding: 3.5rem 1.25rem 3rem;
+  }
+}
+
+.gate-input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(4, 6, 12, 0.55);
+  padding: 0.85rem 1rem;
+  font-size: 1.25rem;
+  letter-spacing: 0.26em;
+  color: #fff;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.gate-input::placeholder {
+  color: rgba(255, 255, 255, 0.22);
+  letter-spacing: 0.26em;
+}
+
+/* A real focus ring, not just a border swap — this is the one control on the
+   page and it is focused on arrival, so it has to look deliberately active. */
+.gate-input:focus {
+  border-color: var(--color-brand-400);
+  background: rgba(4, 6, 12, 0.8);
+  box-shadow: 0 0 0 3px rgba(97, 136, 252, 0.25);
+}
+
+.gate-input-error {
+  border-color: #f87171;
+}
+.gate-input-error:focus {
+  border-color: #f87171;
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.22);
+}
+
+.gate-submit {
+  flex-shrink: 0;
+  padding-inline: 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--color-brand-600);
+  transition: background-color 0.18s ease, opacity 0.18s ease;
+}
+.gate-submit:hover:not(:disabled) {
+  background: var(--color-brand-500);
+}
+.gate-submit:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.gate-note-title {
+  font-size: 0.66rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.gate-link {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.18s ease;
+}
+.gate-link:hover {
+  color: var(--color-brand-300);
+}
+
+/* Staggered entrance. --i is set per element in AccessScreen. */
+.gate-rise {
+  animation: gateRise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+@keyframes gateRise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gate-rise { animation: none; }
+}
+
 /* ---------- Project visuals: APCmini pad chase + equaliser bars ---------- */
 @keyframes padPulse {
   0%, 100% {

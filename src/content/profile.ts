@@ -203,20 +203,16 @@ export const profile = {
     galleryTitle: { de: "Ein paar Bilder", en: "Impressions" } as Localized,
     gallery: [
       {
-        kind: "image",
         src: "/images/Competitions/F1/f1-image1.jpeg",
       },
       {
-        kind: "image",
         src: "/images/Competitions/F1/f1-image2.png",
       },
       {
-        kind: "image",
         src: "/images/Competitions/F1/f1-podium.jpg",
       },
       // {
-      //   kind: "image",
-      //   src: "/images/Competitions/F1/f1-team-image2.jpg",
+      //      //   src: "/images/Competitions/F1/f1-team-image2.jpg",
       // },
     ] as MediaSlide[],
   },

@@ -8,7 +8,7 @@ export const legalConfig = {
   name: "Finn Krause",
   addressLines: ["Bernhard-Plettner-Ring 29", "91052 Erlangen"],
   email: "mail@finnkrause.com",
-  updated: { de: "Juli 2026", en: "July 2026" } as Localized,
+  updated: { de: "September 2026", en: "September 2026" } as Localized,
 };
 
 interface LegalSection {
@@ -121,45 +121,65 @@ export const datenschutz: LegalDocT = {
     },
     {
       heading: {
-        de: "Zugangscode und Cookies",
-        en: "Access code and cookies",
+        de: "Zugangscode, Cookies und Zugriffsprotokoll",
+        en: "Access code, cookies and access log",
       },
       body: [
         {
-          de: "Die Inhalte dieser Website liegen hinter einem Zugangscode. Nach Eingabe eines gültigen Codes setzt diese Website zwei eigene Cookies (keine Drittanbieter): „fk-access“ (Laufzeit 12 Monate, fester Wert „1“) verhindert die erneute Abfrage des Codes; „fk-visitor“ (Laufzeit 6 Monate) enthält eine zufällige Kennung, mit der Zugriffe demselben Gerät zugeordnet werden.",
-          en: "The content of this website sits behind an access code. After a valid code is entered, this website sets two first-party cookies (no third parties): “fk-access” (12-month lifetime, fixed value “1”) prevents the code being requested again; “fk-visitor” (6-month lifetime) holds a random identifier used to attribute accesses to the same device.",
+          de: "Die Inhalte dieser Website liegen hinter einem Zugangscode. Bereits das Anzeigen der Code-Abfrage – also bevor du etwas eingibst und bevor irgendein Cookie gesetzt wird – wird protokolliert: Zeitpunkt, Browser, Betriebssystem, Gerätetyp (Desktop, Tablet oder Smartphone) und, sofern vorhanden, der Hostname der verweisenden Website (nur der Hostname, nie die vollständige URL). Daraus lässt sich ablesen, wie viele Personen die Abfrage erreichen und wie viele davon nicht weiterkommen; einer bestimmten Person ist der Eintrag nicht zuzuordnen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am Betrieb und an der Wirksamkeit der Zugangskontrolle).",
+          en: "The content of this website sits behind an access code. Simply displaying the code prompt – that is, before you type anything and before any cookie is set – is logged: time, browser, operating system, device type (desktop, tablet or phone) and, where present, the hostname of the referring website (the hostname only, never the full URL). This shows how many people reach the prompt and how many get no further; the entry cannot be traced to a particular person. The legal basis is Art. 6 (1) (f) GDPR (legitimate interest in operating the access check and knowing whether it works).",
         },
         {
-          de: "Gespeichert werden dabei: Zeitpunkt, verwendeter Zugangscode, die Kennung aus „fk-visitor“, Browser, Betriebssystem und Gerätetyp, die verweisende Website sowie bei abgelehnten Eingaben der eingegebene Code. Zweck ist die Reichweitenmessung der von mir ausgegebenen Zugangscodes und der Schutz der Inhalte vor automatisiertem Auslesen.",
-          en: "The following is stored: time, access code used, the identifier from “fk-visitor”, browser, operating system and device type, the referring website, and for rejected entries the code that was typed. The purpose is to measure the reach of the access codes I hand out and to protect the content from automated harvesting.",
+          de: "Wird ein Code eingegeben, der nicht gültig ist, wird zusätzlich der eingegebene Code selbst zusammen mit dem Grund der Ablehnung (unbekannt, deaktiviert oder abgelaufen) gespeichert. Das dient dem Schutz der Inhalte vor dem systematischen Durchprobieren von Codes. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO.",
+          en: "If a code is entered that is not valid, the code you typed is additionally stored together with the reason it was refused (unknown, disabled or expired). This protects the content against codes being worked through systematically. The legal basis is Art. 6 (1) (f) GDPR.",
         },
         {
-          de: "Rechtsgrundlage für die Cookies und die daran gebundene Auswertung ist deine Einwilligung (§ 25 Abs. 1 TDDDG, Art. 6 Abs. 1 lit. a DSGVO); für die Protokollierung abgelehnter Eingaben ist es Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am Schutz der Inhalte). Die Daten werden nicht an Dritte weitergegeben und nach sechs Monaten automatisch gelöscht. Du kannst deine Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen, indem du die Cookies dieser Website in deinem Browser löschst.",
-          en: "The legal basis for the cookies and the analysis tied to them is your consent (§ 25 (1) TDDDG, Art. 6 (1) (a) GDPR); for logging rejected entries it is Art. 6 (1) (f) GDPR (legitimate interest in protecting the content). The data is not shared with third parties and is deleted automatically after six months. You can withdraw your consent at any time with effect for the future by deleting this site's cookies in your browser.",
+          de: "Nach Eingabe eines gültigen Codes setzt diese Website zwei eigene Cookies (keine Cookies von Drittanbietern): „fk-access“ (fester Wert „1“) verhindert, dass der Code auf diesem Gerät erneut abgefragt wird; „fk-visitor“ enthält eine zufällig erzeugte Kennung, über die spätere Aufrufe demselben Gerät und dem verwendeten Zugangscode zugeordnet werden.",
+          en: "Once a valid code has been entered, this website sets two first-party cookies (no third-party cookies): “fk-access” (fixed value “1”) stops the code being requested again on this device; “fk-visitor” holds a randomly generated identifier used to attribute later visits to the same device and to the access code it came in with.",
+        },
+        {
+          de: "Beide Cookies haben eine Laufzeit von zwölf Monaten und werden bei jedem Besuch erneuert. Die Frist läuft also ab deinem jeweils letzten Besuch: Wer regelmäßig wiederkommt, muss den Code kein zweites Mal eingeben. Bleibt ein Gerät zwölf Monate lang weg, laufen beide Cookies im Browser ab; beim nächsten Besuch wird der Code erneut abgefragt und das Gerät erhält eine neue, nicht mit der alten verknüpfte Kennung.",
+          en: "Both cookies have a twelve-month lifetime and are renewed on every visit, so the period runs from your most recent visit rather than your first: if you come back regularly you never need to enter the code a second time. If a device stays away for twelve months, both cookies expire in the browser; the next visit asks for the code again and the device receives a new identifier that is not linked to the old one.",
+        },
+        {
+          de: "Ab diesem Zeitpunkt werden beim Eintritt und bei jedem weiteren Seitenaufruf gespeichert: Zeitpunkt, der verwendete Zugangscode, die Kennung aus „fk-visitor“, ob dies der erste Eintritt auf diesem Gerät war, ob der Eintritt über die Eingabemaske oder über einen QR- bzw. Direktlink erfolgte, Browser, Betriebssystem, Gerätetyp und der Hostname der verweisenden Website. Zweck ist ausschließlich, die Reichweite der von mir ausgegebenen Zugangscodes zu messen – also zu sehen, welcher Code tatsächlich bei Menschen ankommt.",
+          en: "From that point on, the following is stored when you enter and on every further page view: time, the access code used, the identifier from “fk-visitor”, whether this was the first entry on this device, whether entry came through the input form or through a QR or direct link, browser, operating system, device type and the hostname of the referring website. The sole purpose is to measure the reach of the access codes I hand out – that is, to see which code actually reaches people.",
+        },
+        {
+          de: "Rechtsgrundlage für diese beiden Cookies und die daran gebundene Auswertung ist deine Einwilligung (§ 25 Abs. 1 TDDDG, Art. 6 Abs. 1 lit. a DSGVO), die du mit dem Absenden eines gültigen Codes erteilst; auf der Code-Abfrage wird zuvor darauf hingewiesen. Du kannst deine Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen, indem du die Cookies dieser Website in deinem Browser löschst – das Gerät ist danach wieder ein unbekanntes Gerät.",
+          en: "The legal basis for these two cookies and the analysis tied to them is your consent (§ 25 (1) TDDDG, Art. 6 (1) (a) GDPR), which you give by submitting a valid code; the code prompt says so before you do. You can withdraw your consent at any time with effect for the future by deleting this site's cookies in your browser – after that the device is an unknown device again.",
+        },
+        {
+          de: "Die einzelnen Einträge werden nach 182 Tagen (rund sechs Monaten) automatisch gelöscht. Erhalten bleiben lediglich zusammengefasste Zahlen ohne Bezug zu einzelnen Aufrufen, damit die Gesamtstatistik über die ausgegebenen Codes nicht schrumpft, sobald ältere Einträge wegfallen. Die Daten werden nicht an Dritte weitergegeben und nicht dazu verwendet, Profile über einzelne Personen zu bilden.",
+          en: "The individual entries are deleted automatically after 182 days (about six months). Only aggregate figures are kept, with no reference to individual page views, so that the overall statistics for the codes I hand out do not shrink as older entries fall away. The data is not shared with third parties and is not used to build profiles of individual people.",
+        },
+        {
+          de: "Deine IP-Adresse wird bei der Code-Eingabe kurzzeitig im Arbeitsspeicher verarbeitet, um die Zahl fehlgeschlagener Versuche pro Anschluss zu begrenzen (höchstens 12 in 10 Minuten). Sie wird dabei weder in der Datenbank gespeichert noch mit den oben genannten Einträgen verknüpft. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO.",
+          en: "Your IP address is held briefly in memory while a code is checked, in order to cap the number of failed attempts per connection (at most 12 in 10 minutes). It is neither written to the database nor linked to any of the entries described above. The legal basis is Art. 6 (1) (f) GDPR.",
         },
       ],
     },
     {
       heading: {
-        de: "Spracheinstellung (Local Storage)",
-        en: "Language preference (local storage)",
+        de: "Lokale Speicherung im Browser (Local Storage)",
+        en: "Local storage in your browser",
       },
       body: [
         {
-          de: "Deine gewählte Sprache (Deutsch/Englisch) wird ausschließlich lokal in deinem Browser (Local Storage) gespeichert, damit die Seite sie beim nächsten Besuch erinnert. Diese Information wird nicht an mich oder Dritte übertragen und enthält keine personenbezogenen Daten. Du kannst sie jederzeit über die Einstellungen deines Browsers löschen.",
-          en: "Your chosen language (German/English) is stored solely locally in your browser (local storage) so the site can remember it on your next visit. This information is not transmitted to me or any third party and contains no personal data. You can delete it at any time via your browser settings.",
+          de: "Zwei Angaben werden ausschließlich lokal in deinem Browser gespeichert: deine gewählte Sprache (Deutsch/Englisch), damit die Seite sie beim nächsten Besuch erinnert, und – nur falls du den Reaktionstest im F1-Bereich ausprobierst – deine bisher beste Reaktionszeit. Beides wird nicht an mich oder an Dritte übertragen, enthält keine personenbezogenen Daten und kann jederzeit über die Einstellungen deines Browsers gelöscht werden.",
+          en: "Two things are stored solely locally in your browser: your chosen language (German/English), so the site remembers it on your next visit, and – only if you try the reaction test in the F1 section – your best reaction time so far. Neither is transmitted to me or to any third party, neither contains personal data, and both can be deleted at any time via your browser settings.",
         },
       ],
     },
     {
       heading: {
-        de: "Eingebundene YouTube-Videos",
-        en: "Embedded YouTube videos",
+        de: "Verlinkte YouTube-Videos",
+        en: "Linked YouTube videos",
       },
       body: [
         {
-          de: "Im Bereich „Weltmeister“ sind Videos von YouTube (Google Ireland Ltd., Gordon House, Barrow Street, Dublin 4, Irland) im erweiterten Datenschutzmodus eingebunden. Es wird zunächst nur ein Vorschaubild geladen; eine Verbindung zu YouTube wird erst hergestellt, wenn du ein Video aktiv startest. Die Vorschaubilder werden dabei von einem Google-Server (ytimg.com) geladen, wodurch deine IP-Adresse an Google übermittelt wird. Beim Abspielen verarbeitet Google weitere Daten gemäß seiner Datenschutzerklärung (https://policies.google.com/privacy). Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO.",
-          en: "In the “World Champion” section, videos from YouTube (Google Ireland Ltd., Gordon House, Barrow Street, Dublin 4, Ireland) are embedded in privacy-enhanced mode. Initially only a preview image is loaded; a connection to YouTube is only established when you actively start a video. The preview images are loaded from a Google server (ytimg.com), which transmits your IP address to Google. When playing, Google processes further data in accordance with its privacy policy (https://policies.google.com/privacy). The legal basis is Art. 6 (1) (f) GDPR.",
+          de: "Im F1-Bereich wird auf Videos meines damaligen Teams bei YouTube verlinkt. Es sind keine Videos eingebettet, und es wird auch kein Player geladen. Die dort gezeigten Vorschaubilder liegen auf dem Server dieser Website; beim Laden der Seite wird also keine Verbindung zu Google aufgebaut und keine IP-Adresse an Google übermittelt. Erst wenn du ein Vorschaubild oder einen Videolink anklickst, verlässt du diese Website und rufst YouTube (Google Ireland Ltd., Gordon House, Barrow Street, Dublin 4, Irland) auf; ab diesem Zeitpunkt gilt die Datenschutzerklärung von Google (https://policies.google.com/privacy).",
+          en: "The F1 section links to videos from my former team on YouTube. No videos are embedded and no player is loaded. The preview images shown there are served from this website's own server, so no connection to Google is made when the page loads and no IP address is transmitted to Google. Only when you click a preview image or a video link do you leave this website and open YouTube (Google Ireland Ltd., Gordon House, Barrow Street, Dublin 4, Ireland); from that point on Google's privacy policy applies (https://policies.google.com/privacy).",
         },
       ],
     },

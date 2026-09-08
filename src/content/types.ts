@@ -20,7 +20,7 @@ export interface LinkItem {
  * experience/award entries. Drop a file in /public and reference it here.
  * (Videos live on the F1 timeline — see src/content/journey.ts.)
  */
-export type MediaSlide = { kind: "image"; src: string; alt?: Localized };
+export type MediaSlide = { src: string; alt?: Localized };
 
 export interface Project {
   slug: string;
@@ -36,8 +36,6 @@ export interface Project {
   featured?: boolean;
   /** Extra slides shown after the built-in visual in the featured carousel. */
   gallery?: MediaSlide[];
-  /** Visual identity for the small grid cards. */
-  accent?: "brand" | "sky" | "violet" | "emerald" | "amber";
   year?: string;
   /**
    * Honest note on where AI was involved in building this project.

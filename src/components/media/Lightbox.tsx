@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { useScrollLock } from "@/lib/useScrollLock";
 
 export interface LightboxImage {
   src: string;
@@ -40,12 +41,10 @@ export function Lightbox({
       else if (e.key === "ArrowLeft") onNav(-1);
     };
     document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
+    return () => document.removeEventListener("keydown", onKey);
   }, [open, onClose, onNav]);
+
+  useScrollLock(open);
 
   if (!mounted) return null;
 

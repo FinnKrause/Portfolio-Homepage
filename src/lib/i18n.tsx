@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import type { Locale, Localized } from "@/content/types";
@@ -12,7 +13,6 @@ import type { Locale, Localized } from "@/content/types";
 interface LanguageContextValue {
   lang: Locale;
   setLang: (l: Locale) => void;
-  toggle: () => void;
   /** Resolve a Localized value to the active language. */
   t: (value: Localized) => string;
 }
@@ -54,25 +54,13 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const toggle = useCallback(() => {
-    setLangState((prev) => {
-      const next = prev === "de" ? "en" : "de";
-      try {
-        window.localStorage.setItem(STORAGE_KEY, next);
-      } catch {
-        /* ignore */
-      }
-      return next;
-    });
-  }, []);
-
   const t = useCallback((value: Localized) => value[lang], [lang]);
 
-  return (
-    <LanguageContext.Provider value={{ lang, setLang, toggle, t }}>
-      {children}
-    </LanguageContext.Provider>
-  );
+  // Memoised: without this every consumer of the context re-renders on any
+  // parent render, and the whole site sits inside this provider.
+  const value = useMemo(() => ({ lang, setLang, t }), [lang, setLang, t]);
+
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }
 
 export function useLang(): LanguageContextValue {

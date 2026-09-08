@@ -1,14 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { randomUUID } from "node:crypto";
 import {
-  ACCESS_COOKIE,
-  ACCESS_COOKIE_MAX_AGE,
   ACCESS_URL_PARAM,
+  SECTION_URL_PARAM,
   VISITOR_COOKIE,
-  VISITOR_COOKIE_MAX_AGE,
   formatAccessCode,
   isWellFormedCode,
 } from "@/config/access";
+import { isKnownSection } from "@/content/ui";
+import { issueCookies } from "@/lib/cookies";
 import {
   bindVisitorToToken,
   checkToken,
@@ -26,28 +26,11 @@ export const dynamic = "force-dynamic";
  *
  * On success it sets two cookies:
  *   fk-access   the gate flag — strictly necessary for the service requested
- *   fk-visitor  the analytics id — written ONLY here, i.e. only once someone
+ *   fk-visitor  the analytics id — first written here, i.e. only once someone
  *               has entered a valid code and is actually being let in. Nobody
- *               who stops at the gate is given one.
+ *               who stops at the gate is given one. Refreshed on every later
+ *               visit by /api/visit, which is what makes the year roll.
  */
-function grant(res: NextResponse, visitorId: string, isNewVisitor: boolean) {
-  res.cookies.set(ACCESS_COOKIE, "1", {
-    maxAge: ACCESS_COOKIE_MAX_AGE,
-    sameSite: "lax",
-    path: "/",
-    httpOnly: false,
-  });
-  if (isNewVisitor) {
-    res.cookies.set(VISITOR_COOKIE, visitorId, {
-      maxAge: VISITOR_COOKIE_MAX_AGE,
-      sameSite: "lax",
-      path: "/",
-      httpOnly: true,
-    });
-  }
-  return res;
-}
-
 function handle(req: NextRequest, rawCode: string, source: "gate" | "link") {
   const facts = readRequestFacts(req.headers);
   const visitor = req.cookies.get(VISITOR_COOKIE)?.value;
@@ -92,7 +75,34 @@ function handle(req: NextRequest, rawCode: string, source: "gate" | "link") {
     isNew: isNewVisitor,
     source,
   });
-  return { status: "granted" as const, facts, visitor, code, visitorId, isNewVisitor };
+  return {
+    status: "granted" as const,
+    facts,
+    visitor,
+    code,
+    visitorId,
+    isNewVisitor,
+    section: check.token.section,
+  };
+}
+
+/**
+ * Where a link arrival should land.
+ *
+ * The `to` parameter wins over the code's stored default, so one code can still
+ * be sent somewhere specific ad hoc without editing the token. Anything not in
+ * SECTION_IDS is dropped rather than rejected: a QR code is printed and outlives
+ * the page, so a section that has since been renamed should land the visitor on
+ * the homepage, not break their link.
+ *
+ * Returned as a fragment. The browser never sends it back to us, which is
+ * exactly right — the section someone was pointed at is not worth logging.
+ */
+function landingUrl(req: NextRequest, tokenSection: string | null): URL {
+  const url = new URL("/", req.url);
+  const requested = req.nextUrl.searchParams.get(SECTION_URL_PARAM) ?? tokenSection;
+  if (isKnownSection(requested) && requested !== "top") url.hash = requested;
+  return url;
 }
 
 /** QR / shared-link path: validate, then land the visitor on the site. */
@@ -101,10 +111,9 @@ export async function GET(req: NextRequest) {
   const result = handle(req, raw, "link");
 
   if (result.status === "granted") {
-    return grant(
-      NextResponse.redirect(new URL("/", req.url)),
+    return issueCookies(
+      NextResponse.redirect(landingUrl(req, result.section)),
       result.visitorId,
-      result.isNewVisitor,
     );
   }
   // Send them to the gate with the code stripped from the address bar.
@@ -124,7 +133,7 @@ export async function POST(req: NextRequest) {
   const result = handle(req, raw, "gate");
 
   if (result.status === "granted") {
-    return grant(NextResponse.json({ ok: true }), result.visitorId, result.isNewVisitor);
+    return issueCookies(NextResponse.json({ ok: true }), result.visitorId);
   }
   if (result.status === "rate-limited") {
     return NextResponse.json({ ok: false, reason: "rate-limited" }, { status: 429 });

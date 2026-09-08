@@ -11,9 +11,18 @@ type SubmitResult = "ok" | "invalid" | "rate-limited";
 /**
  * The door.
  *
- * Plain on purpose — no decorative grid, no motion, no low-contrast greys.
- * This screen exists to be read once and typed into, so legibility beats
- * atmosphere. The site's own look starts on the other side of it.
+ * Reads top to bottom: what this is, where you'd have a code from, then the
+ * field. The explanation comes first because it is what makes the field make
+ * sense — someone who lands here has usually not been told they'd need a code.
+ *
+ * Everything fits one screen down to 1024x768; nothing that matters is below
+ * the fold. Only the privacy footnote is allowed to fall off on a small phone.
+ * If you add copy, re-measure: `document.documentElement.scrollHeight` against
+ * `innerHeight`.
+ *
+ * This is the one page every stranger loads, so it must stay cheap: no
+ * animation library (see LanguageToggle), no images, no extra font. The
+ * gradient, the grain and the entrance are CSS in globals.css.
  */
 export function AccessScreen({
   onSubmit,
@@ -53,43 +62,54 @@ export function AccessScreen({
     tx("Direkt von mir, in z.B. einer Nachricht", "Straight from me, for example in a message"),
   ];
 
+  const rise = (i: number) => ({ "--i": i }) as React.CSSProperties;
+
   return (
-    <div className="min-h-[100svh] bg-[#10141d] px-5 py-14 text-white">
-      <div className="absolute right-4 top-4 sm:right-6 sm:top-6">
+    <div className="gate">
+      <div className="absolute right-4 top-4 z-10 sm:right-6 sm:top-6">
         <LanguageToggle onDark />
       </div>
 
-      <main className="mx-auto max-w-lg">
-        <p className="text-sm font-semibold text-brand-300">
+      <main className="gate-col">
+        <p className="gate-rise text-sm font-semibold text-brand-300" style={rise(0)}>
           {tx("Zugangscode nötig", "Access code required")}
         </p>
 
-        <h1 className="mt-3 text-2xl font-semibold leading-snug sm:text-3xl">
+        <h1
+          className="gate-rise mt-3 text-[clamp(1.55rem,4vw,2.1rem)] font-semibold leading-tight tracking-tight text-white"
+          style={rise(1)}
+        >
           {tx("Einen Moment, bevor du Zugang bekommst.", "One moment before you come in.")}
         </h1>
 
-        <p className="mt-4 text-base leading-relaxed text-white/80">
+        {/* The introduction — Finn's own wording, kept as written. */}
+        <p className="gate-rise mt-3 text-[0.95rem] leading-relaxed text-white/75" style={rise(2)}>
           {tx(
-            "Da das hier meine persönliche Website mit vielen Informationen über mich ist, ist der Inhalt nur mit einem anonymen Zugangscode sichtbar. Das mache ich damit der Inhalt bei Menschen ankommt und nicht bei AI-Crawlern und Bots. Von hier könntest du einen Code haben:",
-            "Since this is my personal website that holds a fair amount of information about me the content sits behind an anonymous verification code to make sure my information reaches people rather than AI-crawlers and scrapers. Where you could have gotten a code from:",
+            "Da das hier meine persönliche Website mit vielen Informationen über mich ist, ist der Inhalt nur mit einem schnellen Sicherheitscheck abrufbar. Das mache ich damit der Inhalt bei Menschen ankommt und nicht bei AI-Crawlern und Bots.",
+            "Since this is my personal website that holds a fair amount of information about me, the content sits behind a quick access check. I do that to make sure my information reaches people rather than AI crawlers and scrapers.",
           )}
         </p>
 
-        <ul className="mt-5 space-y-3">
-          {sources.map((line, i) => (
-            <li key={i} className="flex gap-3 text-base leading-relaxed text-white/80">
-              <span aria-hidden className="mt-2.5 h-1 w-1 shrink-0 rounded-full bg-brand-300" />
-              <span>{line}</span>
-            </li>
-          ))}
-        </ul>
+        <div className="gate-rise mt-4" style={rise(3)}>
+          <h2 className="gate-note-title">
+            {tx("Woher du einen Code hast", "Where you'd have a code from")}
+          </h2>
+          <ul className="mt-2 space-y-1.5">
+            {sources.map((line, i) => (
+              <li key={i} className="flex gap-2.5 text-sm leading-relaxed text-white/70">
+                <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-brand-300" />
+                <span>{line}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        <form onSubmit={submit} className="mt-9">
-          <label htmlFor="access-code" className="block text-sm font-medium text-white">
+        <form onSubmit={submit} className="gate-rise mt-6" style={rise(4)}>
+          <label htmlFor="access-code" className="sr-only">
             {tx("Zugangscode", "Access code")}
           </label>
 
-          <div className="mt-2 flex gap-2">
+          <div className="flex gap-2">
             <input
               ref={inputRef}
               id="access-code"
@@ -107,16 +127,9 @@ export function AccessScreen({
                 setValue(formatAccessCode(e.target.value));
                 if (error) setError(null);
               }}
-              className={cn(
-                "w-full border-2 bg-[#0a0d14] px-4 py-3 text-lg tracking-[0.2em] text-white outline-none transition-colors placeholder:tracking-[0.2em] placeholder:text-white/25 focus:border-brand-400",
-                error ? "border-red-400" : "border-white/25",
-              )}
+              className={cn("gate-input", error && "gate-input-error")}
             />
-            <button
-              type="submit"
-              disabled={!complete || busy}
-              className="shrink-0 bg-brand-500 px-6 text-base font-semibold text-white transition-colors hover:bg-brand-400 disabled:cursor-not-allowed disabled:opacity-40"
-            >
+            <button type="submit" disabled={!complete || busy} className="gate-submit">
               {busy ? tx("Prüfe …", "Checking…") : tx("Eintreten", "Enter")}
             </button>
           </div>
@@ -124,32 +137,29 @@ export function AccessScreen({
           <p
             id="access-help"
             role={error ? "alert" : undefined}
-            className={cn("mt-2.5 text-sm", error ? "text-red-300" : "text-white/60")}
+            className={cn("mt-2.5 text-sm", error ? "text-red-300" : "text-white/50")}
           >
             {error === "rate-limited"
               ? tx(
-                  "Zu viele Versuche. Bitte kurz warten.",
-                  "Too many attempts. Please wait a moment.",
-                )
+                "Zu viele Versuche. Bitte kurz warten.",
+                "Too many attempts. Please wait a moment.",
+              )
               : error
-                ? tx("Dieser Code stimmt nicht.", "That code isn't right.")
-                : tx(
-                    "Fünf Ziffern, z. B. 1234-5. Du wirst auf diesem Gerät nur einmal gefragt.",
-                    "Five digits, e.g. 1234-5. You'll only be asked once on this device.",
-                  )}
+                ? tx("Dieser Code stimmt nicht.", "That code isn't right.") : undefined
+            }
           </p>
         </form>
 
-        <p className="mt-10 border-t border-white/15 pt-5 text-sm leading-relaxed text-white/60">
+        <p
+          className="gate-rise mt-6 border-t border-white/12 pt-4 text-[0.8rem] leading-relaxed text-white/50"
+          style={rise(5)}
+        >
           {tx(
-            "Mit dem Absenden setzt diese Seite zwei Cookies und speichert den Zugriff.",
-            "Submitting sets two cookies and records the visit.",
+            "Mit Betreten dieser Seite wurden Zeitpunkt, Browser, Betriebssystem, Gerätetyp und Referrer automatisch geloggt (ohne Cookie). Erst bei Eingabe eines gültigen Codes kommen zwei Cookies dazu, damit ich sehen kann, welcher Code wie oft benutzt wird. Die Cookies laufen ein Jahr nach dem letzten Besuch ab, die einzelnen Einträge werden nach sechs Monaten automatisch gelöscht. Nach einem Jahr erkennt das System ehemalige Besucher nicht wieder.",
+            "This page being opened is being logged with time, browser, operating system, device type and referrer, with no cookie involved. Enter a valid code and two cookies are added. The cookies expire one year after your last visit. After that time the mechanism cannot recognize old users anymore. All individual server-logs are automatically deleted after six months.",
           )}{" "}
-          <a
-            href="/datenschutz"
-            className="text-white underline underline-offset-4 hover:text-brand-300"
-          >
-            {tx("Datenschutz", "Privacy")}
+          <a href="/datenschutz" className="gate-link">
+            {tx("Mehr dazu im Datenschutz", "More in the privacy policy")}
           </a>
         </p>
       </main>

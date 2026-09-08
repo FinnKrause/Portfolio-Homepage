@@ -1,6 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { db, pruneOldEvents, type EventRow } from "@/lib/db";
-import { EVENT_RETENTION_DAYS } from "@/config/access";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -40,7 +39,6 @@ export async function GET(req: NextRequest) {
     .prepare(
       `SELECT
          SUM(kind = 'granted')                                  AS grants,
-         SUM(kind = 'visit')                                    AS visits,
          SUM(kind = 'rejected')                                 AS rejected,
          SUM(kind = 'gate_view')                                AS gate_views,
          COUNT(DISTINCT CASE WHEN visitor_id IS NOT NULL THEN visitor_id END) AS unique_visitors
@@ -51,13 +49,12 @@ export async function GET(req: NextRequest) {
   /* ---------------- visitors per day ---------------- */
   const perDay = d
     .prepare(
+      // visitors feeds the per-day chart; entries_typed and gate_views feed the
+      // bounce series below. Nothing else here was ever read.
       `SELECT substr(ts,1,10) AS day,
-              COUNT(DISTINCT visitor_id)                     AS visitors,
-              SUM(kind = 'granted')                          AS entries,
-              SUM(kind = 'granted' AND source = 'gate')       AS entries_typed,
-              SUM(kind = 'visit')                            AS visits,
-              SUM(kind = 'gate_view')                        AS gate_views,
-              SUM(kind = 'rejected')                         AS rejected
+              COUNT(DISTINCT visitor_id)                AS visitors,
+              SUM(kind = 'granted' AND source = 'gate') AS entries_typed,
+              SUM(kind = 'gate_view')                   AS gate_views
          FROM events WHERE ts >= ? GROUP BY day ORDER BY day`,
     )
     .all(from) as { day: string }[];
@@ -186,12 +183,53 @@ export async function GET(req: NextRequest) {
     )
     .all(from) as (EventRow & { token_name: string | null; token_code: string | null })[];
 
+  /* ---------------- all time ----------------
+     Read from the running counters, never from `events` — events are deleted
+     after six months, so anything counted from them describes the window, not
+     the lifetime, and would visibly shrink as history aged out.
+
+     `visitors` covers everything with a device attached; `totals` covers the
+     two kinds that have none (nobody has consented at the point a gate view or
+     a rejected code is recorded, so there is no device to attribute them to). */
+  const lifetime = d
+    .prepare(
+      `SELECT COUNT(*)                       AS devices,
+              COALESCE(SUM(total_visits), 0) AS visits,
+              MIN(first_seen)                AS since
+         FROM visitors`,
+    )
+    .get() as Row;
+
+  const counters = Object.fromEntries(
+    (d.prepare(`SELECT key, n FROM totals`).all() as { key: string; n: number }[]).map((r) => [
+      r.key,
+      r.n,
+    ]),
+  );
+
+  const lifetimeDevices = Number(lifetime.devices ?? 0);
+  const lifetimeVisits = Number(lifetime.visits ?? 0);
+
+  // Per code, all time. A LEFT JOIN from tokens so a code that has never been
+  // used still shows up as a zero row rather than vanishing.
+  const lifetimePerToken = d
+    .prepare(
+      `SELECT t.code, t.name,
+              COUNT(v.visitor_id)              AS devices,
+              COALESCE(SUM(v.total_visits), 0) AS visits,
+              MAX(v.last_seen)                     AS last_active
+         FROM tokens t
+         LEFT JOIN visitors v ON v.token_id = t.id
+        GROUP BY t.id
+        ORDER BY devices DESC, visits DESC`,
+    )
+    .all() as Row[];
+
+  // Only what the dashboard actually renders. `days`, `retentionDays` and
+  // `totals.visits` used to be shipped too and were read by nothing.
   return NextResponse.json({
-    days,
-    retentionDays: EVENT_RETENTION_DAYS,
     totals: {
       grants: Number(totals.grants ?? 0),
-      visits: Number(totals.visits ?? 0),
       rejected: Number(totals.rejected ?? 0),
       gateViews: Number(totals.gate_views ?? 0),
       uniqueVisitors: Number(totals.unique_visitors ?? 0),
@@ -199,17 +237,34 @@ export async function GET(req: NextRequest) {
       typedEntries,
       linkEntries,
     },
-    perDay: byDaySeries(perDay as never, days, [
-      "visitors",
-      "entries",
-      "entries_typed",
-      "visits",
-      "gate_views",
-      "rejected",
-    ]),
-    bounced: byDaySeries(bounced as never, days, ["bounced", "gate_views"]),
+    // Only the charted key from each series. The rest were carried to the
+    // browser and dropped there; `bounced` above still reads the raw rows.
+    perDay: byDaySeries(perDay as never, days, ["visitors"]),
+    bounced: byDaySeries(bounced as never, days, ["bounced"]),
     arrival: { typed: typedEntries, link: linkEntries, unknown: unknownEntries },
     tokenEngagement,
+    allTime: {
+      devices: lifetimeDevices,
+      visits: lifetimeVisits,
+      // Page views per device — "how much did the average device come back".
+      // Entries are deliberately not folded in: every device has essentially
+      // exactly one, so including them just adds 1.0 to every ratio.
+      perDevice: lifetimeDevices
+        ? Math.round((lifetimeVisits / lifetimeDevices) * 10) / 10
+        : null,
+      gateViews: Number(counters.gate_views ?? 0),
+      rejected: Number(counters.rejected ?? 0),
+      // Earliest device ever seen — the honest start date for these figures.
+      // Not the deploy date: the counters only exist from their first write.
+      since: (lifetime.since as string) ?? null,
+      perToken: lifetimePerToken.map((r) => ({
+        code: String(r.code),
+        name: String(r.name),
+        devices: Number(r.devices ?? 0),
+        visits: Number(r.visits ?? 0),
+        lastActive: (r.last_active as string) ?? null,
+      })),
+    },
     failedCodes,
     byDevice: breakdown("device"),
     byBrowser: breakdown("browser"),

@@ -111,7 +111,6 @@ export function About() {
           <motion.div style={reduce ? undefined : { y: drift }}>
             <div className="relative aspect-[4/5] w-full overflow-hidden bg-paper-soft sm:aspect-[16/10] lg:aspect-[4/5]">
               <Carousel
-                fill
                 subtle
                 ariaLabel={t({ de: "Eindrücke von Finn", en: "Impressions of Finn" })}
                 slides={FINN_IMAGES.map((img, i) => (

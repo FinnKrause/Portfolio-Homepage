@@ -16,9 +16,8 @@ import { useLang } from "@/lib/i18n";
 import { useIsDesktop } from "@/lib/useIsDesktop";
 import { Lightbox, type LightboxImage } from "../media/Lightbox";
 import { cn } from "@/lib/utils";
+import { RECOIL_BRIGHT, F1_RED } from "@/content/theme";
 
-const RECOIL = "#19d982";
-const F1_RED = "#e10600";
 
 /** Station spacing once zoomed in. Stations alternate above/below the axis,
  *  so neighbours never collide and they can sit closer than a card is wide. */
@@ -42,7 +41,7 @@ const PAD = 56;
 const HOLD_IN = 0.1;
 const ZOOM_IN_END = 0.22;
 
-const toneColor = (tone?: JourneyPoint["tone"]) => (tone === "red" ? F1_RED : RECOIL);
+const toneColor = (tone?: JourneyPoint["tone"]) => (tone === "red" ? F1_RED : RECOIL_BRIGHT);
 const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1);
 /** Eases in and out with zero velocity at both ends — no visible kick. */
 const ease = (t: number) => {
@@ -50,10 +49,21 @@ const ease = (t: number) => {
   return x * x * x * (x * (6 * x - 15) + 10);
 };
 
+/**
+ * Video stills are served from our own origin, not from i.ytimg.com. Hot-linking
+ * Google's copy meant every visitor's IP reached Google on page load, for a
+ * still frame — a third-party request the site otherwise doesn't make. The files
+ * are named after the video id, so adding a video means dropping one more
+ * `<id>.jpg` in here. See docs/frontend.md#youtube-stills.
+ */
+function videoStill(id: string): string {
+  return `/images/Journey-Thumbnails/${id}.jpg`;
+}
+
 /** The circular image used in the overview — a photo if there is one, else the video still. */
 function overviewImage(point: JourneyPoint): string | null {
   if (point.gallery?.length) return point.gallery[0].src;
-  if (point.youtube) return `https://i.ytimg.com/vi/${point.youtube}/hqdefault.jpg`;
+  if (point.youtube) return videoStill(point.youtube);
   return null;
 }
 
@@ -97,13 +107,12 @@ function CardContent({ point, onOpenImage }: { point: JourneyPoint; onOpenImage:
           rel="noreferrer"
           className="group/vid relative mt-3 block aspect-video w-full overflow-hidden border border-white/20"
         >
-          {/* Plain img: YouTube thumbnails are not an allowlisted next/image host. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={`https://i.ytimg.com/vi/${point.youtube}/hqdefault.jpg`}
+          <Image
+            src={videoStill(point.youtube)}
             alt=""
-            loading="lazy"
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover/vid:scale-105"
+            fill
+            sizes="290px"
+            className="object-cover transition-transform duration-500 group-hover/vid:scale-105"
           />
           <span className="absolute inset-0 bg-black/30 transition-colors group-hover/vid:bg-black/10" />
           <span
@@ -224,8 +233,7 @@ function Station({
       >
         {img && point.highlight && above && (
           <span className="relative mb-3 block h-24 w-24 overflow-hidden rounded-full border border-white/25 transition-transform duration-500 group-hover:scale-105">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={img} alt="" loading="lazy" className="h-full w-full object-cover" />
+            <Image src={img} alt="" fill sizes="96px" className="object-cover" />
           </span>
         )}
 
@@ -239,8 +247,7 @@ function Station({
 
         {img && point.highlight && !above && (
           <span className="relative mt-3 block h-24 w-24 overflow-hidden rounded-full border border-white/25 transition-transform duration-500 group-hover:scale-105">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={img} alt="" loading="lazy" className="h-full w-full object-cover" />
+            <Image src={img} alt="" fill sizes="96px" className="object-cover" />
           </span>
         )}
       </motion.a>
@@ -343,7 +350,7 @@ export function JourneyTimeline() {
             <div className="flex items-start justify-between gap-6">
               <div>
                 <div className="flex items-center gap-3">
-                  <span aria-hidden className="h-px w-6" style={{ backgroundColor: RECOIL }} />
+                  <span aria-hidden className="h-px w-6" style={{ backgroundColor: RECOIL_BRIGHT }} />
                   <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-white/70">
                     {t({ de: "Wie es weiterging", en: "How it unfolded" })}
                   </p>
@@ -380,7 +387,7 @@ export function JourneyTimeline() {
               >
                 <div
                   className="h-px w-full"
-                  style={{ background: `linear-gradient(to right, ${RECOIL}, ${F1_RED})` }}
+                  style={{ background: `linear-gradient(to right, ${RECOIL_BRIGHT}, ${F1_RED})` }}
                 />
               </motion.div>
 
@@ -417,7 +424,7 @@ export function JourneyTimeline() {
                     "h-4 w-4 shrink-0 transition-transform duration-300",
                     listOpen && "rotate-180",
                   )}
-                  style={{ color: RECOIL }}
+                  style={{ color: RECOIL_BRIGHT }}
                 />
               </button>
 

@@ -6,26 +6,27 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * Crossfade carousel.
- * - `fill`: every slide is absolutely positioned to fill the parent (the parent
- *   must define the height). Use for edge-to-edge media panels.
- * - default (no `fill`): the FIRST slide stays in flow and defines the height;
- *   the rest are overlaid. Good for slides of differing intrinsic heights.
- * - Auto-advances only while scrolled into view.
- * - Any manual interaction (arrow/dot) permanently stops auto-advance.
+ * Crossfade carousel. Every slide is absolutely positioned to fill the parent,
+ * so the parent must define the height.
+ *
+ * Auto-advances only while scrolled into view; any manual interaction (arrow or
+ * dot) stops auto-advance permanently.
+ *
+ * There used to be a second, in-flow layout mode behind a `fill` prop, where
+ * the first slide sized the container. Both call sites passed `fill`, so that
+ * branch never ran — and because it rendered every slide unconditionally it
+ * also quietly contradicted the mounting rule below.
  */
 export function Carousel({
   slides,
   autoMs = 4200,
   ariaLabel,
-  fill = false,
   subtle = false,
   className,
 }: {
   slides: ReactNode[];
   autoMs?: number;
   ariaLabel?: string;
-  fill?: boolean;
   /** Quiet controls: small arrows that surface on hover/focus, not always-on. */
   subtle?: boolean;
   className?: string;
@@ -75,51 +76,22 @@ export function Carousel({
   return (
     <div
       ref={rootRef}
-      className={cn("relative", fill && "h-full", subtle && "group", className)}
+      className={cn("relative h-full", subtle && "group", className)}
       aria-roledescription="carousel"
       aria-label={ariaLabel}
     >
-      {fill ? (
-        // Fill mode: all slides absolute; parent provides the height.
-        slides.map((node, i) => (
-          <div
-            key={i}
-            className={cn(
-              "absolute inset-0 transition-opacity duration-500",
-              index === i ? "opacity-100" : "pointer-events-none opacity-0",
-            )}
-            aria-hidden={index !== i}
-          >
-            {near(i) ? node : null}
-          </div>
-        ))
-      ) : (
-        <>
-          {/* Sizer = first slide, always in flow */}
-          <div
-            className={cn("transition-opacity duration-500", index === 0 ? "opacity-100" : "opacity-0")}
-            aria-hidden={index !== 0}
-          >
-            {slides[0]}
-          </div>
-          {slides.slice(1).map((node, i) => {
-            const slideIndex = i + 1;
-            const active = index === slideIndex;
-            return (
-              <div
-                key={slideIndex}
-                className={cn(
-                  "absolute inset-0 transition-opacity duration-500",
-                  active ? "opacity-100" : "pointer-events-none opacity-0",
-                )}
-                aria-hidden={!active}
-              >
-                {node}
-              </div>
-            );
-          })}
-        </>
-      )}
+      {slides.map((node, i) => (
+        <div
+          key={i}
+          className={cn(
+            "absolute inset-0 transition-opacity duration-500",
+            index === i ? "opacity-100" : "pointer-events-none opacity-0",
+          )}
+          aria-hidden={index !== i}
+        >
+          {near(i) ? node : null}
+        </div>
+      ))}
 
       {count > 1 && (
         <>

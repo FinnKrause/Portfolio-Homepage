@@ -29,8 +29,9 @@ export function db(): Database.Database {
       id          INTEGER PRIMARY KEY AUTOINCREMENT,
       code        TEXT    NOT NULL UNIQUE,
       name        TEXT    NOT NULL,
-      description TEXT    NOT NULL DEFAULT '',
-      note        TEXT    NOT NULL DEFAULT '',
+      -- Where a link or QR built from this code should land. NULL = the top of
+      -- the page. Only ever a value from SECTION_IDS; see content/ui.ts.
+      section     TEXT,
       enabled     INTEGER NOT NULL DEFAULT 1,
       expires_at  TEXT,
       created_at  TEXT    NOT NULL
@@ -54,11 +55,28 @@ export function db(): Database.Database {
 
     -- A device belongs to exactly one code: the one it entered with. Clearing
     -- cookies makes it a new device with a new row.
+    --
+    -- total_entries / total_visits are running counters, NOT derived from the
+    -- events table. That is the whole point: events are deleted after six months,
+    -- so anything counted from them silently shrinks over time and the all-time
+    -- figures would drift downwards. These only ever go up.
     CREATE TABLE IF NOT EXISTS visitors (
-      visitor_id TEXT PRIMARY KEY,
-      token_id   INTEGER REFERENCES tokens(id) ON DELETE SET NULL,
-      first_seen TEXT NOT NULL,
-      last_seen  TEXT NOT NULL
+      visitor_id    TEXT PRIMARY KEY,
+      token_id      INTEGER REFERENCES tokens(id) ON DELETE SET NULL,
+      first_seen    TEXT    NOT NULL,
+      last_seen     TEXT    NOT NULL,
+      total_entries INTEGER NOT NULL DEFAULT 0,
+      total_visits  INTEGER NOT NULL DEFAULT 0
+    );
+
+    -- All-time counters for the two event kinds that have no device attached.
+    -- A gate view or a rejected code happens before any cookie exists, so there
+    -- is no visitors row to hang a counter on — and once those events age out,
+    -- "how many people ever turned back at the door" would be unanswerable.
+    -- Deliberately just a name and a number: nothing here identifies anyone.
+    CREATE TABLE IF NOT EXISTS totals (
+      key TEXT    PRIMARY KEY,   -- gate_views | rejected
+      n   INTEGER NOT NULL DEFAULT 0
     );
 
     CREATE INDEX IF NOT EXISTS idx_events_ts       ON events(ts);
@@ -66,13 +84,6 @@ export function db(): Database.Database {
     CREATE INDEX IF NOT EXISTS idx_events_token    ON events(token_id);
     CREATE INDEX IF NOT EXISTS idx_events_visitor  ON events(visitor_id);
   `);
-
-  // Added after the first deploy: tells a typed entry apart from a QR/link
-  // entry. Without it the gate bounce rate compares populations that never
-  // overlap (link arrivals never see the gate).
-  const hasSource = (conn.prepare(`PRAGMA table_info(events)`).all() as { name: string }[])
-    .some((c) => c.name === "source");
-  if (!hasSource) conn.exec(`ALTER TABLE events ADD COLUMN source TEXT`);
 
   instance = conn;
   pruneOldEvents();
@@ -82,21 +93,24 @@ export function db(): Database.Database {
 /**
  * Enforces the retention promised in the privacy policy. Cheap enough to run
  * opportunistically; it only touches rows that are already past the cut-off.
+ *
+ * Events only, and on the event's own timestamp — this does not roll forward
+ * when a device returns. The running totals that survive it live on `visitors`
+ * and in `totals`, which is what keeps the all-time figures honest after the
+ * rows behind them are gone.
  */
 export function pruneOldEvents(): number {
   const cutoff = new Date(
     Date.now() - EVENT_RETENTION_DAYS * 86_400_000,
   ).toISOString();
-  const info = instance!.prepare(`DELETE FROM events WHERE ts < ?`).run(cutoff);
-  return info.changes;
+  return db().prepare(`DELETE FROM events WHERE ts < ?`).run(cutoff).changes;
 }
 
 export interface TokenRow {
   id: number;
   code: string;
   name: string;
-  description: string;
-  note: string;
+  section: string | null;
   enabled: number;
   expires_at: string | null;
   created_at: string;
@@ -123,4 +137,6 @@ export interface VisitorRow {
   token_id: number | null;
   first_seen: string;
   last_seen: string;
+  total_entries: number;
+  total_visits: number;
 }

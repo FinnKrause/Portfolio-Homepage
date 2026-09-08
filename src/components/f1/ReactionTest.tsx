@@ -3,10 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLang } from "@/lib/i18n";
-import { cn } from "@/lib/utils";
+import { RECOIL_BRIGHT, F1_RED } from "@/content/theme";
 
-const RECOIL = "#19d982";
-const F1_RED = "#e10600";
 const BEST_KEY = "fk-reaction-best";
 
 /** A real start sequence: five columns light up a second apart, hold for a
@@ -146,9 +144,7 @@ export function ReactionTest() {
                   {[0, 1].map((row) => (
                     <span
                       key={row}
-                      className={cn(
-                        "block h-4 w-4 rounded-full transition-all duration-150 sm:h-5 sm:w-5",
-                      )}
+                      className="block h-4 w-4 rounded-full transition-all duration-150 sm:h-5 sm:w-5"
                       style={
                         on
                           ? {
@@ -177,7 +173,7 @@ export function ReactionTest() {
               className="text-[0.68rem] font-semibold uppercase tracking-[0.16em]"
               style={{
                 color:
-                  phase === "go" ? RECOIL : phase === "jump" ? F1_RED : "rgba(255,255,255,0.6)",
+                  phase === "go" ? RECOIL_BRIGHT : phase === "jump" ? F1_RED : "rgba(255,255,255,0.6)",
               }}
             >
               {label()}
@@ -188,7 +184,7 @@ export function ReactionTest() {
             {time !== null && (
               <span
                 className="text-xl font-medium"
-                style={{ color: time < 200 ? RECOIL : "#fff" }}
+                style={{ color: time < 200 ? RECOIL_BRIGHT : "#fff" }}
               >
                 {(time / 1000).toFixed(3)}
                 <span className="ml-0.5 text-xs text-white/50">s</span>

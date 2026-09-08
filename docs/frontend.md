@@ -188,34 +188,49 @@ The fix, which must be preserved:
 The scroll check is a plain `getBoundingClientRect` per scroll event rather than
 an `IntersectionObserver`, so the behaviour is deterministic and testable.
 
-Served file: `public/videos/f1-web.webm` (~29 MB web transcode).
-`public/videos/f1.webm` (~68 MB) is the master and must not be referenced.
+Served file: `public/videos/f1-web.webm` (~29 MB web transcode). The 68 MB
+master it was produced from used to sit next to it in `public/`, unreferenced
+and publicly downloadable; it has been removed (see below). Keep masters outside
+the repo.
 
-### Assets kept but not referenced
+### Dead assets are deleted, not parked
 
-These are intentionally retained (masters and spares), not oversights. They are
-**not** served, but they do ship inside the Docker image and the repo:
+`public/` used to carry ~103 MB of files nothing referenced — the 68 MB
+`f1.webm` master, plus seven unused images — recorded in a table here as
+"intentionally retained". They were not retained in any useful sense: they were
+publicly downloadable, shipped in every Docker image, and the table went stale
+the moment anyone added or removed one. They have been removed (they remain in
+git history if a master is ever needed again).
 
-| File | Size | Note |
-|---|---|---|
-| `videos/f1.webm` | 68 MB | master for `f1-web.webm`. Never reference it. |
-| `Portraits/finn-portrait-image3-f1outfit.png` | 14 MB | unused |
-| `Competitions/F1/f1-team-image1.JPG` | 10 MB | unused |
-| `Stagelighting/stage-lighting2.png` | 4 MB | unused |
-| `Stagelighting/stage-lighting-image4.png` | 3.3 MB | unused |
-| `Portraits/finn-portrait-transparent.png` | 2 MB | was used by a hero treatment that is gone |
-| `Stagelighting/stage-lighting.jpg` | 1.1 MB | unused |
-| `Portraits/finn-portrait_mirrored-transparent.png` | 584 KB | unused |
-
-`public/` totals ~242 MB, of which roughly 100 MB is the above. If image size
-ever becomes a deployment problem, this table is where to start.
-
-To regenerate it:
+The rule now: if nothing in `src/` references it, it does not live in `public/`.
+Masters and working files belong outside the repo. To check:
 
 ```bash
-find public -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.JPG' -o -name '*.webm' -o -name '*.mov' \) \
-  | while read -r f; do grep -rIqF "$(basename "$f")" src/ || du -h "$f"; done | sort -rh
+for f in $(cd public && find . -type f | sed 's|^\./||'); do
+  grep -rqF "/$f" src/ || echo "UNREFERENCED  $f"
+done
 ```
+
+One caveat when reading that output: `images/Journey-Thumbnails/*` is referenced
+through a template literal built from a video id, so it always shows up as
+unreferenced. Everything else that appears really is dead.
+
+### YouTube stills
+
+Video stills in the F1 timeline are served from `public/images/Journey-Thumbnails/`,
+named `<video-id>.jpg`. They used to be hot-linked from `i.ytimg.com`, which sent
+every visitor's IP to Google on page load — about eleven requests before anyone
+had clicked anything — and made the privacy policy's claim that "a connection to
+YouTube is only established when you actively start a video" false.
+
+Adding a video to `content/journey.ts` therefore means adding its still:
+
+```bash
+curl -o "public/images/Journey-Thumbnails/<id>.jpg" "https://i.ytimg.com/vi/<id>/hqdefault.jpg"
+```
+
+They are 480×360 and ~25 KB each; all eleven together are 280 KB, which is less
+than one of the photos on the page.
 
 ### A known rough edge
 
@@ -232,7 +247,18 @@ Left as-is deliberately. If it ever needs fixing, transcode to WebM the way
 | `Carousel` | windowed slider — renders only ±1 slide, so a long gallery doesn't mount every image |
 | `Gallery` | grid of thumbnails |
 | `Lightbox` | full-screen view; bypasses the optimizer and shows the original |
-| `MediaView` | shared frame used by the above |
+| `MediaView` | one image slide inside a project carousel (`object-contain`, for screenshots) |
+
+`Carousel` and `MediaView` each used to carry a `fill` prop selecting between two
+layouts. Every call site passed `fill`, so the other branch never ran — and in
+`Carousel` that dead branch rendered *every* slide, quietly contradicting the
+"only ±1 slide" rule above. Both props are gone; the surviving behaviour is the
+one that was always used.
+
+`Lightbox` and the mobile nav sheet both freeze page scrolling, and can be open
+at once. They share `lib/useScrollLock.ts`, which counts holders — writing
+`document.body.style.overflow` directly means whichever closes first releases the
+other's lock.
 
 On mobile the lightbox close button is positioned clear of the nav — it used to
 sit directly under it and became untappable.
@@ -258,6 +284,26 @@ sit directly under it and became untappable.
 JS purely because `LanguageToggle` imported `framer-motion` for a sliding pill;
 rewriting the pill as a CSS transform brought it to 105 kB — the shared
 baseline. Anything the gate imports must stay free of the animation library.
+
+Its visual treatment is held to the same rule. The gradient field, the grain,
+the focus ring and the staggered entrance are all CSS in `globals.css` under
+`.gate*` — no library, no images, no extra font. The stagger is driven by a
+`--i` custom property set per element in `AccessScreen`, and the whole thing is
+switched off under `prefers-reduced-motion`. Keep it that way: this is the page
+where load time matters more than anywhere else on the site.
+
+**It reads top to bottom, and it fits one screen.** Order: what this is, where
+a code comes from, then the field, then the privacy note. The explanation comes
+*before* the input because it is what makes the input make sense — someone who
+lands here has usually not been told they would need a code.
+
+One narrow column (`max-width: 34rem`). Measured: fits without scrolling at
+1440x900, 1280x720, 1024x768 and 390x844; a 375x667 handset scrolls ~77px, and
+the only thing below the fold there is the tail of the privacy footnote — the
+field itself stays visible.
+
+If you add copy here, re-measure. `document.documentElement.scrollHeight`
+against `innerHeight` at **1024x768** is the binding case.
 
 ---
 

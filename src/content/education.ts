@@ -14,7 +14,7 @@ export const education: EducationItem[] = [
     title: { de: "Auslandssemester", en: "Exchange semester" },
     org: "Kyonggi University (KGU), Suwon · Südkorea",
     period: { de: "Aug. 2026 – Jan. 2027", en: "Aug 2026 – Jan 2027" },
-    upcoming: true,
+    upcoming: false,
     description: {
       de: "Ein Semester an der Kyonggi University in Suwon mit hoffentlich vielen neue Perspektiven, Sprache und Kultur.",
       en: "A semester at Kyonggi University in Suwon with new perspectives, language and culture.",

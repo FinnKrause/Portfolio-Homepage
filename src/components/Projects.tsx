@@ -28,7 +28,7 @@ function slidesFor(project: Project): ReactNode[] {
     </div>,
   ];
   (project.gallery ?? []).forEach((slide, i) => {
-    slides.push(<MediaView key={`g-${i}`} slide={slide} fill />);
+    slides.push(<MediaView key={`g-${i}`} slide={slide} />);
   });
   return slides;
 }
@@ -114,7 +114,6 @@ export function Projects() {
                   >
                     <div className="relative aspect-[4/3] w-full sm:aspect-[16/10] lg:absolute lg:inset-0 lg:aspect-auto lg:h-full">
                       <Carousel
-                        fill
                         subtle
                         className="h-full"
                         ariaLabel={project.title}

@@ -37,7 +37,6 @@ export const engagement: EngagementItem[] = [
     ],
     gallery: [
       {
-        kind: "image",
         src: "/images/General-Impressions/finn-rede-image1.jpeg",
         alt: {
           de: "Finn bei einer Rede vor der Schülerschaft.",
@@ -66,24 +65,21 @@ export const engagement: EngagementItem[] = [
     ],
     // gallery: [
     //   {
-    //     kind: "image",
-    //     src: "/images/Competitions/Umbruchszeiten/umbruchszeiten-image1.png",
+    //    //     src: "/images/Competitions/Umbruchszeiten/umbruchszeiten-image1.png",
     //     alt: {
     //       de: "Bei der Preisverleihung in Berlin.",
     //       en: "At the award ceremony in Berlin.",
     //     },
     //   },
     //   {
-    //     kind: "image",
-    //     src: "/images/Competitions/Umbruchszeiten/umbruchszeiten-image2.jpeg",
+    //    //     src: "/images/Competitions/Umbruchszeiten/umbruchszeiten-image2.jpeg",
     //     alt: {
     //       de: "Bei der Preisverleihung in Berlin.",
     //       en: "At the award ceremony in Berlin.",
     //     },
     //   },
     //   {
-    //     kind: "image",
-    //     src: "/images/Competitions/Umbruchszeiten/umbruchszeiten-judge-image2.png",
+    //    //     src: "/images/Competitions/Umbruchszeiten/umbruchszeiten-judge-image2.png",
     //     alt: {
     //       de: "Finn als Jurymitglied im Interview.",
     //       en: "Finn being interviewed as a juror.",

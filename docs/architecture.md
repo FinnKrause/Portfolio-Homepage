@@ -176,6 +176,7 @@ src/
 │       └── admin/
 │           ├── tokens/      GET POST PATCH DELETE
 │           ├── stats/       GET — every number the dashboard shows
+│           ├── query/       GET tables · POST free-form SQL (read AND write)
 │           └── qr/          GET — PNG for a code
 │
 ├── components/
@@ -190,12 +191,16 @@ src/
 │   └── legal/LegalDoc.tsx   renders a legal document from content
 │
 ├── content/                 ALL copy lives here — see frontend.md
-├── config/access.ts         cookie names, lifetimes, code format
+│   └── theme.ts             the three F1 colours used in inline styles
+├── config/access.ts         cookie names, lifetimes, code format, expiry rule
 └── lib/
-    ├── db.ts                SQLite connection, schema, migrations, retention
-    ├── analytics.ts         request facts, rate limiting, event recording
+    ├── db.ts                SQLite connection, schema, retention
+    ├── analytics.ts         request facts, rate limiting, event recording, counters
+    ├── cookies.ts           the one place both access cookies are written
     ├── i18n.tsx             LanguageProvider / useLang
     ├── useIsDesktop.ts      matchMedia hook, SSR-safe
+    ├── useScrollLock.ts     counted body-scroll lock (nav sheet + lightbox)
+    ├── useHashScroll.ts     lands a sectioned link on the right section
     └── utils.ts             cn()
 ```
 

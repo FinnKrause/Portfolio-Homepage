@@ -8,6 +8,7 @@ import { profile } from "@/content/profile";
 import { useLang } from "@/lib/i18n";
 import { LanguageToggle } from "./LanguageToggle";
 import { cn } from "@/lib/utils";
+import { useScrollLock } from "@/lib/useScrollLock";
 
 export function Nav() {
   const { t } = useLang();
@@ -45,12 +46,7 @@ export function Nav() {
   }, []);
 
   // Lock scroll when the mobile sheet is open.
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
+  useScrollLock(open);
 
   const dark = !onPaper && !open;
 

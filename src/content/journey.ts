@@ -177,8 +177,8 @@ export const journey: JourneyPoint[] = [
       en: "I travelled to Avignon with my teammate Timon to coach LLP Racing from Lycée Louis Pasteur. Passing on what we'd learned and re-living the thrill of the competition without having to deliver ourselves was especially cool",
     },
     gallery: [
-      { kind: "image", src: "/images/Competitions/F1/f1-france-image1.png" },
-      { kind: "image", src: "/images/Competitions/F1/f1-france-image2.png" },
+      { src: "/images/Competitions/F1/f1-france-image1.png" },
+      { src: "/images/Competitions/F1/f1-france-image2.png" },
     ],
   },
   {
@@ -195,7 +195,7 @@ export const journey: JourneyPoint[] = [
       en: "I got to know the participants and the director of F1 in Schools Thailand. A totally different world, wonderful people and an eventful day.",
     },
     gallery: [
-      { kind: "image", src: "/images/Competitions/F1/f1-thailand-image1.png" },
+      { src: "/images/Competitions/F1/f1-thailand-image1.png" },
     ],
   },
   {
