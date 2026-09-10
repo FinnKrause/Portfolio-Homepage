@@ -79,7 +79,7 @@ export function AccessScreen({
           className="gate-rise mt-3 text-[clamp(1.55rem,4vw,2.1rem)] font-semibold leading-tight tracking-tight text-white"
           style={rise(1)}
         >
-          {tx("Einen Moment, bevor du Zugang bekommst.", "One moment before you come in.")}
+          {tx("Einen Moment, bevor du Zugang bekommst", "One moment before you come in")}
         </h1>
 
         {/* The introduction — Finn's own wording, kept as written. */}
@@ -92,7 +92,7 @@ export function AccessScreen({
 
         <div className="gate-rise mt-4" style={rise(3)}>
           <h2 className="gate-note-title">
-            {tx("Woher du einen Code hast", "Where you'd have a code from")}
+            {tx("Woher du einen Code haben könntest", "Where you'd have a code from")}
           </h2>
           <ul className="mt-2 space-y-1.5">
             {sources.map((line, i) => (
@@ -159,7 +159,7 @@ export function AccessScreen({
             "This page being opened is being logged with time, browser, operating system, device type and referrer, with no cookie involved. Enter a valid code and two cookies are added. The cookies expire one year after your last visit. After that time the mechanism cannot recognize old users anymore. All individual server-logs are automatically deleted after six months.",
           )}{" "}
           <a href="/datenschutz" className="gate-link">
-            {tx("Mehr dazu im Datenschutz", "More in the privacy policy")}
+            {tx("Datenschutz", "Privacy Policy")}
           </a>
         </p>
       </main>
