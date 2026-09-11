@@ -30,6 +30,7 @@ Open `http://localhost:3000/?code=<the code>`. The admin dashboard is at
 | `npm run build` | production build |
 | `npm start` | serve the build |
 | `npx tsc --noEmit` | typecheck (there is no lint step) |
+| `npm run redeploy` | full Docker redeploy: stop, rebuild, start, wait for health |
 
 ## Documentation
 
@@ -49,17 +50,31 @@ live database — so a misconfigured proxy is a remote `DROP TABLE`. Never expos
 the container directly.
 → [operations](docs/operations.md#the-admin-surface-has-no-lock-of-its-own)
 
-**The `homepage-data` volume is the database.** Without it, every redeploy
-starts from zero codes and zero statistics. → [operations](docs/operations.md#the-volume-is-the-data)
+**`./data` on the host is the database.** It is a bind mount, and it holds every
+access code you have handed out. Without it every redeploy starts from zero
+codes and zero statistics.
+→ [operations](docs/operations.md#the-data-lives-on-the-host)
 
-**An image `quality` value missing from `next.config.ts` is a runtime crash the
-build does not catch** — the page renders with an empty body.
-→ [frontend](docs/frontend.md#images)
+**`next.config.mjs` must stay plain JavaScript.** `next start` reads it at
+runtime; as TypeScript it needs the `typescript` package, which production
+dependencies do not include, so Next tries to npm-install it at boot and the
+container never serves. Also: an image `quality` value used by a component but
+missing from that file is a runtime crash the build does not catch — the page
+renders with an empty body.
+→ [operations](docs/operations.md#the-image-is-two-stages) · [frontend](docs/frontend.md#images)
 
 ## Deployment
 
 ```bash
-docker compose up -d --build
+./scripts/redeploy.sh
 ```
 
-Container listens on `3000`, published as `8070`, behind the reverse proxy.
+Stops the running container, rebuilds, restarts, and waits for the healthcheck —
+printing logs and failing loudly if it does not come up. `--no-cache`, `--prune`
+and `--logs` are available; `npm run redeploy` is the same script.
+
+Container listens on `3000`, published as `8070`, behind the reverse proxy. It
+builds on a Raspberry Pi 4; the base image is pinned to Node 22 because that is
+the oldest Node with a prebuilt `better-sqlite3` binary — on Node 20 the Pi
+compiles SQLite from source and the build takes ten minutes instead of one.
+→ [operations](docs/operations.md#build-time-on-the-pi)

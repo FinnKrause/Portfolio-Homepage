@@ -148,7 +148,7 @@ default visibly degraded the photography.
 
 - `quality={90}` everywhere by default
 - `quality={95}` for the About carousel, the most scrutinised images on the page
-- allowed values are pinned in `next.config.ts` (`qualities: [75, 90, 95]`)
+- allowed values are pinned in `next.config.mjs` (`qualities: [75, 90, 95]`)
 
 > **A quality value not in that list is a runtime crash, not a build error.**
 > `npm run build` will not catch it; the page renders with an empty body. If you

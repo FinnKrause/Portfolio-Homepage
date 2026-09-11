@@ -1,14 +1,56 @@
 services:
-  homepage-nextjs-app:
-    build: .
-    ports:
-      - "8070:3000"
+  homepage:
+    container_name: finn-homepage
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: finn-homepage:latest
     restart: unless-stopped
+
+    ports:
+      # Host 8070 -> container 3000. Only the reverse proxy in front of this may
+      # reach 8070; see docs/operations.md.
+      #
+      # If — and only if — that proxy runs on the host itself rather than in its
+      # own container, tighten this to "127.0.0.1:8070:3000". That stops the app
+      # being reachable from outside the machine even if the firewall is wrong,
+      # which matters because /admin has no authentication of its own and now
+      # carries a read/write SQL console. Do not change it blind: a containerised
+      # proxy cannot reach a port bound to the host loopback.
+      - "8070:3000"
+
     environment:
       FK_DB_PATH: /app/data/access.db
       FK_PUBLIC_ORIGIN: https://home.finnkrause.com
-    volumes:
-      - homepage-data:/app/data
+      TZ: Europe/Berlin
 
-volumes:
-  homepage-data:
+    volumes:
+      # A bind mount to ./data on the host, not a named volume. The database is
+      # the only irreplaceable thing here — every code you have handed out lives
+      # in it — and a bind mount means you can see it, back it up with cp, and
+      # copy it to another machine without knowing anything about Docker's
+      # internal volume store. `docker compose down -v` cannot take it with it.
+      #
+      # ./data is gitignored. The redeploy script creates it if it is missing.
+      - ./data:/app/data
+
+    healthcheck:
+      # Matches the HEALTHCHECK in the Dockerfile; repeated here so `docker
+      # compose ps` reports health even if the image is ever built elsewhere.
+      test:
+        - CMD
+        - node
+        - -e
+        - "require('http').get('http://127.0.0.1:3000/api/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+
+    logging:
+      # Without this, container logs grow without bound and are the usual way a
+      # small VPS runs out of disk.
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

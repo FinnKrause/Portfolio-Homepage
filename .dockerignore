@@ -1,6 +1,6 @@
 # Build context exclusions.
 #
-# Critical: node_modules must NEVER be copied. The image installs and compiles
+# Critical: node_modules must NEVER be copied. The image compiles
 # better-sqlite3 for linux-musl in an earlier layer; copying a host-built
 # node_modules over it replaces the native binary with a darwin/win32 one and
 # the container fails to start.
@@ -10,14 +10,21 @@ node_modules
 out
 build
 
-# The live database. Production data belongs in the mounted volume, not in an
-# image layer.
+# The live database. It is a bind mount from ./data at runtime; production data
+# has no business inside an image layer, and excluding it keeps the build
+# context small as the database grows.
 data
+
+# Not needed to build or run the image.
+scripts
+docs
+README.md
+VideoEdits
 
 .git
 .gitignore
 .dockerignore
-dockerfile
+Dockerfile
 docker-compose.yaml
 
 *.tsbuildinfo

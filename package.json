@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "redeploy": "./scripts/redeploy.sh"
   },
   "dependencies": {
     "better-sqlite3": "^12.6.2",

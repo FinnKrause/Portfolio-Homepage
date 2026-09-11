@@ -33,7 +33,7 @@ Scripts:
 | `npm start` | serve the build |
 | `npx tsc --noEmit` | typecheck |
 
-There is no lint script — ESLint is not installed, and `next.config.ts` sets
+There is no lint script — ESLint is not installed, and `next.config.mjs` sets
 `eslint.ignoreDuringBuilds`. Typecheck is the gate.
 
 > **Never run `npm run build` while `npm run dev` is running.** They write the
@@ -73,52 +73,153 @@ of those changes, change the other** — they are the same fact stored twice
 ## Deployment
 
 ```bash
-docker compose up -d --build
+./scripts/redeploy.sh
 ```
+
+That is the whole thing: it stops the running container, rebuilds the image,
+starts it again and waits until the healthcheck passes, printing the last 60 log
+lines and exiting non-zero if it does not. `npm run redeploy` is the same
+script.
+
+| Flag | Does |
+|---|---|
+| `--no-cache` | rebuild from scratch — use after a dependency change that Docker's cache misses |
+| `--prune` | delete dangling images afterwards |
+| `--logs` | follow the logs once it is up |
 
 Container listens on `3000`, published as `8070`.
 
-### The build is two stages
+### Build time on the Pi
 
-`better-sqlite3` is a native module, so building it needs `python3 make g++`.
-Those are build tools: the `builder` stage installs them, compiles, builds the
-site and then runs `npm prune --omit=dev`; the `runner` stage copies the result
-and carries none of them.
+This builds on a Raspberry Pi 4 (arm64), where the build used to take over ten
+minutes. Almost all of that was one thing:
 
-**Both stages must sit on the identical base image.** The `.node` binary
-compiled in `builder` is copied verbatim into `runner`; change one base without
+**`better-sqlite3` was being compiled from source.** It is a native module and
+ships prebuilt binaries keyed by Node's ABI version — but the lowest prebuild it
+publishes is ABI 127, which is **Node 22**. The image was on `node:20-alpine`
+(ABI 115), found no prebuild, and silently fell back to `node-gyp rebuild`,
+compiling SQLite on a Pi. Moving the base image to `node:22-alpine` makes
+`prebuild-install` fetch `node-v127-linuxmusl-arm64` and finish in seconds.
+
+**Do not move the base image back to an older Node to "be safe".** It is the
+most expensive single change available in this file, and it fails silently — the
+build still works, it just takes ten minutes. To check which ABI a Node major
+has: `node -p process.versions.modules`.
+
+Three smaller things, all in the same direction:
+
+- **One `npm ci`, not two.** A previous revision had a separate `deps` stage for
+  production modules, so dependencies were installed — and, back then, compiled
+  — twice. Installing once and running `npm prune --omit=dev` after the build
+  produces the same lean tree for about half the work.
+- **The npm cache is a BuildKit cache mount**, so a rebuild that does not change
+  `package-lock.json` reuses the downloaded tarballs instead of pulling them
+  over the Pi's network again. `scripts/redeploy.sh` exports `DOCKER_BUILDKIT=1`
+  so this works even on an older daemon.
+- **`public/` never enters the builder.** It is ~140 MB of photography and video
+  that `next build` does not read, so it is copied straight from the build
+  context into the runner. Routing it through the builder moved it twice across
+  SD-card I/O for nothing.
+
+If you ever build this image on your laptop for the Pi, build it **on** the Pi
+or with a native arm64 builder. Cross-building arm64 under qemu emulation is far
+slower than anything described above.
+
+### The image is two stages
+
+`builder` installs dependencies and runs `next build`, then drops
+devDependencies with `npm prune --omit=dev`. `runner` copies the result and
+carries no toolchain.
+
+**Both stages must sit on the identical base image.** The native `.node` binary
+installed in `builder` is copied verbatim into `runner`; change one base without
 the other and you get a binary the runtime cannot load — and it fails at
-container start, not at build time.
+container start, not at build time. The build calls
+`node -e "require('better-sqlite3')"` right after install so that failure
+surfaces during the build instead.
 
 `runner` copies exactly five things: `node_modules`, `.next`, `public`,
-`package.json` and **`next.config.ts`**. That last one is easy to forget because
-it looks like build-time config, but `next start` reads it, and the image
-optimizer needs its `images.qualities` list — omit it and pages render with an
-empty body.
+`package.json` and **`next.config.mjs`**.
+
+**`next.config.mjs` is plain JavaScript on purpose — do not rename it back to
+`.ts`.** `next start` reads it at runtime, and when it is TypeScript it needs
+the `typescript` package to do so. Production dependencies do not include it, so
+Next tries to *npm-install TypeScript at boot*: the container hangs on a network
+fetch instead of serving, and the symptom looks like the application being
+broken rather than a config file being the wrong extension. This is exactly how
+this deployment broke.
 
 Dependencies install with `npm ci`, not `npm install`: `ci` installs exactly what
-`package-lock.json` pins and fails if the lockfile is out of sync, so an image
-built today matches one built months from now.
+`package-lock.json` pins and fails if the lockfile is out of sync. That also
+means **package.json and package-lock.json must agree** or the image will not
+build — check with `npm ci --dry-run`.
+
+### The file is `Dockerfile`, not `dockerfile`
+
+Docker looks for the capitalised name by default. On macOS the filesystem is
+case-insensitive so either works; on the Pi it is not, and the lowercase name is
+simply not found.
 
 ### `.dockerignore` is load-bearing
 
-The image compiles `better-sqlite3` for linux-musl in the builder stage before
-`COPY . .` runs. Without `.dockerignore` excluding `node_modules`, that copy
-drops a host-built (darwin/win32) `node_modules` on top of the Linux one and
-**the container fails to start** with a native-module error.
+Without `node_modules` excluded, a host-built (darwin/win32) `node_modules`
+would be copied over the Linux one and **the container fails to start** with a
+native-module error. It also keeps `data/` out of the image, so production
+analytics never end up baked into a layer — and keeps the build context small
+as that database grows.
 
-It also keeps `data/` out of the image, so local analytics never end up baked
-into a layer.
+### Health
 
-### The volume is the data
+The container has a healthcheck hitting `/api/health`, which opens SQLite and
+runs a trivial query: a server answering requests but unable to reach its
+database is not healthy, and a missing `/app/data` mount is the most likely
+thing to go wrong here.
+
+It deliberately does **not** point at a page the gate logs. A healthcheck on
+`/gate` would write a `gate_view` row every thirty seconds forever, burying the
+real visitor numbers and permanently skewing the bounce rate.
+
+`docker compose ps` shows the health state; `./scripts/redeploy.sh` waits for it.
+
+### The data lives on the host
 
 ```yaml
 volumes:
-  - homepage-data:/app/data
+  - ./data:/app/data
 ```
 
-Without it every redeploy starts from an empty database — all codes and all
-statistics gone. It is the single most important line in the compose file.
+A bind mount, not a named volume. The database is the only irreplaceable thing
+in this deployment — every access code you have handed out is in it — and a bind
+mount means you can see the file, copy it with `cp`, and move it to another
+machine without knowing anything about Docker's internal volume store.
+`docker compose down -v` cannot take it with it.
+
+Without this line every redeploy starts from an empty database: all codes and
+all statistics gone.
+
+#### Migrating from the old named volume
+
+This used to be a named volume called `homepage-data`. Those are different
+places — redeploying without moving the data leaves the old database stranded
+inside Docker and starts a fresh empty one, which silently invalidates every
+code already in circulation.
+
+`./scripts/redeploy.sh` refuses to run if it finds the old volume and no
+`./data/access.db`, and prints the command to move it:
+
+```bash
+docker run --rm -v portfolio_homepage-data:/from -v "$(pwd)/data":/to alpine sh -c 'cp -a /from/. /to/'
+```
+
+(The volume is prefixed with the compose project name, usually the directory —
+`docker volume ls` shows the real one.) Once `./data/access.db` exists the check
+is skipped and the old volume can be removed with `docker volume rm`.
+
+#### Ownership
+
+The container runs as root, so files under `./data` are root-owned on the host.
+That is normal for a Docker bind mount and nothing needs to change; it just
+means `sudo` to inspect them directly.
 
 ---
 
@@ -161,7 +262,7 @@ Copy the file while the app is stopped, or use SQLite's online backup so the WAL
 is included:
 
 ```bash
-docker compose exec homepage-nextjs-app \
+docker compose exec homepage \
   sqlite3 /app/data/access.db ".backup '/app/data/backup.db'"
 ```
 
@@ -224,7 +325,7 @@ dependency of the content.
 ## Troubleshooting
 
 **Blank page, empty `<body>`, no build error.**
-Almost certainly an image `quality` value not listed in `next.config.ts`'s
+Almost certainly an image `quality` value not listed in `next.config.mjs`'s
 `qualities` array. It is a runtime crash and the build will not catch it.
 
 **Images 404 in production but work locally.**
@@ -234,11 +335,11 @@ Case-sensitive filesystem. macOS matched `.jpg` against `.JPG`; Linux won't.
 Native module mismatch — check `.dockerignore` still excludes `node_modules`.
 
 **Admin shows an empty database after a deploy.**
-Either the `homepage-data` volume was dropped, or `FK_DB_PATH` doesn't point
+Either the `./data` bind mount is missing or unwritable, or `FK_DB_PATH` doesn't point
 into it and the app opened a fresh file elsewhere. Check with:
 
 ```bash
-docker compose exec homepage-nextjs-app sh -c 'echo $FK_DB_PATH && ls -la /app/data'
+docker compose exec homepage sh -c 'echo $FK_DB_PATH && ls -la /app/data'
 ```
 
 **Unique-visitor counts look too low.**

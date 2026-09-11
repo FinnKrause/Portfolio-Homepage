@@ -172,7 +172,8 @@ src/
 │   ├── impressum/           ─┘
 │   └── api/
 │       ├── access/          GET = link arrival, POST = gate form
-│       ├── visit/           POST beacon, one per page load
+│       ├── visit/           POST beacon, one per page load; renews the cookies
+│       ├── health/          GET — container healthcheck, pings SQLite, logs nothing
 │       └── admin/
 │           ├── tokens/      GET POST PATCH DELETE
 │           ├── stats/       GET — every number the dashboard shows
