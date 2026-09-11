@@ -160,7 +160,7 @@ const tooltipStyle = {
 
 /* ------------------------------------------------------------- dashboard */
 
-export function AdminDashboard() {
+export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
   const [tokens, setTokens] = useState<TokenWithStats[] | null>(null);
   const [stats, setStats] = useState<Stats | null>(null);
   const [days, setDays] = useState<number>(30);
@@ -205,13 +205,16 @@ export function AdminDashboard() {
   /**
    * The shareable link, including the code's landing section when it has one.
    *
-   * Reads the origin at call time rather than from render state: this only ever
-   * runs from the copy button, i.e. in the browser, where window.location is
-   * real. Building it during the server render would bake in a placeholder
-   * origin and hand out links pointing at the wrong host.
+   * Prefers FK_PUBLIC_ORIGIN — the same value the QR route uses — so a copied
+   * link and the QR for one code always point at the same place. Without it,
+   * opening /admin on localhost produced localhost links while the QR still
+   * encoded the public domain.
+   *
+   * Falls back to the origin being browsed, which is what you want in local
+   * development where the variable is unset.
    */
   const linkFor = (tk: { code: string; section: string | null }) => {
-    const u = new URL("/", window.location.origin);
+    const u = new URL("/", publicOrigin || window.location.origin);
     u.searchParams.set(ACCESS_URL_PARAM, tk.code);
     if (tk.section) u.searchParams.set(SECTION_URL_PARAM, tk.section);
     return u.toString();

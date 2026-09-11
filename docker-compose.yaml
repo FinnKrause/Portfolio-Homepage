@@ -7,9 +7,12 @@ services:
     image: finn-homepage:latest
     restart: unless-stopped
 
+    # Values come from .env in this directory, which docker compose reads
+    # automatically. Each has a fallback, so a missing .env still starts.
+    # `cp .env.example .env` and edit that rather than editing this file.
     ports:
-      # Host 8070 -> container 3000. Only the reverse proxy in front of this may
-      # reach 8070; see docs/operations.md.
+      # Host FK_HOST_PORT -> container 3000. Only the reverse proxy in front of
+      # this may reach it; see docs/operations.md.
       #
       # If — and only if — that proxy runs on the host itself rather than in its
       # own container, tighten this to "127.0.0.1:8070:3000". That stops the app
@@ -17,12 +20,16 @@ services:
       # which matters because /admin has no authentication of its own and now
       # carries a read/write SQL console. Do not change it blind: a containerised
       # proxy cannot reach a port bound to the host loopback.
-      - "8070:3000"
+      - "${FK_HOST_PORT:-8070}:3000"
 
     environment:
-      FK_DB_PATH: /app/data/access.db
-      FK_PUBLIC_ORIGIN: https://home.finnkrause.com
-      TZ: Europe/Berlin
+      FK_DB_PATH: ${FK_DB_PATH:-/app/data/access.db}
+      # Must be the origin visitors actually use. It is baked into printed QR
+      # codes and links copied out of /admin, and the app cannot discover it:
+      # a route handler derives its origin from the container's own listening
+      # address, not from the Host header the proxy forwards.
+      FK_PUBLIC_ORIGIN: ${FK_PUBLIC_ORIGIN:-}
+      TZ: ${TZ:-Europe/Berlin}
 
     volumes:
       # A bind mount to ./data on the host, not a named volume. The database is
@@ -32,7 +39,7 @@ services:
       # internal volume store. `docker compose down -v` cannot take it with it.
       #
       # ./data is gitignored. The redeploy script creates it if it is missing.
-      - ./data:/app/data
+      - ${FK_DATA_DIR:-./data}:/app/data
 
     healthcheck:
       # Matches the HEALTHCHECK in the Dockerfile; repeated here so `docker

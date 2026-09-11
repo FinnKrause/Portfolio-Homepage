@@ -8,8 +8,16 @@ export const dynamic = "force-dynamic";
 
 /**
  * Renders the direct-access link for a code as a downloadable PNG.
- * The origin is taken from the request, so the QR always points at whatever
- * host the panel is being used on.
+ *
+ * The origin comes from FK_PUBLIC_ORIGIN, never from the request. A Next route
+ * handler derives its own origin from the address the container is listening
+ * on — `http://localhost:3000` — not from the Host header the proxy forwards,
+ * so a QR built from the request would encode an address that exists nowhere
+ * outside the host.
+ *
+ * That is unrecoverable in a way most misconfigurations are not: this PNG gets
+ * printed onto cards. So in production a missing FK_PUBLIC_ORIGIN is refused
+ * rather than guessed at.
  */
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams;
@@ -25,7 +33,22 @@ export async function GET(req: NextRequest) {
   }
 
   const size = Math.min(Math.max(Number(params.get("size")) || 1024, 256), 2048);
-  const origin = process.env.FK_PUBLIC_ORIGIN ?? req.nextUrl.origin;
+
+  // In development, falling back to the browsed origin is convenient and
+  // harmless — nothing gets printed. In production it would silently produce a
+  // QR pointing at the container's own localhost, so refuse instead.
+  const configured = process.env.FK_PUBLIC_ORIGIN?.trim();
+  if (!configured && process.env.NODE_ENV === "production") {
+    return NextResponse.json(
+      {
+        error:
+          "FK_PUBLIC_ORIGIN is not set. Refusing to generate a QR code that would " +
+          "point at the container's own address. Set it in .env and redeploy.",
+      },
+      { status: 500 },
+    );
+  }
+  const origin = configured || req.nextUrl.origin;
 
   // The section is encoded into the printed code itself, so a card can send
   // someone straight to a specific part of the page. Validated for the same

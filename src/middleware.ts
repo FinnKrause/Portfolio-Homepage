@@ -28,6 +28,18 @@ export function middleware(req: NextRequest) {
     // here — the edge runtime should stay free of anything but the cookie check.
     const section = url.searchParams.get(SECTION_URL_PARAM);
     if (section) target.searchParams.set(SECTION_URL_PARAM, section);
+
+    // Absolute here is safe, and only here. Middleware builds `req.url` from
+    // the Host header, so this URL is same-origin as the request and Next
+    // emits it as a relative Location — verified against a public domain, a
+    // bare host:port and no Host override at all.
+    //
+    // **Route handlers do not work this way.** There, `req.url` is built from
+    // the address the container is listening on, so `new URL("/", req.url)`
+    // behind a proxy yields `http://localhost:3000/` and redirects the visitor
+    // somewhere that does not exist off-host. That was a real bug. If you add
+    // a redirect to anything under /api, set a relative Location by hand — see
+    // `redirectTo` in api/access/route.ts.
     return NextResponse.redirect(target);
   }
 

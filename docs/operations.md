@@ -53,20 +53,78 @@ Then open `http://localhost:3000/?code=1234-5`.
 
 ## Environment variables
 
+Configuration lives in **`.env`** in the repository root. `.env.example` is the
+committed template:
+
+```bash
+cp .env.example .env      # then edit
+./scripts/redeploy.sh     # apply
+```
+
 | Variable | Default | Meaning |
 |---|---|---|
-| `FK_DB_PATH` | `<cwd>/data/access.db` | where SQLite lives |
-| `FK_PUBLIC_ORIGIN` | — | origin baked into generated QR codes and copied links |
+| `FK_PUBLIC_ORIGIN` | *(empty)* | the origin visitors actually use — baked into QR codes and copied admin links |
+| `FK_DB_PATH` | `/app/data/access.db` | where SQLite lives **inside** the container |
+| `FK_DATA_DIR` | `./data` | where the database lives **on the host** (the bind mount) |
+| `FK_HOST_PORT` | `8070` | the port published on the host |
+| `TZ` | `Europe/Berlin` | container timezone, which admin timestamps render against |
 
-**Set `FK_DB_PATH` explicitly in production.** The default is relative to
+`docker-compose.yaml` substitutes each with a fallback, so a missing `.env`
+still starts — it just starts with defaults.
+
+### `.env` is read in two different places
+
+This trips people up, so it is worth stating plainly:
+
+1. **`docker compose`** reads it for `${VAR}` substitution in
+   `docker-compose.yaml` — that is how the container gets its settings.
+2. **Next.js itself** reads it when you run `npm run dev` / `npm start`
+   *directly on your machine*, which is why local development picks it up with
+   no extra setup.
+
+Inside the container only (1) applies: `.env` is never copied into the image —
+the builder copies an explicit list of files and `.env` is not on it — so the
+container's settings come entirely from the compose `environment:` block.
+
+A consequence worth knowing when testing locally: `.env` will override a
+variable you think you unset on the command line, because Next loads the file
+after your shell.
+
+### `FK_PUBLIC_ORIGIN` is not optional in production
+
+It must match the origin visitors actually type or scan. **The app cannot work
+it out for itself**, and this is the single most confusing failure in the
+deployment, so it is worth being precise about why:
+
+A Next.js **route handler** builds its own origin from the address the container
+is listening on — `http://localhost:3000` — *not* from the `Host` header the
+reverse proxy forwards. Forwarding `Host` correctly does not change this.
+Verified directly: with `Host: home.finnkrause.com`, `new URL("/", req.url)`
+still evaluates to `http://localhost:3000/`.
+
+So two things had to change:
+
+- **Redirects no longer build absolute URLs at all.** `/api/access` sets a
+  *relative* `Location` (`/#engagement`), which the browser resolves against the
+  URL it actually requested. That is correct on any domain, behind any proxy,
+  with no configuration. See `redirectTo` in `src/app/api/access/route.ts`.
+  Middleware is the exception and may use absolute URLs — it builds `req.url`
+  from the `Host` header, so its redirects come out relative anyway.
+- **QR codes and copied admin links use `FK_PUBLIC_ORIGIN`**, because those must
+  be absolute — they get printed onto cards and pasted into messages. If it is
+  unset while `NODE_ENV=production`, the QR route returns **500 with an
+  explanation rather than generating a PNG**. A printed QR pointing at
+  `localhost` cannot be recalled, so guessing is worse than refusing.
+
+`FK_PUBLIC_ORIGIN` is also the address shown on the gate screen. **If one
+changes, change the other** — they are the same fact stored twice (`.env` and
+the copy in `src/components/access/AccessScreen.tsx`).
+
+### `FK_DB_PATH`
+
+**Set it explicitly in production.** The default is relative to
 `process.cwd()`, so a process started from a different working directory quietly
-opens a *different, empty* database. `docker-compose.yaml` pins it.
-
-`FK_PUBLIC_ORIGIN` must match the origin visitors actually use, or every QR code
-you print will point somewhere wrong. It is currently
-`https://home.finnkrause.com`, matching the address shown on the gate. **If one
-of those changes, change the other** — they are the same fact stored twice
-(`docker-compose.yaml` and the copy in `src/components/access/AccessScreen.tsx`).
+opens a *different, empty* database. Compose pins it.
 
 ---
 

@@ -98,11 +98,28 @@ function handle(req: NextRequest, rawCode: string, source: "gate" | "link") {
  * Returned as a fragment. The browser never sends it back to us, which is
  * exactly right — the section someone was pointed at is not worth logging.
  */
-function landingUrl(req: NextRequest, tokenSection: string | null): URL {
-  const url = new URL("/", req.url);
+function landingPath(req: NextRequest, tokenSection: string | null): string {
   const requested = req.nextUrl.searchParams.get(SECTION_URL_PARAM) ?? tokenSection;
-  if (isKnownSection(requested) && requested !== "top") url.hash = requested;
-  return url;
+  return isKnownSection(requested) && requested !== "top" ? `/#${requested}` : "/";
+}
+
+/**
+ * A redirect with a **relative** Location header.
+ *
+ * Do not replace this with `NextResponse.redirect(new URL("/", req.url))`. That
+ * builds an absolute URL out of `req.url`, which behind a reverse proxy is the
+ * address the container is listening on — so a visitor who opened
+ * `https://home.finnkrause.com/?code=1234-5` was answered with
+ * `Location: http://localhost:3000/` and sent somewhere that does not exist
+ * outside the host. Forwarding the real Host header does not help: the URL a
+ * route handler sees is built from the listening address either way.
+ *
+ * A relative Location is resolved by the browser against the URL it actually
+ * requested, so this is correct in dev, behind any proxy, on any domain, with
+ * no configuration — every destination here is same-origin anyway.
+ */
+function redirectTo(path: string): NextResponse {
+  return new NextResponse(null, { status: 307, headers: { Location: path } });
 }
 
 /** QR / shared-link path: validate, then land the visitor on the site. */
@@ -111,13 +128,10 @@ export async function GET(req: NextRequest) {
   const result = handle(req, raw, "link");
 
   if (result.status === "granted") {
-    return issueCookies(
-      NextResponse.redirect(landingUrl(req, result.section)),
-      result.visitorId,
-    );
+    return issueCookies(redirectTo(landingPath(req, result.section)), result.visitorId);
   }
   // Send them to the gate with the code stripped from the address bar.
-  return NextResponse.redirect(new URL("/", req.url));
+  return redirectTo("/");
 }
 
 /** Form path: validate and answer with JSON so the screen can show the error. */

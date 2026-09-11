@@ -12,6 +12,7 @@ performing.
 
 ```bash
 npm install
+cp .env.example .env    # optional locally; required for deployment
 npm run dev
 ```
 
@@ -49,6 +50,13 @@ at `/api/admin/query` that runs free-form **read and write** queries against the
 live database — so a misconfigured proxy is a remote `DROP TABLE`. Never expose
 the container directly.
 → [operations](docs/operations.md#the-admin-surface-has-no-lock-of-its-own)
+
+**Configuration lives in `.env`** (`cp .env.example .env`). `FK_PUBLIC_ORIGIN`
+must be set in production: the app cannot discover its own public origin — a
+route handler sees the container's `localhost:3000`, not the proxied `Host` —
+so QR codes and copied admin links read it from there, and the QR route refuses
+to generate rather than print a code pointing at localhost.
+→ [operations](docs/operations.md#environment-variables)
 
 **`./data` on the host is the database.** It is a bind mount, and it holds every
 access code you have handed out. Without it every redeploy starts from zero
