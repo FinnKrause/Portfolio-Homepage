@@ -2,7 +2,6 @@ import { NextResponse, type NextRequest } from "next/server";
 import { randomUUID } from "node:crypto";
 import {
   ACCESS_URL_PARAM,
-  SECTION_URL_PARAM,
   VISITOR_COOKIE,
   formatAccessCode,
   isWellFormedCode,
@@ -87,20 +86,27 @@ function handle(req: NextRequest, rawCode: string, source: "gate" | "link") {
 }
 
 /**
- * Where a link arrival should land.
+ * Where a link arrival should land — read from the token, never from the URL.
  *
- * The `to` parameter wins over the code's stored default, so one code can still
- * be sent somewhere specific ad hoc without editing the token. Anything not in
- * SECTION_IDS is dropped rather than rejected: a QR code is printed and outlives
- * the page, so a section that has since been renamed should land the visitor on
- * the homepage, not break their link.
+ * This is resolved at scan time, which is the point: editing "Lands on" in the
+ * admin instantly retargets every link and every already-printed QR for that
+ * code. A section carried in the URL would be frozen into the printed card.
+ *
+ * Only applies to link arrivals. Typing a code at the gate always lands on the
+ * homepage — `GateClient` navigates to "/" itself — because someone who has
+ * just typed a code is looking at the site, not following a pointer into it.
+ *
+ * A section that is no longer in SECTION_IDS is dropped rather than rejected:
+ * a printed QR outlives the page, so a renamed section should land the visitor
+ * on the homepage rather than break their link.
  *
  * Returned as a fragment. The browser never sends it back to us, which is
  * exactly right — the section someone was pointed at is not worth logging.
  */
-function landingPath(req: NextRequest, tokenSection: string | null): string {
-  const requested = req.nextUrl.searchParams.get(SECTION_URL_PARAM) ?? tokenSection;
-  return isKnownSection(requested) && requested !== "top" ? `/#${requested}` : "/";
+function landingPath(tokenSection: string | null): string {
+  return isKnownSection(tokenSection) && tokenSection !== "top"
+    ? `/#${tokenSection}`
+    : "/";
 }
 
 /**
@@ -128,7 +134,7 @@ export async function GET(req: NextRequest) {
   const result = handle(req, raw, "link");
 
   if (result.status === "granted") {
-    return issueCookies(redirectTo(landingPath(req, result.section)), result.visitorId);
+    return issueCookies(redirectTo(landingPath(result.section)), result.visitorId);
   }
   // Send them to the gate with the code stripped from the address bar.
   return redirectTo("/");

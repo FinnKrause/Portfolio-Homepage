@@ -48,15 +48,22 @@ export const EVENT_RETENTION_DAYS = 182;
 export const ACCESS_URL_PARAM = "code";
 
 /**
- * Optional section to land on, carried in the same URL as the code:
- * `/?code=1234-5&to=championship`.
+ * The code is the only thing that travels in the URL.
  *
- * It travels in the query rather than as a `#hash` because the middleware has
- * to hand it to /api/access on the server, and fragments are never sent to a
- * server. The route turns it back into a hash on the final redirect, which is
- * what actually makes the browser scroll.
+ * Where a link or QR lands is a property of the *code*, stored on the token and
+ * resolved when the link is opened — deliberately not carried in the URL. Do
+ * not add a parameter for it.
+ *
+ * It would be redundant: the server looks the code up anyway, so the parameter
+ * could only restate what is about to be read from the database. And it would
+ * be actively harmful, because a QR gets printed onto a card and printing
+ * freezes whatever is in it — changing "Lands on" in the admin would then fail
+ * to affect any card already handed out, and the dropdown would be describing
+ * behaviour that no longer happened.
+ *
+ * Resolving from the token means editing it retargets every link and every
+ * printed QR already in circulation, immediately.
  */
-export const SECTION_URL_PARAM = "to";
 
 /** Codes are typed by hand and read off cards, so they stay short: XXXX-X. */
 const CODE_RE = /^(\d{4})-(\d)$/;

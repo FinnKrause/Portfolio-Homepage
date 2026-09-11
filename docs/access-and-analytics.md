@@ -256,50 +256,75 @@ asking: are the QR links doing the work, or are people typing codes off print?
 
 ## Landing sections
 
-A code can point at a section of the page, so a QR on a business card can drop
+A code can point at a section of the page, so a QR on a business card drops
 someone straight into the F1 chapter instead of the top.
 
+**Where a code lands is a property of the code, not of the URL.** The link and
+the QR carry the code and nothing else:
+
 ```
-/?code=1234-5&to=championship
-        │            └── section, optional
-        └── the code
+/?code=1234-5
+        └── that's the whole thing
 ```
 
-The chain, and why it has this shape:
+The chain:
 
-1. **Middleware** sees `code` and redirects to `/api/access`, forwarding `to`
-   untouched. It does not validate — the edge runtime stays free of everything
-   but the cookie check.
-2. **`/api/access` GET** validates the code, then resolves the landing section:
-   the `to` parameter if there is one, otherwise the token's stored `section`.
-   An explicit `to` therefore lets one code be aimed somewhere else ad hoc
-   without editing the token.
-3. It redirects to `/#championship`. **The section becomes a fragment**, which
-   the browser never sends back to a server — so the section someone was
-   pointed at is not logged, which is right: it is navigation, not analytics.
-4. **`useHashScroll`** in `SiteContent` scrolls to it once on mount and again as
+1. **Middleware** sees `code` and redirects to `/api/access`. Only the code
+   travels; any other query the visitor arrived with is dropped.
+2. **`/api/access` GET** validates the code and reads the landing section off
+   the **token row**.
+3. It redirects to `/#championship`. The section becomes a **fragment**, which
+   the browser never sends back to a server — so the section someone was pointed
+   at is not logged, which is right: it is navigation, not analytics.
+4. **`useHashScroll`** in `SiteContent` scrolls to it on mount and again as
    images resolve. The browser's own hash handling fires before the photography
-   below the fold has taken up its real height, which lands you hundreds of
-   pixels short.
+   below the fold has taken its real height, which lands you hundreds of pixels
+   short.
 
-**Why a query parameter and not just a `#hash` in the QR.** Fragments are never
-transmitted to the server, and this URL has to survive two server-side redirects
-before the browser is allowed to keep anything. Browsers *do* usually carry a
-fragment across a redirect whose target has none, but "usually" is not a
-property you want printed onto a card.
+### Typing the code at the gate always lands on the homepage
+
+Only *link* arrivals get a section. `GateClient` navigates to `/` itself after a
+successful POST, with no fragment. Someone who has just typed a code is looking
+at the site; someone who scanned a card was pointed *into* it.
+
+### Why the section is not in the URL
+
+Do not add a `?to=` parameter for it. One existed briefly and was removed; these
+are the reasons, so nobody reaches for it again.
+
+**A QR code is printed, and printing freezes it.** With the section baked into
+the URL, changing "Lands on" in the admin would silently fail to affect a single
+card already handed out — the dropdown would be describing behaviour that no
+longer happened for most of the codes in circulation. Resolving from the token at
+scan time means editing it retargets every link and every printed QR
+immediately. Verified: flipping a token from `projects` to `experience` changes
+where the *same, already-issued* link lands.
+
+**It is redundant.** The server looks the code up anyway, so the parameter could
+only restate what is about to be read from the database.
+
+**It makes the QR denser for nothing.** One test code's QR went from 7852 to
+7319 bytes without it; fewer modules means larger modules at the same printed
+size, which scans more reliably off a card.
 
 ### Validation
 
-`to` is checked against `SECTION_IDS` in `content/ui.ts` — derived from `nav`,
-plus `top`. Anything else is **dropped, not rejected**: a QR code is a printed
-artefact that outlives the page it points at, so a section that has since been
-renamed lands the visitor on the homepage rather than breaking their link.
+The token's `section` is checked against `SECTION_IDS` in `content/ui.ts` —
+derived from `nav`, plus `top` — both when it is **written** (the tokens route)
+and when it is **read** (`landingPath`).
 
-`top` is stored as `NULL`, since it means the same thing as no section and one
-representation keeps the link builder to a single branch.
+Checking on read as well is not redundant. The write path is not the only way a
+value gets into that column: the SQL console writes arbitrary SQL, and the value
+ends up interpolated into a `Location` header. A section that is not in the list
+yields `/` instead of a fragment, so a typo made in the console — or a nav id
+renamed while tokens still reference the old one — degrades to the homepage
+instead of 500-ing and locking everyone out of that code.
 
-The same allowlist guards the QR route, so an invalid section can never be baked
-into a printed code.
+It is not a security boundary: the runtime rejects a header value containing
+CR or LF outright, so this cannot be an injection vector either way.
+
+`top` is stored as `NULL`, since it means the same thing as no section, and one
+representation keeps the landing logic to a single branch.
 
 ---
 

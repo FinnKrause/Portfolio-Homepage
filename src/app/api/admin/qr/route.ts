@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import QRCode from "qrcode";
-import { ACCESS_URL_PARAM, SECTION_URL_PARAM, isWellFormedCode } from "@/config/access";
-import { isKnownSection } from "@/content/ui";
+import { ACCESS_URL_PARAM, isWellFormedCode } from "@/config/access";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -50,17 +49,11 @@ export async function GET(req: NextRequest) {
   }
   const origin = configured || req.nextUrl.origin;
 
-  // The section is encoded into the printed code itself, so a card can send
-  // someone straight to a specific part of the page. Validated for the same
-  // reason the code is: this string ends up inside a QR that will outlive the
-  // page, and an unknown id should degrade to the homepage rather than persist
-  // as junk in a printed artefact.
+  // Only the code. Where it lands is a property of the token, resolved at scan
+  // time — deliberately not baked in here, because this PNG gets printed and a
+  // section frozen into it could never be changed again. See config/access.ts.
   const target = new URL("/", origin);
   target.searchParams.set(ACCESS_URL_PARAM, code);
-  const section = params.get(SECTION_URL_PARAM);
-  if (isKnownSection(section) && section !== "top") {
-    target.searchParams.set(SECTION_URL_PARAM, section);
-  }
 
   const png = await QRCode.toBuffer(target.toString(), {
     type: "png",

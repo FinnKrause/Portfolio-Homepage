@@ -26,7 +26,7 @@ import {
   X,
 } from "lucide-react";
 import type { TokenWithStats } from "@/app/api/admin/tokens/route";
-import { isExpired, ACCESS_URL_PARAM, SECTION_URL_PARAM } from "@/config/access";
+import { isExpired, ACCESS_URL_PARAM } from "@/config/access";
 import { sectionOptions } from "@/content/ui";
 import { cn } from "@/lib/utils";
 
@@ -203,7 +203,9 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
   };
 
   /**
-   * The shareable link, including the code's landing section when it has one.
+   * The shareable link. Just the code — where it lands is looked up from the
+   * token when the link is opened, so changing "Lands on" retargets every link
+   * and printed QR already in circulation. See config/access.ts.
    *
    * Prefers FK_PUBLIC_ORIGIN — the same value the QR route uses — so a copied
    * link and the QR for one code always point at the same place. Without it,
@@ -213,18 +215,16 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
    * Falls back to the origin being browsed, which is what you want in local
    * development where the variable is unset.
    */
-  const linkFor = (tk: { code: string; section: string | null }) => {
+  const linkFor = (tk: { code: string }) => {
     const u = new URL("/", publicOrigin || window.location.origin);
     u.searchParams.set(ACCESS_URL_PARAM, tk.code);
-    if (tk.section) u.searchParams.set(SECTION_URL_PARAM, tk.section);
     return u.toString();
   };
 
-  const qrHref = (tk: { code: string; section: string | null }) =>
-    `/api/admin/qr?${ACCESS_URL_PARAM}=${encodeURIComponent(tk.code)}` +
-    (tk.section ? `&${SECTION_URL_PARAM}=${encodeURIComponent(tk.section)}` : "");
+  const qrHref = (tk: { code: string }) =>
+    `/api/admin/qr?${ACCESS_URL_PARAM}=${encodeURIComponent(tk.code)}`;
 
-  const copy = async (tk: { code: string; section: string | null }) => {
+  const copy = async (tk: { code: string }) => {
     await navigator.clipboard.writeText(linkFor(tk));
     setCopied(tk.code);
     window.setTimeout(() => setCopied((c) => (c === tk.code ? null : c)), 1600);
