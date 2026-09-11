@@ -170,16 +170,25 @@ as that database grows.
 
 ### Health
 
-The container has a healthcheck hitting `/api/health`, which opens SQLite and
-runs a trivial query: a server answering requests but unable to reach its
-database is not healthy, and a missing `/app/data` mount is the most likely
-thing to go wrong here.
+The container has a healthcheck, and `./scripts/redeploy.sh` waits on it;
+`docker compose ps` shows the state.
 
-It deliberately does **not** point at a page the gate logs. A healthcheck on
-`/gate` would write a `gate_view` row every thirty seconds forever, burying the
-real visitor numbers and permanently skewing the bounce rate.
+It probes **`/impressum`** — a page that already exists, is public, is statically
+prerendered and records nothing. There is deliberately **no `/api/health`
+route**: an endpoint whose only purpose is to be polled is one more thing
+reachable from the outside, and this app's whole premise is that its surface is
+small. The probe answers the question that actually matters in practice — is the
+server accepting connections and serving pages.
 
-`docker compose ps` shows the health state; `./scripts/redeploy.sh` waits for it.
+It must never point at `/` or `/gate`. Those are the gate, and every request to
+them writes a `gate_view` row; a healthcheck there would log a visitor every
+thirty seconds forever, bury the real numbers and permanently skew the bounce
+rate.
+
+The trade-off: this is a liveness check, not a database check. A server that
+serves pages but cannot open SQLite reports healthy. That is the price of not
+having a dedicated endpoint, and it is the right trade here — a broken database
+surfaces immediately on `/admin` and on the first real visit.
 
 ### The data lives on the host
 

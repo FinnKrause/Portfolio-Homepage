@@ -171,7 +171,6 @@ export function AdminDashboard() {
   const [showNew, setShowNew] = useState(false);
   const [query, setQuery] = useState("");
 
-  const origin = typeof window === "undefined" ? "" : window.location.origin;
 
   const loadTokens = useCallback(async () => {
     const res = await fetch("/api/admin/tokens");
@@ -203,9 +202,16 @@ export function AdminDashboard() {
     return res.ok;
   };
 
-  /** The shareable link, including the code's landing section when it has one. */
+  /**
+   * The shareable link, including the code's landing section when it has one.
+   *
+   * Reads the origin at call time rather than from render state: this only ever
+   * runs from the copy button, i.e. in the browser, where window.location is
+   * real. Building it during the server render would bake in a placeholder
+   * origin and hand out links pointing at the wrong host.
+   */
   const linkFor = (tk: { code: string; section: string | null }) => {
-    const u = new URL("/", origin || "http://localhost");
+    const u = new URL("/", window.location.origin);
     u.searchParams.set(ACCESS_URL_PARAM, tk.code);
     if (tk.section) u.searchParams.set(SECTION_URL_PARAM, tk.section);
     return u.toString();

@@ -112,16 +112,22 @@ RUN mkdir -p /app/data
 
 EXPOSE 3000
 
-# Hits /api/health, which pings SQLite: a server answering requests but unable
-# to open its database is not healthy, and a missing /app/data mount is the most
-# likely thing to go wrong here. Deliberately NOT pointed at a page the gate
-# logs — that would write a gate_view every 30s forever and bury the real
-# visitor numbers.
+# Liveness probe against /impressum — a page that already exists, is public, is
+# statically prerendered and records nothing.
+#
+# There is deliberately no dedicated /api/health route. An endpoint that exists
+# only to be polled is one more thing reachable from outside, and the app's
+# whole premise is that its surface is small. This checks the same thing that
+# matters in practice: is the server accepting connections and serving pages.
+#
+# It must not point at `/` or `/gate`. Those are the gate, and every request to
+# them writes a gate_view row — a healthcheck there would log a visitor every
+# thirty seconds forever and bury the real numbers.
 #
 # Probing with node rather than wget: node is guaranteed present in a node
 # image, whereas the wget in Alpine's busybox has had inconsistent `--spider`
 # support across versions.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD node -e "require('http').get('http://127.0.0.1:3000/api/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))" || exit 1
+  CMD node -e "require('http').get('http://127.0.0.1:3000/impressum',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))" || exit 1
 
 CMD ["npm", "start"]

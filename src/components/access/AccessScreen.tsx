@@ -121,7 +121,7 @@ export function AccessScreen({
               maxLength={6}
               placeholder="1234-5"
               value={value}
-              aria-describedby="access-help"
+              aria-describedby={error ? "access-help" : undefined}
               aria-invalid={!!error}
               onChange={(e) => {
                 setValue(formatAccessCode(e.target.value));
@@ -134,20 +134,20 @@ export function AccessScreen({
             </button>
           </div>
 
-          <p
-            id="access-help"
-            role={error ? "alert" : undefined}
-            className={cn("mt-2.5 text-sm", error ? "text-red-300" : "text-white/50")}
-          >
-            {error === "rate-limited"
-              ? tx(
-                "Zu viele Versuche. Bitte kurz warten.",
-                "Too many attempts. Please wait a moment.",
-              )
-              : error
-                ? tx("Dieser Code stimmt nicht.", "That code isn't right.") : undefined
-            }
-          </p>
+          {/* Rendered only when there is something to say. An always-present
+              empty paragraph left a margin's worth of dead space under the
+              field and gave aria-describedby an empty element to point at;
+              appearing on demand is also what makes role="alert" announce. */}
+          {error && (
+            <p id="access-help" role="alert" className="mt-2.5 text-sm text-red-300">
+              {error === "rate-limited"
+                ? tx(
+                    "Zu viele Versuche. Bitte kurz warten.",
+                    "Too many attempts. Please wait a moment.",
+                  )
+                : tx("Dieser Code stimmt nicht.", "That code isn't right.")}
+            </p>
+          )}
         </form>
 
         <p

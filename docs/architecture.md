@@ -55,6 +55,29 @@ Three surfaces, three audiences:
 `/impressum` and `/datenschutz` are deliberately public — they must be
 reachable without passing the gate to satisfy German disclosure law.
 
+That table is the whole surface. There are six API routes and five pages, and
+nothing exists purely to be called by tooling — notably there is **no
+`/api/health`**: the container healthcheck probes `/impressum`, a page that
+already exists. Before adding a route, check it cannot be served by one that
+does.
+
+### Response headers
+
+`next.config.mjs` sets four headers on every response, and disables
+`X-Powered-By`:
+
+| Header | Why |
+|---|---|
+| `X-Frame-Options: DENY` | nothing here is meant to be embedded — and framing `/admin`, which has no auth of its own and carries a read/write SQL console, turns a stray click into arbitrary SQL |
+| `X-Content-Type-Options: nosniff` | don't let a browser second-guess a declared type |
+| `Referrer-Policy: strict-origin-when-cross-origin` | never send a path — which can contain `?code=` — to another origin |
+| `Permissions-Policy` | camera, microphone, geolocation and topics all denied; the site uses none of them |
+
+There is deliberately **no Content-Security-Policy**. Next's hydration relies on
+inline scripts, so a useful CSP needs per-request nonces threaded through the
+middleware. Worth doing, but it fails at runtime rather than at build time, so it
+should not be added without exercising every page against it first.
+
 > **The admin surface has no application-level auth.** That is intentional and
 > documented in `src/app/admin/page.tsx`, but it means the app must never be
 > exposed to the internet without the proxy in front of it. See
@@ -173,7 +196,6 @@ src/
 │   └── api/
 │       ├── access/          GET = link arrival, POST = gate form
 │       ├── visit/           POST beacon, one per page load; renews the cookies
-│       ├── health/          GET — container healthcheck, pings SQLite, logs nothing
 │       └── admin/
 │           ├── tokens/      GET POST PATCH DELETE
 │           ├── stats/       GET — every number the dashboard shows
