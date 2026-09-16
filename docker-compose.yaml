@@ -23,6 +23,11 @@ services:
       - "${FK_HOST_PORT:-8070}:3000"
 
     environment:
+      # The container path, and the one place it should be set. It is commented
+      # out in .env on purpose: Next.js loads .env on the host too, so a value
+      # written for the container would also point `npm run dev` at /app/data
+      # and break every database route locally. The fallback here is what the
+      # deployment actually runs on.
       FK_DB_PATH: ${FK_DB_PATH:-/app/data/access.db}
       # Must be the origin visitors actually use. It is baked into printed QR
       # codes and links copied out of /admin, and the app cannot discover it:

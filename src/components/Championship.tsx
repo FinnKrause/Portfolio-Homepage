@@ -1,169 +1,115 @@
 "use client";
 
-import { useReducedMotion } from "framer-motion";
-import { ArrowUpRight, ExternalLink } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { profile } from "@/content/profile";
 import { useLang } from "@/lib/i18n";
-import { Reveal } from "./motion/Reveal";
 import { Gallery } from "./media/Gallery";
 import { ReactionTest } from "./f1/ReactionTest";
 import { JourneyTimeline } from "./f1/JourneyTimeline";
 import { RaceFilm } from "./f1/RaceFilm";
-import { RECOIL_BRIGHT, F1_RED } from "@/content/theme";
+import { ACCENT_WARM } from "@/content/theme";
 
-
+/**
+ * The championship chapter — the site's ink slab.
+ *
+ * This used to be its own world, with a green-and-red gradient backdrop, an
+ * asphalt texture and a light sweep. The system has a closed surface
+ * vocabulary and one warm accent, so the chapter now earns its weight the way
+ * every other dark band in the system does: near-black, white type, one
+ * chromatic accent on the numbers, and photography doing the rest.
+ *
+ * No overflow-hidden on the section — it would turn this into a scroll
+ * container and kill the timeline's position:sticky further down.
+ */
 export function Championship() {
   const { t } = useLang();
-  const reduce = useReducedMotion();
   const c = profile.championship;
 
   return (
-    // No overflow-hidden here: it would turn this section into a scroll
-    // container and kill the timeline's position:sticky further down. The
-    // decoration is clipped by its own wrapper instead.
-    <section id="championship" className="f1-world relative py-16 text-white md:py-20">
-      <div aria-hidden className="grain pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="f1-asphalt" />
-        {!reduce && <div className="f1-sweep" />}
-      </div>
-
-      {/* Racing edge — green at the top, red at the bottom */}
-      <div
-        aria-hidden
-        className="absolute inset-y-0 left-0 w-[3px]"
-        style={{ background: `linear-gradient(to bottom, ${RECOIL_BRIGHT}, ${F1_RED})` }}
-      />
-
-      <div className="mx-container relative">
-        {/* Headline and the reaction test share one row, so the test costs no
+    <section id="championship" className="band band-ink relative">
+      <div className="mx-container">
+        {/* Headline and the reaction test share a row, so the test costs no
             vertical space of its own. */}
-        <div className="grid gap-8 lg:grid-cols-12 lg:items-start lg:gap-12">
-          <Reveal className="lg:col-span-6">
-            <p
-              className="text-[0.7rem] font-semibold uppercase tracking-[0.2em]"
-              style={{ color: RECOIL_BRIGHT }}
-            >
-              {t(c.eyebrow)}
-            </p>
-            <h2 className="headline mt-4 max-w-[14ch] text-5xl font-medium sm:text-6xl md:text-[4rem]">
-              {t(c.title)}
-            </h2>
+        <div className="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-12">
+          <header className="lg:col-span-7">
+            <p className="text-body text-steel">{t(c.eyebrow)}</p>
+            <h2 className="display-xl mt-4 max-w-[16ch]">{t(c.title)}</h2>
+          </header>
 
-            {/* A telemetry trace that draws itself under the headline */}
-            <svg
-              aria-hidden
-              viewBox="0 0 1200 40"
-              preserveAspectRatio="none"
-              className="mt-6 h-6 w-full max-w-lg"
-            >
-              <path
-                className="f1-trace"
-                d="M0 30 L180 30 L230 8 L340 8 L392 26 L520 26 L560 6 L700 6 L742 30 L900 30 L950 14 L1200 14"
-                fill="none"
-                stroke={RECOIL_BRIGHT}
-                strokeWidth="1.5"
-                opacity="0.85"
-              />
-            </svg>
-          </Reveal>
-
-          <Reveal delay={0.08} className="lg:col-span-5 lg:col-start-8 lg:pt-2">
+          <div className="lg:col-span-5">
             <ReactionTest />
-          </Reveal>
+          </div>
         </div>
 
-        {/* ---------- The clip ---------- */}
-        <Reveal delay={0.05} className="mt-10">
+        {/* The clip, in a 16px frame like every other photograph on the site. */}
+        <div className="frame mt-10">
           <RaceFilm posterAlt={t(c.imageAlt)} />
-        </Reveal>
+        </div>
 
-        {/* ---------- Result band — a supporting strip, not a headline ---------- */}
-        <Reveal className="mt-8">
-          <dl className="flex flex-wrap items-baseline gap-x-9 gap-y-3 border-y border-white/15 py-4">
-            {c.stats.map((stat, i) => (
-              <div key={i} className="flex items-baseline gap-2">
-                <dd
-                  className="text-lg font-medium tabular-nums sm:text-xl"
-                  style={{ color: i === 0 ? F1_RED : "#fff" }}
-                >
-                  {stat.value}
-                </dd>
-                <dt className="text-[0.7rem] uppercase tracking-[0.12em] text-white/55">
-                  {t(stat.label)}
-                </dt>
-              </div>
-            ))}
-          </dl>
-        </Reveal>
+        {/* The result, set the way the system sets a price stamp. */}
+        <dl className="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 border-y border-white/15 py-8 sm:grid-cols-4">
+          {c.stats.map((stat, i) => (
+            <div key={i}>
+              <dd
+                className="display-md tabular-nums"
+                style={i === 0 ? { color: ACCENT_WARM } : undefined}
+              >
+                {stat.value}
+              </dd>
+              <dt className="mt-2 text-caption text-steel">{t(stat.label)}</dt>
+            </div>
+          ))}
+        </dl>
 
-        {/* ---------- Story, offset from the grid ---------- */}
-        <div className="mt-12 grid gap-10 lg:grid-cols-12 lg:gap-10">
-          <Reveal className="lg:col-span-6">
-            <div className="space-y-5">
+        {/* The story, with the quote pulled out beside it. */}
+        <div className="mt-12 grid gap-10 lg:grid-cols-12 lg:gap-12">
+          <div className="lg:col-span-7">
+            <div className="max-w-[66ch] space-y-5">
               {c.body.map((para, i) => (
-                <p key={i} className="text-base leading-relaxed text-white/80 sm:text-lg">
+                <p key={i} className="text-body text-white/80">
                   {t(para)}
                 </p>
               ))}
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <div className="mt-8 flex flex-wrap gap-3">
               <a
                 href={c.links[0].href}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 text-sm font-semibold text-white transition-transform duration-300 hover:-translate-y-0.5"
-                style={{ backgroundColor: F1_RED }}
+                className="btn btn-primary"
               >
                 {t(c.links[0].label)}
-                <ExternalLink className="h-4 w-4" />
+                <ArrowUpRight className="h-4 w-4" />
               </a>
               <a
                 href={c.links[1].href}
                 target="_blank"
                 rel="noreferrer"
-                className="group inline-flex items-center gap-1.5 text-sm font-semibold text-white/90 transition-colors hover:text-white"
+                className="btn btn-outline-ink"
               >
-                <span
-                  className="border-b pb-0.5 transition-colors"
-                  style={{ borderColor: RECOIL_BRIGHT }}
-                >
-                  {t(c.links[1].label)}
-                </span>
-                <ArrowUpRight className="h-4 w-4" />
+                {t(c.links[1].label)}
               </a>
             </div>
-          </Reveal>
+          </div>
 
-          {/* Quote pulled out to the right, hanging lower than the text */}
-          <Reveal delay={0.08} className="lg:col-span-5 lg:col-start-8 lg:pt-10">
-            <figure
-              className="border-l-2 pl-6"
-              style={{ borderColor: F1_RED }}
-            >
-              <blockquote className="headline text-xl font-medium leading-snug text-white sm:text-2xl">
-                {t(c.quote)}
-              </blockquote>
-              <figcaption className="mt-4 text-xs uppercase tracking-[0.14em] text-white/60">
-                {t(c.quoteAuthor)}
-              </figcaption>
-            </figure>
-
-            <p className="mt-6 text-sm leading-relaxed text-white/65">{t(c.prize)}</p>
-          </Reveal>
+          <figure className="lg:col-span-5">
+            <blockquote className="display-sm text-on-ink">{t(c.quote)}</blockquote>
+            <figcaption className="mt-4 text-caption text-steel">{t(c.quoteAuthor)}</figcaption>
+            <p className="mt-8 border-t border-white/15 pt-6 text-caption text-white/70">
+              {t(c.prize)}
+            </p>
+          </figure>
         </div>
 
-        {/* ---------- Impressions ---------- */}
-        <Reveal className="mt-14">
-          <h3 className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-white/60">
-            {t(c.galleryTitle)}
-          </h3>
-          <Gallery slides={c.gallery} className="mt-5" />
-        </Reveal>
-
+        {/* Impressions */}
+        <div className="mt-14">
+          <h3 className="display-sm">{t(c.galleryTitle)}</h3>
+          <Gallery slides={c.gallery} className="mt-6" />
+        </div>
       </div>
 
-      {/* ---------- Where it went next ---------- */}
+      {/* Where it went next */}
       <JourneyTimeline />
     </section>
   );

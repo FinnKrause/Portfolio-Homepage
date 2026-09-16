@@ -21,8 +21,10 @@ type SubmitResult = "ok" | "invalid" | "rate-limited";
  * `innerHeight`.
  *
  * This is the one page every stranger loads, so it must stay cheap: no
- * animation library (see LanguageToggle), no images, no extra font. The
- * gradient, the grain and the entrance are CSS in globals.css.
+ * animation library (see LanguageToggle), no images, no extra font. It gets
+ * the same ink slab and the same blue slash pair as the site's own hero, built
+ * from the shared token classes — so the door looks like the building without
+ * costing a single extra byte of CSS.
  */
 export function AccessScreen({
   onSubmit,
@@ -65,46 +67,55 @@ export function AccessScreen({
   const rise = (i: number) => ({ "--i": i }) as React.CSSProperties;
 
   return (
-    <div className="gate">
+    <div className="band-ink relative flex min-h-[100svh] items-center overflow-hidden px-5 py-10 sm:py-14">
+      {/* The same pair that opens the site itself. */}
+      <span
+        aria-hidden
+        className="chevron chevron-in absolute inset-y-20 -left-6 hidden w-14 md:block lg:w-20"
+        style={{ "--from": "-3rem" } as React.CSSProperties}
+      />
+      <span
+        aria-hidden
+        className="chevron chevron-end chevron-in absolute inset-y-20 -right-6 hidden w-14 md:block lg:w-20"
+        style={{ "--from": "3rem" } as React.CSSProperties}
+      />
+
       <div className="absolute right-4 top-4 z-10 sm:right-6 sm:top-6">
         <LanguageToggle onDark />
       </div>
 
-      <main className="gate-col">
-        <p className="gate-rise text-sm font-semibold text-brand-300" style={rise(0)}>
+      <main className="relative z-1 mx-auto w-full max-w-xl">
+        <p className="rise text-body text-primary-bright" style={rise(0)}>
           {tx("Zugangscode nötig", "Access code required")}
         </p>
 
-        <h1
-          className="gate-rise mt-3 text-[clamp(1.55rem,4vw,2.1rem)] font-semibold leading-tight tracking-tight text-white"
-          style={rise(1)}
-        >
+        <h1 className="display-lg rise mt-3" style={rise(1)}>
           {tx("Einen Moment, bevor du Zugang bekommst", "One moment before you come in")}
         </h1>
 
         {/* The introduction — Finn's own wording, kept as written. */}
-        <p className="gate-rise mt-3 text-[0.95rem] leading-relaxed text-white/75" style={rise(2)}>
+        <p className="rise mt-4 text-body text-white/75" style={rise(2)}>
           {tx(
             "Da das hier meine persönliche Website mit vielen Informationen über mich ist, ist der Inhalt nur mit einem schnellen Sicherheitscheck abrufbar. Das mache ich damit der Inhalt bei Menschen ankommt und nicht bei AI-Crawlern und Bots.",
             "Since this is my personal website that holds a fair amount of information about me, the content sits behind a quick access check. I do that to make sure my information reaches people rather than AI crawlers and scrapers.",
           )}
         </p>
 
-        <div className="gate-rise mt-4" style={rise(3)}>
-          <h2 className="gate-note-title">
+        <div className="rise mt-6 border-t border-white/15 pt-5" style={rise(3)}>
+          <h2 className="text-body font-medium">
             {tx("Woher du einen Code haben könntest", "Where you'd have a code from")}
           </h2>
-          <ul className="mt-2 space-y-1.5">
+          <ul className="mt-3 space-y-2">
             {sources.map((line, i) => (
-              <li key={i} className="flex gap-2.5 text-sm leading-relaxed text-white/70">
-                <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-brand-300" />
+              <li key={i} className="flex gap-3 text-caption text-white/70">
+                <span aria-hidden className="mt-2.5 h-0.5 w-3 shrink-0 bg-primary-bright" />
                 <span>{line}</span>
               </li>
             ))}
           </ul>
         </div>
 
-        <form onSubmit={submit} className="gate-rise mt-6" style={rise(4)}>
+        <form onSubmit={submit} className="rise mt-6" style={rise(4)}>
           <label htmlFor="access-code" className="sr-only">
             {tx("Zugangscode", "Access code")}
           </label>
@@ -127,9 +138,9 @@ export function AccessScreen({
                 setValue(formatAccessCode(e.target.value));
                 if (error) setError(null);
               }}
-              className={cn("gate-input", error && "gate-input-error")}
+              className={cn("input tracking-[0.22em]", error && "input-error")}
             />
-            <button type="submit" disabled={!complete || busy} className="gate-submit">
+            <button type="submit" disabled={!complete || busy} className="btn btn-primary">
               {busy ? tx("Prüfe …", "Checking…") : tx("Eintreten", "Enter")}
             </button>
           </div>
@@ -139,7 +150,7 @@ export function AccessScreen({
               field and gave aria-describedby an empty element to point at;
               appearing on demand is also what makes role="alert" announce. */}
           {error && (
-            <p id="access-help" role="alert" className="mt-2.5 text-sm text-red-300">
+            <p id="access-help" role="alert" className="mt-3 text-caption text-coral">
               {error === "rate-limited"
                 ? tx(
                     "Zu viele Versuche. Bitte kurz warten.",
@@ -150,15 +161,12 @@ export function AccessScreen({
           )}
         </form>
 
-        <p
-          className="gate-rise mt-6 border-t border-white/12 pt-4 text-[0.8rem] leading-relaxed text-white/50"
-          style={rise(5)}
-        >
+        <p className="rise fine-print mt-6 border-t border-white/15 pt-5" style={rise(5)}>
           {tx(
             "Mit Betreten dieser Seite wurden Zeitpunkt, Browser, Betriebssystem, Gerätetyp und Referrer automatisch geloggt (ohne Cookie). Erst bei Eingabe eines gültigen Codes kommen zwei Cookies dazu, damit ich sehen kann, welcher Code wie oft benutzt wird. Die Cookies laufen ein Jahr nach dem letzten Besuch ab, die einzelnen Einträge werden nach sechs Monaten automatisch gelöscht. Nach einem Jahr erkennt das System ehemalige Besucher nicht wieder.",
             "This page being opened is being logged with time, browser, operating system, device type and referrer, with no cookie involved. Enter a valid code and two cookies are added. The cookies expire one year after your last visit. After that time the mechanism cannot recognize old users anymore. All individual server-logs are automatically deleted after six months.",
           )}{" "}
-          <a href="/datenschutz" className="gate-link">
+          <a href="/datenschutz" className="link text-fine">
             {tx("Datenschutz", "Privacy Policy")}
           </a>
         </p>

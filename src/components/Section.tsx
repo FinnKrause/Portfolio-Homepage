@@ -1,85 +1,96 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { Reveal } from "./motion/Reveal";
+
+type Surface = "canvas" | "cloud" | "fog" | "ink";
+
+const SURFACE: Record<Surface, string> = {
+  canvas: "band-canvas",
+  cloud: "band-cloud",
+  fog: "band-fog",
+  ink: "band-ink",
+};
 
 interface SectionProps {
   id?: string;
+  /** One of the four surface modes. The site has no other backgrounds. */
+  surface?: Surface;
   children: ReactNode;
   className?: string;
   containerClassName?: string;
 }
 
-export function Section({ id, children, className, containerClassName }: SectionProps) {
+/**
+ * A page band: one of four surfaces, the 80px vertical rhythm, and the 1366px
+ * container. Alternating canvas and cloud is what gives the page its beat —
+ * depth here comes from surface contrast, not from shadow.
+ */
+export function Section({
+  id,
+  surface = "canvas",
+  children,
+  className,
+  containerClassName,
+}: SectionProps) {
   return (
-    <section id={id} className={cn("relative py-16 md:py-20", className)}>
-      <div className={cn("mx-container relative", containerClassName)}>{children}</div>
+    <section id={id} className={cn("band", SURFACE[surface], className)}>
+      <div className={cn("mx-container", containerClassName)}>{children}</div>
     </section>
   );
 }
 
 interface SectionHeadingProps {
-  index: string;
-  eyebrow: string;
   title: string;
   intro?: string;
-  dark?: boolean;
+  /** Pulls the headline in so it never runs past a comfortable measure. */
+  className?: string;
 }
 
 /**
- * One heading treatment for every section: same left edge, same rhythm.
- * Character comes from type scale and colour, not from moving things around.
+ * One heading treatment site-wide: the title at display weight 500 with a
+ * line-height of 1, and an optional lead beneath it.
+ *
+ * There is no eyebrow and no index number. The system tracks letters in
+ * exactly one place — button labels — so a tracked uppercase kicker would
+ * contradict it, and numbering sections implies a sequence this page doesn't
+ * have. What separates sections here is the surface underneath them.
  */
-export function SectionHeading({
-  index,
-  eyebrow,
+export function SectionHeading({ title, intro, className }: SectionHeadingProps) {
+  return (
+    <header className={cn("max-w-4xl", className)}>
+      <h2 className="display-xl">{title}</h2>
+      {intro ? <p className="lead mt-5">{intro}</p> : null}
+    </header>
+  );
+}
+
+/**
+ * The smaller heading used inside a band for a secondary group
+ * ("More projects", "Languages"). Sits on a hairline so it reads as a
+ * division of the band it's in rather than a band of its own.
+ */
+export function SubHeading({
   title,
   intro,
-  dark = false,
-}: SectionHeadingProps) {
+  action,
+  className,
+}: {
+  title: string;
+  intro?: string;
+  action?: ReactNode;
+  className?: string;
+}) {
   return (
-    <Reveal>
-      <div className="flex items-center gap-3">
-        <span
-          className={cn(
-            "text-xs font-semibold tabular-nums",
-            dark ? "text-brand-300" : "text-brand-700",
-          )}
-        >
-          {index}
-        </span>
-        <span
-          aria-hidden
-          className={cn("h-px w-6", dark ? "bg-white/25" : "bg-ink-300")}
-        />
-        <p
-          className={cn(
-            "text-[0.7rem] font-semibold uppercase tracking-[0.16em]",
-            dark ? "text-brand-300" : "text-brand-700",
-          )}
-        >
-          {eyebrow}
-        </p>
+    <div
+      className={cn(
+        "flex flex-wrap items-end justify-between gap-x-8 gap-y-3 border-t border-hairline pt-6",
+        className,
+      )}
+    >
+      <div>
+        <h3 className="display-sm">{title}</h3>
+        {intro ? <p className="mt-2 text-caption text-graphite">{intro}</p> : null}
       </div>
-
-      <h2
-        className={cn(
-          "headline mt-4 max-w-[20ch] text-4xl font-medium sm:text-5xl md:text-[3.4rem]",
-          dark ? "text-white" : "text-ink-900",
-        )}
-      >
-        {title}
-      </h2>
-
-      {intro ? (
-        <p
-          className={cn(
-            "mt-4 max-w-2xl text-base leading-relaxed sm:text-lg",
-            dark ? "text-night-mute" : "text-ink-500",
-          )}
-        >
-          {intro}
-        </p>
-      ) : null}
-    </Reveal>
+      {action}
+    </div>
   );
 }

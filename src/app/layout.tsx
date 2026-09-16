@@ -1,14 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n";
 import { VERIFICATION_ENABLED } from "@/config/access";
 
-// One typeface for the whole site — weights, size and tracking carry the
-// hierarchy instead of font switches.
-const inter = Inter({
+// One typeface for the whole site. DESIGN.md's own face (Forma DJR Micro) is
+// proprietary and names Manrope as the substitute that needs no metric
+// adjustment — a geometric grotesque with the same open, slightly mechanical
+// voice. Four weights: 400 body, 500 display, 600 buttons, 700 emphasis.
+const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-manrope",
   display: "swap",
 });
 
@@ -60,14 +63,15 @@ export const metadata: Metadata = VERIFICATION_ENABLED
   : publicMetadata;
 
 export const viewport: Viewport = {
-  themeColor: "#06080f",
+  // The canvas nav bar is the first thing under the browser chrome.
+  themeColor: "#ffffff",
   colorScheme: "light",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className={inter.variable}>
-      <body className="min-h-screen bg-paper antialiased">
+    <html lang="de" className={manrope.variable}>
+      <body className="min-h-screen bg-canvas text-ink antialiased">
         <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>

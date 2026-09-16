@@ -30,10 +30,13 @@ import { isExpired, ACCESS_URL_PARAM } from "@/config/access";
 import { sectionOptions } from "@/content/ui";
 import { cn } from "@/lib/utils";
 
-const BRAND = "#2645e6";
-const GREEN = "#12a150";
-const RED = "#e10600";
-const GREY = "#94a3b8";
+/* Chart colours, straight off the design tokens. The system allows the primary
+   family, one warm bloom accent and the storm neutral — nothing else, which is
+   why "good" here is the storm teal rather than a green from outside it. */
+const BRAND = "#024ad8"; /* --color-primary */
+const GOOD = "#356373"; /* --color-storm-deep */
+const BAD = "#b3262b"; /* --color-bloom-deep */
+const MUTED = "#636363"; /* --color-graphite */
 
 const RANGES = [7, 30, 90, 182] as const;
 
@@ -129,9 +132,9 @@ function Card({
   className?: string;
 }) {
   return (
-    <section className={cn("border border-line bg-white p-5", className)}>
-      <div className="flex items-center justify-between gap-4">
-        <h2 className="text-sm font-semibold text-ink-900">{title}</h2>
+    <section className={cn("card-hairline p-5", className)}>
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <h2 className="display-xs">{title}</h2>
         {right}
       </div>
       <div className="mt-4">{children}</div>
@@ -144,19 +147,26 @@ const shortId = (id: string | null | undefined) => (id ? id.slice(0, 8) : "—")
 
 function Stat({ label, value, tone }: { label: string; value: number; tone?: string }) {
   return (
-    <div className="border border-line bg-white p-4">
-      <div className="text-2xl font-semibold tabular-nums" style={{ color: tone ?? "#0b1220" }}>
+    <div className="card-hairline p-4">
+      <div className="display-sm tabular-nums" style={{ color: tone ?? "#1a1a1a" }}>
         {value.toLocaleString("en-GB")}
       </div>
-      <div className="mt-1 text-xs text-ink-500">{label}</div>
+      <div className="mt-1 text-fine text-graphite">{label}</div>
     </div>
   );
 }
 
-const axis = { stroke: "#94a3b8", fontSize: 11 };
+const axis = { stroke: "#636363", fontSize: 12 };
 const tooltipStyle = {
-  contentStyle: { fontSize: 12, border: "1px solid #e6eaf2", borderRadius: 0 },
+  contentStyle: {
+    fontSize: 12,
+    border: "1px solid #e8e8e8",
+    borderRadius: 8,
+    boxShadow: "0 2px 8px rgba(26, 26, 26, 0.08)",
+  },
 };
+/** The hairline grid inside every chart. */
+const GRID = "#e8e8e8";
 
 /* ------------------------------------------------------------- dashboard */
 
@@ -264,27 +274,24 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
   }, [totals]);
 
   return (
-    <div className="min-h-screen bg-paper-soft">
+    <div className="min-h-screen bg-cloud">
       <div className="mx-auto max-w-[86rem] px-5 py-10 md:px-8">
         {/* Header */}
         <header className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-brand-700">
-              Administration
-            </p>
-            <h1 className="headline mt-2 text-3xl font-medium text-ink-900">
-              Access codes &amp; statistics
-            </h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="flex border border-line bg-white">
+          <h1 className="display-lg">Access codes &amp; statistics</h1>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Range picker: one segmented control, 44px tall like every other
+                interactive element in the system. */}
+            <div className="flex overflow-hidden rounded-md border border-hairline bg-canvas">
               {RANGES.map((r) => (
                 <button
                   key={r}
                   onClick={() => setDays(r)}
+                  aria-pressed={days === r}
                   className={cn(
-                    "px-3 py-2 text-xs font-medium transition-colors",
-                    days === r ? "bg-brand-600 text-white" : "text-ink-500 hover:text-ink-900",
+                    "h-11 px-4 text-caption font-medium transition-colors",
+                    days === r ? "bg-ink text-on-ink" : "text-charcoal hover:text-ink",
                   )}
                 >
                   {r}d
@@ -296,23 +303,23 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
                 void loadTokens();
                 void loadStats(days);
               }}
-              className="inline-flex items-center gap-2 border border-line bg-white px-3 py-2 text-xs font-medium text-ink-700 hover:border-brand-300"
+              className="btn btn-outline-ink"
             >
-              <RefreshCw className="h-3.5 w-3.5" />
+              <RefreshCw className="h-4 w-4" />
               Refresh
             </button>
-            <button
-              onClick={() => setShowNew((v) => !v)}
-              className="inline-flex items-center gap-2 bg-brand-600 px-3 py-2 text-xs font-semibold text-white hover:bg-brand-700"
-            >
-              <Plus className="h-3.5 w-3.5" />
+            <button onClick={() => setShowNew((v) => !v)} className="btn btn-primary">
+              <Plus className="h-4 w-4" />
               New code
             </button>
           </div>
         </header>
 
         {error && (
-          <p className="mt-4 border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
+          <p
+            role="alert"
+            className="mt-4 rounded-lg border border-bloom-deep/30 bg-rose px-4 py-3 text-caption text-bloom-wine"
+          >
             {error}
           </p>
         )}
@@ -322,10 +329,10 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
         {/* Headline numbers */}
         <div className="mt-8 grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
           <Stat label="Entries" value={totals?.grants ?? 0} tone={BRAND} />
-          <Stat label="Returning devices" value={totals?.returningDevices ?? 0} tone={GREEN} />
+          <Stat label="Returning devices" value={totals?.returningDevices ?? 0} tone={GOOD} />
           <Stat label="Unique devices" value={totals?.uniqueVisitors ?? 0} />
-          <Stat label="Gate views" value={totals?.gateViews ?? 0} tone={GREY} />
-          <Stat label="Rejected codes" value={totals?.rejected ?? 0} tone={RED} />
+          <Stat label="Gate views" value={totals?.gateViews ?? 0} tone={MUTED} />
+          <Stat label="Rejected codes" value={totals?.rejected ?? 0} tone={BAD} />
         </div>
 
         {/* Tokens */}
@@ -334,16 +341,16 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
           title="Codes"
         >
           {!tokens ? (
-            <p className="flex items-center gap-2 text-sm text-ink-500">
+            <p className="flex items-center gap-2 text-caption text-graphite">
               <Loader2 className="h-4 w-4 animate-spin" /> Loading…
             </p>
           ) : tokens.length === 0 ? (
-            <p className="text-sm text-ink-500">No codes.</p>
+            <p className="text-caption text-graphite">No codes.</p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[60rem] border-collapse text-sm">
+              <table className="w-full min-w-[60rem] border-collapse text-caption">
                 <thead>
-                  <tr className="border-b border-line text-left text-xs uppercase tracking-wide text-ink-500">
+                  <tr className="border-b border-steel text-left text-fine font-semibold text-graphite">
                     <th className="py-2 pr-3 font-medium">Code</th>
                     <th className="py-2 pr-3 font-medium">Name</th>
                     <th className="py-2 pr-3 font-medium">Lands on</th>
@@ -359,11 +366,11 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
                   {tokens.map((tk) => {
                     const expired = isExpired(tk.expires_at);
                     return (
-                      <tr key={tk.id} className="border-b border-line/70 align-top">
-                        <td className="py-3 pr-3 font-mono font-semibold text-ink-900">
+                      <tr key={tk.id} className="border-b border-hairline align-top">
+                        <td className="py-3 pr-3 font-mono font-semibold text-ink">
                           {tk.code}
                         </td>
-                        <td className="py-3 pr-3 text-ink-900">{tk.name}</td>
+                        <td className="py-3 pr-3 text-ink">{tk.name}</td>
                         <td className="py-3 pr-3">
                           <select
                             value={tk.section ?? "top"}
@@ -374,7 +381,7 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
                                 body: JSON.stringify({ id: tk.id, section: e.target.value }),
                               })
                             }
-                            className="border border-line bg-white px-1.5 py-1 text-xs text-ink-700"
+                            className="h-9 rounded-md border border-steel bg-canvas px-2 text-fine text-charcoal"
                           >
                             {sectionOptions.map((o) => (
                               <option key={o.id} value={o.id}>
@@ -385,21 +392,21 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
                         </td>
                         <td className="py-3 pr-3 text-right tabular-nums">{tk.uses}</td>
                         <td className="py-3 pr-3 text-right tabular-nums">{tk.unique_visitors}</td>
-                        <td className="py-3 pr-3 text-xs text-ink-500">
+                        <td className="py-3 pr-3 text-fine text-graphite">
                           {tk.last_used ? fmt(tk.last_used) : "—"}
                         </td>
-                        <td className="py-3 pr-3 text-xs text-ink-500">
+                        <td className="py-3 pr-3 text-fine text-graphite">
                           {tk.expires_at ? tk.expires_at.slice(0, 10) : "—"}
                         </td>
                         <td className="py-3 pr-3">
                           <span
                             className={cn(
-                              "inline-block px-2 py-0.5 text-[0.65rem] font-semibold uppercase",
+                              "inline-block rounded-sm px-2 py-0.5 text-fine font-semibold",
                               !tk.enabled
-                                ? "bg-ink-300/40 text-ink-700"
+                                ? "bg-fog text-charcoal"
                                 : expired
-                                  ? "bg-amber-100 text-amber-800"
-                                  : "bg-emerald-50 text-emerald-700",
+                                  ? "bg-rose text-bloom-wine"
+                                  : "bg-primary-soft text-primary-deep",
                             )}
                           >
                             {!tk.enabled ? "Off" : expired ? "Expired" : "Active"}
@@ -410,21 +417,21 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
                             <button
                               onClick={() => void copy(tk)}
                               title="Copy access link"
-                              className="inline-flex items-center gap-1 border border-line px-2 py-1 text-xs hover:border-brand-300"
+                              className="inline-flex h-9 items-center gap-1.5 rounded-md border border-hairline px-2.5 text-fine transition-colors hover:border-ink"
                             >
                               {copied === tk.code ? (
-                                <Check className="h-3 w-3 text-emerald-600" />
+                                <Check className="h-3.5 w-3.5 text-primary" />
                               ) : (
-                                <Copy className="h-3 w-3" />
+                                <Copy className="h-3.5 w-3.5" />
                               )}
                               Link
                             </button>
                             <a
                               href={qrHref(tk)}
                               title="QR code as PNG"
-                              className="inline-flex items-center gap-1 border border-line px-2 py-1 text-xs hover:border-brand-300"
+                              className="inline-flex h-9 items-center gap-1.5 rounded-md border border-hairline px-2.5 text-fine transition-colors hover:border-ink"
                             >
-                              <Download className="h-3 w-3" />
+                              <Download className="h-3.5 w-3.5" />
                               QR
                             </a>
                             <button
@@ -435,7 +442,7 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
                                   body: JSON.stringify({ id: tk.id, enabled: !tk.enabled }),
                                 })
                               }
-                              className="border border-line px-2 py-1 text-xs hover:border-brand-300"
+                              className="h-9 rounded-md border border-hairline px-2.5 text-fine transition-colors hover:border-ink"
                             >
                               {tk.enabled ? "Disable" : "Enable"}
                             </button>
@@ -448,9 +455,9 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
                                   });
                               }}
                               title="Delete"
-                              className="border border-line px-2 py-1 text-xs text-red-600 hover:border-red-300"
+                              className="grid h-9 w-9 place-items-center rounded-md border border-hairline text-bloom-deep transition-colors hover:border-bloom-deep"
                             >
-                              <Trash2 className="h-3 w-3" />
+                              <Trash2 className="h-3.5 w-3.5" />
                             </button>
                           </div>
                         </td>
@@ -470,7 +477,7 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
           >
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={stats?.perDay ?? []}>
-                <CartesianGrid stroke="#eef1f6" vertical={false} />
+                <CartesianGrid stroke={GRID} vertical={false} />
                 <XAxis dataKey="day" tick={axis} tickFormatter={(v) => String(v).slice(5)} />
                 <YAxis tick={axis} allowDecimals={false} width={30} />
                 <Tooltip {...tooltipStyle} />
@@ -491,15 +498,15 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
           >
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={stats?.bounced ?? []}>
-                <CartesianGrid stroke="#eef1f6" vertical={false} />
+                <CartesianGrid stroke={GRID} vertical={false} />
                 <XAxis dataKey="day" tick={axis} tickFormatter={(v) => String(v).slice(5)} />
                 <YAxis tick={axis} allowDecimals={false} width={30} />
                 <Tooltip {...tooltipStyle} />
-                <Bar dataKey="bounced" name="No entry" fill={GREY} />
+                <Bar dataKey="bounced" name="No entry" fill={MUTED} />
               </BarChart>
             </ResponsiveContainer>
             {bounceRate !== null && (
-              <p className="mt-2 text-xs tabular-nums text-ink-500">
+              <p className="mt-2 text-fine tabular-nums text-graphite">
                 {bounceRate}% of gate views ended without a code being entered
               </p>
             )}
@@ -514,7 +521,7 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
           <Card className="lg:col-span-2" title="Devices reached per code">
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={stats?.tokenEngagement ?? []} layout="vertical">
-                <CartesianGrid stroke="#eef1f6" horizontal={false} />
+                <CartesianGrid stroke={GRID} horizontal={false} />
                 <XAxis type="number" tick={axis} allowDecimals={false} />
                 <YAxis type="category" dataKey="name" tick={axis} width={110} />
                 <Tooltip {...tooltipStyle} />
@@ -528,21 +535,19 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
           <Card title="How entries arrive">
             <div className="grid gap-4">
               <div>
-                <p className="text-2xl font-semibold tabular-nums" style={{ color: BRAND }}>
+                <p className="display-sm tabular-nums" style={{ color: BRAND }}>
                   {stats?.arrival.link ?? 0}
                 </p>
-                <p className="mt-1 text-sm text-ink-500">QR or shared link</p>
+                <p className="mt-1 text-caption text-graphite">QR or shared link</p>
               </div>
               <div>
-                <p className="text-2xl font-semibold tabular-nums">{stats?.arrival.typed ?? 0}</p>
-                <p className="mt-1 text-sm text-ink-500">Code typed at the gate</p>
+                <p className="display-sm tabular-nums">{stats?.arrival.typed ?? 0}</p>
+                <p className="mt-1 text-caption text-graphite">Code typed at the gate</p>
               </div>
               {!!stats?.arrival.unknown && (
                 <div>
-                  <p className="text-2xl font-semibold tabular-nums text-ink-500">
-                    {stats.arrival.unknown}
-                  </p>
-                  <p className="mt-1 text-sm text-ink-500">Before this was tracked</p>
+                  <p className="display-sm tabular-nums text-graphite">{stats.arrival.unknown}</p>
+                  <p className="mt-1 text-caption text-graphite">Before this was tracked</p>
                 </div>
               )}
             </div>
@@ -558,7 +563,7 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
           className="mt-4"
           title="All time"
           right={
-            <span className="text-xs text-ink-500">
+            <span className="text-fine text-graphite">
               {stats?.allTime.since ? `since ${fmt(stats.allTime.since)}` : "no devices yet"}
             </span>
           }
@@ -571,20 +576,20 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
           <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
             <Stat label="Devices ever" value={stats?.allTime.devices ?? 0} tone={BRAND} />
             <Stat label="Page views" value={stats?.allTime.visits ?? 0} />
-            <div className="border border-line bg-white p-4">
-              <div className="text-2xl font-semibold tabular-nums" style={{ color: GREEN }}>
+            <div className="card-hairline p-4">
+              <div className="display-sm tabular-nums" style={{ color: GOOD }}>
                 {stats?.allTime.perDevice ?? "—"}
               </div>
-              <div className="mt-1 text-xs text-ink-500">Views per device</div>
+              <div className="mt-1 text-fine text-graphite">Views per device</div>
             </div>
-            <Stat label="Gate views" value={stats?.allTime.gateViews ?? 0} tone={GREY} />
-            <Stat label="Rejected" value={stats?.allTime.rejected ?? 0} tone={RED} />
+            <Stat label="Gate views" value={stats?.allTime.gateViews ?? 0} tone={MUTED} />
+            <Stat label="Rejected" value={stats?.allTime.rejected ?? 0} tone={BAD} />
           </div>
 
           {stats?.allTime.perToken.length ? (
-            <table className="mt-5 w-full border-collapse text-sm">
+            <table className="mt-5 w-full border-collapse text-caption">
               <thead>
-                <tr className="border-b border-line text-left text-xs uppercase tracking-wide text-ink-500">
+                <tr className="border-b border-steel text-left text-fine font-semibold text-graphite">
                   <th className="py-2 pr-3 font-medium">Code</th>
                   <th className="py-2 pr-3 text-right font-medium">Devices</th>
                   <th className="py-2 pr-3 text-right font-medium">Page views</th>
@@ -593,14 +598,14 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
               </thead>
               <tbody>
                 {stats.allTime.perToken.map((r) => (
-                  <tr key={r.code} className="border-b border-line/60">
+                  <tr key={r.code} className="border-b border-hairline">
                     <td className="py-2 pr-3">
-                      <span className="font-mono text-xs">{r.code}</span>
-                      <span className="ml-2 text-ink-500">{r.name}</span>
+                      <span className="font-mono text-fine">{r.code}</span>
+                      <span className="ml-2 text-graphite">{r.name}</span>
                     </td>
                     <td className="py-2 pr-3 text-right tabular-nums">{r.devices}</td>
                     <td className="py-2 pr-3 text-right tabular-nums">{r.visits}</td>
-                    <td className="py-2 text-xs text-ink-500">
+                    <td className="py-2 text-fine text-graphite">
                       {r.lastActive ? fmt(r.lastActive) : "—"}
                     </td>
                   </tr>
@@ -623,14 +628,14 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
               {rows?.length ? (
                 <ul className="space-y-1.5">
                   {rows.map((r: { label: string; n: number }) => (
-                    <li key={r.label} className="flex justify-between text-sm">
-                      <span className="truncate text-ink-700">{r.label}</span>
-                      <span className="tabular-nums text-ink-500">{r.n}</span>
+                    <li key={r.label} className="flex justify-between text-caption">
+                      <span className="truncate text-charcoal">{r.label}</span>
+                      <span className="tabular-nums text-graphite">{r.n}</span>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-ink-500">No data yet.</p>
+                <p className="text-caption text-graphite">No data yet.</p>
               )}
             </Card>
           ))}
@@ -640,9 +645,9 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
         <div className="mt-4 grid gap-4 lg:grid-cols-2">
           <Card title="Engagement per code">
             {stats?.tokenEngagement.length ? (
-              <table className="w-full border-collapse text-sm">
+              <table className="w-full border-collapse text-caption">
                 <thead>
-                  <tr className="border-b border-line text-left text-xs uppercase tracking-wide text-ink-500">
+                  <tr className="border-b border-steel text-left text-fine font-semibold text-graphite">
                     <th className="py-2 pr-3 font-medium">Code</th>
                     <th className="py-2 pr-3 text-right font-medium">Devices</th>
                     <th className="py-2 pr-3 text-right font-medium">Accesses</th>
@@ -652,20 +657,20 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
                 </thead>
                 <tbody>
                   {stats.tokenEngagement.map((r) => (
-                    <tr key={r.code} className="border-b border-line/60">
+                    <tr key={r.code} className="border-b border-hairline">
                       <td className="py-2 pr-3">
-                        <span className="font-mono text-xs">{r.code}</span>
-                        <span className="ml-2 text-ink-500">{r.name}</span>
+                        <span className="font-mono text-fine">{r.code}</span>
+                        <span className="ml-2 text-graphite">{r.name}</span>
                       </td>
                       <td className="py-2 pr-3 text-right tabular-nums">{r.devices}</td>
                       <td className="py-2 pr-3 text-right tabular-nums">{r.accesses}</td>
                       <td
                         className="py-2 pr-3 text-right font-medium tabular-nums"
-                        style={{ color: (r.perDevice ?? 0) >= 2 ? GREEN : undefined }}
+                        style={{ color: (r.perDevice ?? 0) >= 2 ? GOOD : undefined }}
                       >
                         {r.perDevice ?? "—"}
                       </td>
-                      <td className="py-2 text-xs text-ink-500">
+                      <td className="py-2 text-fine text-graphite">
                         {r.lastActive ? fmt(r.lastActive) : "—"}
                       </td>
                     </tr>
@@ -673,7 +678,7 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
                 </tbody>
               </table>
             ) : (
-              <p className="text-sm text-ink-500">No codes yet.</p>
+              <p className="text-caption text-graphite">No codes yet.</p>
             )}
           </Card>
 
@@ -681,11 +686,11 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
             title="Rejected entries"
           >
             {stats?.failedCodes.length ? (
-              <ul className="max-h-60 space-y-1 overflow-y-auto text-sm">
+              <ul className="max-h-60 space-y-1 overflow-y-auto text-caption">
                 {stats.failedCodes.map((f, i) => (
                   <li key={i} className="flex items-center justify-between gap-3">
-                    <span className="font-mono text-ink-900">{f.code}</span>
-                    <span className="text-xs text-ink-500">
+                    <span className="font-mono text-ink">{f.code}</span>
+                    <span className="text-fine text-graphite">
                       {f.reason === "disabled"
                         ? "disabled"
                         : f.reason === "expired"
@@ -697,7 +702,7 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-ink-500">No rejected entries.</p>
+              <p className="text-caption text-graphite">No rejected entries.</p>
             )}
           </Card>
         </div>
@@ -706,9 +711,9 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
             once, so there is nothing to chart beyond the access count. */}
         <Card className="mt-4" title="Devices by accesses">
           {stats?.topVisitors.length ? (
-            <table className="w-full border-collapse text-sm">
+            <table className="w-full border-collapse text-caption">
               <thead>
-                <tr className="border-b border-line text-left text-xs uppercase tracking-wide text-ink-500">
+                <tr className="border-b border-steel text-left text-fine font-semibold text-graphite">
                   <th className="w-8 py-2 pr-3 font-medium">#</th>
                   <th className="py-2 pr-3 font-medium">Device ID</th>
                   <th className="py-2 pr-3 font-medium">Code</th>
@@ -719,24 +724,24 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
               </thead>
               <tbody>
                 {stats.topVisitors.map((v, i) => (
-                  <tr key={v.visitor_id} className="border-b border-line/60">
-                    <td className="py-2 pr-3 tabular-nums text-ink-500">{i + 1}</td>
-                    <td className="py-2 pr-3 font-mono text-xs">{shortId(v.visitor_id)}</td>
-                    <td className="py-2 pr-3 font-mono text-xs">
+                  <tr key={v.visitor_id} className="border-b border-hairline">
+                    <td className="py-2 pr-3 tabular-nums text-graphite">{i + 1}</td>
+                    <td className="py-2 pr-3 font-mono text-fine">{shortId(v.visitor_id)}</td>
+                    <td className="py-2 pr-3 font-mono text-fine">
                       {v.token_code ?? "—"}
                       {v.token_name && (
-                        <span className="ml-2 font-sans text-ink-500">{v.token_name}</span>
+                        <span className="ml-2 font-sans text-graphite">{v.token_name}</span>
                       )}
                     </td>
                     <td className="py-2 pr-3 text-right tabular-nums font-medium">{v.requests}</td>
-                    <td className="py-2 pr-3 text-xs text-ink-500">{fmt(v.first_seen)}</td>
-                    <td className="py-2 text-xs text-ink-500">{fmt(v.last_seen)}</td>
+                    <td className="py-2 pr-3 text-fine text-graphite">{fmt(v.first_seen)}</td>
+                    <td className="py-2 text-fine text-graphite">{fmt(v.last_seen)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           ) : (
-            <p className="text-sm text-ink-500">No devices.</p>
+            <p className="text-caption text-graphite">No devices.</p>
           )}
         </Card>
 
@@ -747,24 +752,25 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
           right={
             <div className="flex items-center gap-2">
               <div className="relative">
-                <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-ink-300" />
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-graphite" />
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search code, device ID, browser…"
-                  className="w-64 border border-line bg-white py-1.5 pl-7 pr-2 text-xs"
+                  aria-label="Search the event log"
+                  className="input w-64 pl-9 text-caption"
                 />
               </div>
-              <span className="tabular-nums text-xs text-ink-500">
+              <span className="tabular-nums text-fine text-graphite">
                 {shownEvents.length}/{stats?.events.length ?? 0}
               </span>
             </div>
           }
         >
           <div className="max-h-[30rem] overflow-y-auto">
-            <table className="w-full min-w-[60rem] border-collapse text-sm">
-              <thead className="sticky top-0 bg-white">
-                <tr className="border-b border-line text-left text-xs uppercase tracking-wide text-ink-500">
+            <table className="w-full min-w-[60rem] border-collapse text-caption">
+              <thead className="sticky top-0 bg-canvas">
+                <tr className="border-b border-steel text-left text-fine font-semibold text-graphite">
                   <th className="py-2 pr-3 font-medium">Time</th>
                   <th className="py-2 pr-3 font-medium">Event</th>
                   <th className="py-2 pr-3 font-medium">Code</th>
@@ -775,35 +781,35 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
               </thead>
               <tbody>
                 {shownEvents.map((e) => (
-                  <tr key={e.id} className="border-b border-line/60">
-                    <td className="whitespace-nowrap py-2 pr-3 text-xs tabular-nums text-ink-500">
+                  <tr key={e.id} className="border-b border-hairline">
+                    <td className="whitespace-nowrap py-2 pr-3 text-fine tabular-nums text-graphite">
                       {fmt(e.ts)}
                     </td>
                     <td className="py-2 pr-3">
                       <EventBadge e={e} />
                     </td>
-                    <td className="py-2 pr-3 font-mono text-xs">
+                    <td className="py-2 pr-3 font-mono text-fine">
                       {e.token_code ?? e.attempted_code ?? "—"}
                     </td>
-                    <td className="py-2 pr-3 font-mono text-xs text-ink-700">
+                    <td className="py-2 pr-3 font-mono text-fine text-charcoal">
                       {shortId(e.visitor_id)}
                     </td>
-                    <td className="py-2 pr-3 text-xs text-ink-500">
+                    <td className="py-2 pr-3 text-fine text-graphite">
                       {[e.device, e.os, e.browser].filter(Boolean).join(" · ") || "—"}
                     </td>
                     <td className="py-2">
                       <button
                         onClick={() => setOpenEvent(e)}
-                        className="text-xs font-medium text-brand-700 hover:underline"
+                        className="link text-fine"
                       >
-                        view
+                        View
                       </button>
                     </td>
                   </tr>
                 ))}
                 {!shownEvents.length && (
                   <tr>
-                    <td colSpan={6} className="py-4 text-sm text-ink-500">
+                    <td colSpan={6} className="py-4 text-caption text-graphite">
                       {query ? "No matches." : "No events yet."}
                     </td>
                   </tr>
@@ -827,15 +833,15 @@ function EventBadge({ e }: { e: EventItem }) {
   const map = {
     granted: {
       label: e.is_new ? "granted · new" : "granted · known",
-      cls: e.is_new ? "bg-emerald-50 text-emerald-700" : "bg-brand-50 text-brand-700",
+      cls: e.is_new ? "bg-primary text-on-ink" : "bg-primary-soft text-primary-deep",
     },
-    visit: { label: "visit", cls: "bg-ink-300/30 text-ink-700" },
-    rejected: { label: "rejected", cls: "bg-red-50 text-red-700" },
-    gate_view: { label: "gate_view", cls: "bg-paper-soft text-ink-500" },
+    visit: { label: "visit", cls: "bg-fog text-charcoal" },
+    rejected: { label: "rejected", cls: "bg-rose text-bloom-wine" },
+    gate_view: { label: "gate view", cls: "bg-cloud text-graphite" },
   } as const;
   const v = map[e.kind];
   return (
-    <span className={cn("inline-block px-2 py-0.5 text-[0.65rem] font-semibold", v.cls)}>
+    <span className={cn("inline-block rounded-sm px-2 py-0.5 text-fine font-semibold", v.cls)}>
       {v.label}
     </span>
   );
@@ -857,26 +863,30 @@ function EventDetail({ e, onClose }: { e: EventItem; onClose: () => void }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 grid place-items-center bg-ink/60 p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
     >
       <div
-        className="w-full max-w-md border border-line bg-white p-6"
+        className="w-full max-w-md rounded-xl bg-canvas p-6 shadow-float"
         onClick={(ev) => ev.stopPropagation()}
       >
         <div className="flex items-start justify-between">
-          <h3 className="text-sm font-semibold text-ink-900">Event #{e.id}</h3>
-          <button onClick={onClose} aria-label="Close" className="text-ink-500">
-            <X className="h-4 w-4" />
+          <h3 className="display-xs">Event #{e.id}</h3>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="-mr-2 -mt-2 grid h-11 w-11 place-items-center rounded-md text-graphite transition-colors hover:text-ink"
+          >
+            <X className="h-5 w-5" />
           </button>
         </div>
-        <dl className="mt-4 space-y-2 text-sm">
+        <dl className="mt-5 space-y-2 text-caption">
           {rows.map(([k, v]) => (
-            <div key={k} className="flex justify-between gap-4 border-b border-line/60 pb-1.5">
-              <dt className="text-ink-500">{k}</dt>
-              <dd className="text-right text-ink-900">{v}</dd>
+            <div key={k} className="flex justify-between gap-4 border-b border-hairline pb-2">
+              <dt className="text-graphite">{k}</dt>
+              <dd className="text-right">{v}</dd>
             </div>
           ))}
         </dl>
@@ -923,35 +933,31 @@ function NewToken({
         });
         if (ok) onDone();
       }}
-      className="mt-4 border border-brand-200 bg-brand-50/40 p-5"
+      className="mt-4 rounded-xl bg-canvas p-5 shadow-lift"
     >
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <label className="text-xs font-medium text-ink-700">
+        <label className="block text-caption font-medium">
           Name *
           <input
             required
             value={form.name}
             onChange={set("name")}
             placeholder="e.g. CV application"
-            className="mt-1 w-full border border-line bg-white px-3 py-2 text-sm"
+            className="input mt-2"
           />
         </label>
-        <label className="text-xs font-medium text-ink-700">
+        <label className="block text-caption font-medium">
           Code (blank = random)
           <input
             value={form.code}
             onChange={set("code")}
             placeholder="1234-5"
-            className="mt-1 w-full border border-line bg-white px-3 py-2 font-mono text-sm"
+            className="input mt-2 font-mono"
           />
         </label>
-        <label className="text-xs font-medium text-ink-700">
+        <label className="block text-caption font-medium">
           Lands on
-          <select
-            value={form.section}
-            onChange={set("section")}
-            className="mt-1 w-full border border-line bg-white px-3 py-2 text-sm"
-          >
+          <select value={form.section} onChange={set("section")} className="input mt-2">
             {sectionOptions.map((o) => (
               <option key={o.id} value={o.id}>
                 {o.label.en}
@@ -959,30 +965,22 @@ function NewToken({
             ))}
           </select>
         </label>
-        <label className="text-xs font-medium text-ink-700">
+        <label className="block text-caption font-medium">
           Expires on (optional)
           <input
             type="date"
             value={form.expires_at}
             onChange={set("expires_at")}
-            className="mt-1 w-full border border-line bg-white px-3 py-2 text-sm"
+            className="input mt-2"
           />
         </label>
       </div>
-      <div className="mt-4 flex items-center gap-2">
-        <button
-          type="submit"
-          disabled={busy}
-          className="inline-flex items-center gap-2 bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
-        >
+      <div className="mt-5 flex items-center gap-2">
+        <button type="submit" disabled={busy} className="btn btn-primary">
           {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <QrCode className="h-4 w-4" />}
           Create
         </button>
-        <button
-          type="button"
-          onClick={onDone}
-          className="px-3 py-2 text-sm text-ink-500 hover:text-ink-900"
-        >
+        <button type="button" onClick={onDone} className="btn btn-outline-ink">
           Cancel
         </button>
       </div>
@@ -1066,7 +1064,7 @@ function SqlConsole() {
       className="mt-4"
       title="SQL"
       right={
-        <span className="text-xs text-ink-500">
+        <span className="text-fine text-graphite">
           read &amp; write · no row limit · not undoable
         </span>
       }
@@ -1075,7 +1073,7 @@ function SqlConsole() {
           the real schema. Clicking one writes a starter query. */}
       <div className="flex flex-wrap gap-1.5">
         {tables === null ? (
-          <span className="text-xs text-ink-500">Loading tables…</span>
+          <span className="text-fine text-graphite">Loading tables…</span>
         ) : (
           tables.map((t) => (
             <button
@@ -1083,10 +1081,10 @@ function SqlConsole() {
               type="button"
               onClick={() => setSql(`SELECT * FROM ${t.name} LIMIT 100;`)}
               title={t.columns.join("\n")}
-              className="border border-line px-2 py-1 font-mono text-xs text-ink-700 hover:border-brand-300 hover:text-brand-700"
+              className="h-9 rounded-md border border-hairline px-2.5 font-mono text-fine text-charcoal transition-colors hover:border-primary hover:text-primary"
             >
               {t.name}
-              <span className="ml-1.5 tabular-nums text-ink-300">{t.rows}</span>
+              <span className="ml-2 tabular-nums text-steel">{t.rows}</span>
             </button>
           ))
         )}
@@ -1105,7 +1103,7 @@ function SqlConsole() {
         }}
         spellCheck={false}
         rows={4}
-        className="mt-3 w-full resize-y border border-line bg-paper-soft p-3 font-mono text-xs text-ink-900"
+        className="input mt-3 h-auto resize-y bg-cloud p-3 font-mono text-fine"
       />
 
       <div className="mt-2 flex items-center gap-3">
@@ -1113,14 +1111,14 @@ function SqlConsole() {
           type="button"
           onClick={() => void run()}
           disabled={busy}
-          className="inline-flex items-center gap-2 bg-brand-600 px-3 py-2 text-xs font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
+          className="btn btn-primary"
         >
-          {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Play className="h-3.5 w-3.5" />}
+          {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
           Run
         </button>
-        <span className="text-xs text-ink-300">⌘/Ctrl + Enter</span>
+        <span className="text-fine text-graphite">⌘/Ctrl + Enter</span>
         {result && (
-          <span className="ml-auto text-xs tabular-nums text-ink-500">
+          <span className="ml-auto text-fine tabular-nums text-graphite">
             {result.kind === "rows"
               ? `${result.rowCount} row${result.rowCount === 1 ? "" : "s"} · ${result.ms} ms`
               : `${result.changes} row${result.changes === 1 ? "" : "s"} changed · ${result.ms} ms`}
@@ -1129,16 +1127,16 @@ function SqlConsole() {
       </div>
 
       {error && (
-        <p className="mt-3 border border-red-200 bg-red-50 px-3 py-2 font-mono text-xs text-red-700">
+        <p className="mt-3 rounded-lg border border-bloom-deep/30 bg-rose px-3 py-2 font-mono text-fine text-bloom-wine">
           {error}
         </p>
       )}
 
       {result?.kind === "rows" && (
-        <div className="mt-3 max-h-[28rem] overflow-auto border border-line">
-          <table className="w-full border-collapse text-xs">
-            <thead className="sticky top-0 bg-white">
-              <tr className="border-b border-line text-left uppercase tracking-wide text-ink-500">
+        <div className="mt-3 max-h-[28rem] overflow-auto rounded-lg border border-hairline">
+          <table className="w-full border-collapse text-fine">
+            <thead className="sticky top-0 bg-canvas">
+              <tr className="border-b border-steel text-left text-fine font-semibold text-graphite">
                 {result.columns.map((c) => (
                   <th key={c} className="whitespace-nowrap px-2 py-1.5 font-medium">
                     {c}
@@ -1148,9 +1146,9 @@ function SqlConsole() {
             </thead>
             <tbody>
               {result.rows.map((row, i) => (
-                <tr key={i} className="border-b border-line/60">
+                <tr key={i} className="border-b border-hairline">
                   {result.columns.map((c) => (
-                    <td key={c} className="whitespace-nowrap px-2 py-1.5 font-mono text-ink-700">
+                    <td key={c} className="whitespace-nowrap px-2 py-1.5 font-mono text-charcoal">
                       {cell(row[c])}
                     </td>
                   ))}
@@ -1158,7 +1156,7 @@ function SqlConsole() {
               ))}
               {!result.rows.length && (
                 <tr>
-                  <td colSpan={Math.max(1, result.columns.length)} className="px-2 py-3 text-ink-500">
+                  <td colSpan={Math.max(1, result.columns.length)} className="px-2 py-3 text-graphite">
                     No rows.
                   </td>
                 </tr>
@@ -1169,7 +1167,7 @@ function SqlConsole() {
       )}
 
       {result?.kind === "write" && (
-        <p className="mt-3 border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+        <p className="mt-3 rounded-lg border border-storm-mist bg-storm-mist/20 px-3 py-2 text-fine text-storm-deep">
           {result.changes} row{result.changes === 1 ? "" : "s"} changed.
           {result.lastInsertRowid > 0 && ` Last insert rowid: ${result.lastInsertRowid}.`}
         </p>

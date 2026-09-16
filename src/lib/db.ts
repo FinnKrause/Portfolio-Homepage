@@ -10,6 +10,11 @@ import { EVENT_RETENTION_DAYS } from "@/config/access";
  *
  * The file lives outside the build output so it survives redeploys — see the
  * `data` volume in docker-compose.yaml. Override with FK_DB_PATH if needed.
+ *
+ * The default is `./data/access.db` relative to the working directory, which is
+ * what `npm run dev` uses: the deployment sets FK_DB_PATH through
+ * docker-compose.yaml, not through .env. See the note on that variable in
+ * .env.example for why the distinction matters.
  */
 const DB_PATH =
   process.env.FK_DB_PATH ?? path.join(process.cwd(), "data", "access.db");
@@ -19,7 +24,28 @@ let instance: Database.Database | null = null;
 export function db(): Database.Database {
   if (instance) return instance;
 
-  fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+  const dir = path.dirname(DB_PATH);
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+  } catch (cause) {
+    /**
+     * Nearly always FK_DB_PATH carrying a container path onto the host: .env is
+     * read by docker compose *and* by Next.js, so a value written for the
+     * container also reaches `npm run dev`. The raw ENOENT this replaces
+     * surfaced four frames deep in an API route and named neither the variable
+     * nor the fix, which cost an afternoon once already.
+     */
+    throw new Error(
+      `Could not create the database directory ${dir}.` +
+        (process.env.FK_DB_PATH
+          ? ` It comes from FK_DB_PATH=${process.env.FK_DB_PATH}. If this is a` +
+            ` local dev server, unset it: that is a path inside the Docker` +
+            ` container, and docker-compose.yaml already supplies it there.`
+          : ""),
+      { cause },
+    );
+  }
+
   const conn = new Database(DB_PATH);
   conn.pragma("journal_mode = WAL");
   conn.pragma("foreign_keys = ON");

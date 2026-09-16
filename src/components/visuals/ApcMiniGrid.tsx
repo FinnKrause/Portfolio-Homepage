@@ -3,6 +3,10 @@ import { cn } from "@/lib/utils";
 /**
  * A stylised, self-animating recreation of the APCmini Middleware pad grid.
  * Pure CSS animation (see `.pad-live` in globals.css) — no JS, reduced-motion safe.
+ *
+ * The pad colours are not a palette choice: they are the LED colours of the
+ * actual control surface, which is what the project is about. Everything
+ * around them — the panel, the frame, the labels — is on the site's system.
  */
 
 // Column colour themes, inspired by the real control surface.
@@ -20,24 +24,14 @@ const COLS: (string | null)[][] = [
 export function ApcMiniGrid({ className }: { className?: string }) {
   return (
     <div
-      className={cn(
-        "relative w-full rounded-2xl border border-white/10 bg-[#0a0f1f] p-4 shadow-inner",
-        className,
-      )}
+      className={cn("relative w-full rounded-xl bg-ink p-4", className)}
       aria-hidden
     >
       {/* Panel header */}
-      <div className="mb-3 flex items-center justify-between">
-        <div className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
-        </div>
-        <span className="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-white/40">
-          Krause Software Solutions
-        </span>
-        <span className="inline-flex items-center gap-1.5 text-[0.6rem] font-medium text-emerald-400">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px] shadow-emerald-400" />
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <span className="text-fine text-white/45">Krause Software Solutions</span>
+        <span className="inline-flex items-center gap-2 text-fine text-white/70">
+          <span className="h-1.5 w-1.5 rounded-full bg-primary-bright" />
           MIDI
         </span>
       </div>
@@ -52,8 +46,8 @@ export function ApcMiniGrid({ className }: { className?: string }) {
               <div
                 key={`${row}-${c}`}
                 className={cn(
-                  "aspect-square rounded-[5px] transition-transform",
-                  lit ? "pad-live" : "bg-white/[0.04] ring-1 ring-inset ring-white/5",
+                  "aspect-square rounded-sm",
+                  lit ? "pad-live" : "bg-white/[0.06]",
                 )}
                 style={
                   lit
@@ -73,11 +67,8 @@ export function ApcMiniGrid({ className }: { className?: string }) {
       {/* Faders */}
       <div className="mt-3 grid grid-cols-8 gap-1.5">
         {[62, 40, 78, 33, 88, 55, 47, 70].map((v, i) => (
-          <div key={i} className="flex h-10 items-end rounded-[5px] bg-white/[0.04] p-1 ring-1 ring-inset ring-white/5">
-            <div
-              className="w-full rounded-[3px] bg-gradient-to-t from-brand-500 to-sky-400"
-              style={{ height: `${v}%` }}
-            />
+          <div key={i} className="flex h-10 items-end rounded-sm bg-white/[0.06] p-1">
+            <div className="w-full rounded-xs bg-primary-bright" style={{ height: `${v}%` }} />
           </div>
         ))}
       </div>

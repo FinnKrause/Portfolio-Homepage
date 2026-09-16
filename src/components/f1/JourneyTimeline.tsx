@@ -16,7 +16,7 @@ import { useLang } from "@/lib/i18n";
 import { useIsDesktop } from "@/lib/useIsDesktop";
 import { Lightbox, type LightboxImage } from "../media/Lightbox";
 import { cn } from "@/lib/utils";
-import { RECOIL_BRIGHT, F1_RED } from "@/content/theme";
+import { ACCENT_WARM, ACCENT_COOL } from "@/content/theme";
 
 
 /** Station spacing once zoomed in. Stations alternate above/below the axis,
@@ -41,7 +41,7 @@ const PAD = 56;
 const HOLD_IN = 0.1;
 const ZOOM_IN_END = 0.22;
 
-const toneColor = (tone?: JourneyPoint["tone"]) => (tone === "red" ? F1_RED : RECOIL_BRIGHT);
+const toneColor = (tone?: JourneyPoint["tone"]) => (tone === "red" ? ACCENT_WARM : ACCENT_COOL);
 const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1);
 /** Eases in and out with zero velocity at both ends — no visible kick. */
 const ease = (t: number) => {
@@ -86,26 +86,20 @@ function CardContent({ point, onOpenImage }: { point: JourneyPoint; onOpenImage:
           style={{ backgroundColor: toneColor(point.tone) }}
           aria-hidden
         />
-        <span className="text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-white/65">
-          {t(point.marker)}
-        </span>
+        <span className="text-fine font-medium text-steel">{t(point.marker)}</span>
       </div>
 
-      <h4 className="headline mt-2 text-base font-medium leading-snug text-white">
-        {t(point.title)}
-      </h4>
-      <p className="mt-1.5 text-[0.78rem] leading-relaxed text-white/70">{t(point.blurb)}</p>
+      <h4 className="display-xs mt-2 text-on-ink">{t(point.title)}</h4>
+      <p className="mt-2 text-caption text-white/75">{t(point.blurb)}</p>
 
-      {point.body && (
-        <p className="mt-2 text-[0.74rem] leading-relaxed text-white/55">{t(point.body)}</p>
-      )}
+      {point.body && <p className="mt-2 text-caption text-white/55">{t(point.body)}</p>}
 
       {point.youtube && (
         <a
           href={`https://www.youtube.com/watch?v=${point.youtube}`}
           target="_blank"
           rel="noreferrer"
-          className="group/vid relative mt-3 block aspect-video w-full overflow-hidden border border-white/20"
+          className="frame group/vid relative mt-3 block aspect-video w-full"
         >
           <Image
             src={videoStill(point.youtube)}
@@ -114,15 +108,15 @@ function CardContent({ point, onOpenImage }: { point: JourneyPoint; onOpenImage:
             sizes="290px"
             className="object-cover transition-transform duration-500 group-hover/vid:scale-105"
           />
-          <span className="absolute inset-0 bg-black/30 transition-colors group-hover/vid:bg-black/10" />
+          <span className="absolute inset-0 bg-ink/30 transition-colors group-hover/vid:bg-ink/10" />
           <span
-            className="absolute left-1/2 top-1/2 grid h-9 w-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full"
-            style={{ backgroundColor: F1_RED }}
+            className="absolute left-1/2 top-1/2 grid h-10 w-10 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full"
+            style={{ backgroundColor: ACCENT_WARM }}
           >
-            <Play className="h-3 w-3 fill-white text-white" />
+            <Play className="h-3.5 w-3.5 fill-white text-white" />
           </span>
-          <span className="absolute bottom-1.5 right-1.5 inline-flex items-center gap-1 bg-black/70 px-1.5 py-0.5 text-[0.52rem] uppercase tracking-[0.12em] text-white/85">
-            YouTube <ArrowUpRight className="h-2.5 w-2.5" />
+          <span className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-sm bg-ink/75 px-1.5 py-0.5 text-fine text-white/90">
+            YouTube <ArrowUpRight className="h-3 w-3" />
           </span>
         </a>
       )}
@@ -135,7 +129,7 @@ function CardContent({ point, onOpenImage }: { point: JourneyPoint; onOpenImage:
               type="button"
               onClick={() => onOpenImage(images, i)}
               aria-label={t({ de: "Bild vergrößern", en: "Enlarge image" })}
-              className="group/img relative aspect-[16/10] w-full overflow-hidden border border-white/20"
+              className="frame group/img relative aspect-[16/10] w-full"
             >
               <Image
                 src={img.src}
@@ -215,7 +209,7 @@ function Station({
       <span
         aria-hidden
         className={cn(
-          "absolute left-1/2 w-px -translate-x-1/2 bg-white/20",
+          "absolute left-1/2 w-px -translate-x-1/2 bg-white/25",
           above ? "bottom-1/2 h-8" : "top-1/2 h-8",
         )}
       />
@@ -232,21 +226,21 @@ function Station({
         )}
       >
         {img && point.highlight && above && (
-          <span className="relative mb-3 block h-24 w-24 overflow-hidden rounded-full border border-white/25 transition-transform duration-500 group-hover:scale-105">
+          <span className="relative mb-3 block h-24 w-24 overflow-hidden rounded-xl transition-transform duration-500 group-hover:scale-105">
             <Image src={img} alt="" fill sizes="96px" className="object-cover" />
           </span>
         )}
 
         <span
-          className="text-sm font-semibold tracking-[0.04em]"
-          style={{ color: point.highlight ? accent : "rgba(255,255,255,0.75)" }}
+          className="text-body font-medium"
+          style={{ color: point.highlight ? accent : "rgba(255, 255, 255, 0.75)" }}
         >
           {t(point.marker)}
         </span>
-        <span className="mt-1 text-[0.7rem] leading-snug text-white/55">{t(point.title)}</span>
+        <span className="mt-1 text-fine text-white/55">{t(point.title)}</span>
 
         {img && point.highlight && !above && (
-          <span className="relative mt-3 block h-24 w-24 overflow-hidden rounded-full border border-white/25 transition-transform duration-500 group-hover:scale-105">
+          <span className="relative mt-3 block h-24 w-24 overflow-hidden rounded-xl transition-transform duration-500 group-hover:scale-105">
             <Image src={img} alt="" fill sizes="96px" className="object-cover" />
           </span>
         )}
@@ -261,7 +255,7 @@ function Station({
           width: CARD_W,
         }}
         className={cn(
-          "absolute left-1/2 -translate-x-1/2 border border-white/20 bg-black/55 p-3.5 backdrop-blur-sm",
+          "absolute left-1/2 -translate-x-1/2 rounded-xl border border-white/15 bg-white/[0.07] p-4 backdrop-blur-md",
           above ? "bottom-[calc(50%+2.25rem)] origin-bottom" : "top-[calc(50%+2.25rem)] origin-top",
         )}
       >
@@ -349,28 +343,28 @@ export function JourneyTimeline() {
           <div className={cn("mx-container shrink-0", immersive ? "pt-24" : "pt-4")}>
             <div className="flex items-start justify-between gap-6">
               <div>
-                <div className="flex items-center gap-3">
-                  <span aria-hidden className="h-px w-6" style={{ backgroundColor: RECOIL_BRIGHT }} />
-                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-white/70">
-                    {t({ de: "Wie es weiterging", en: "How it unfolded" })}
-                  </p>
-                </div>
-                <h3 className="headline mt-2 max-w-[24ch] text-2xl font-medium text-white sm:text-3xl">
+                <h3 className="display-lg max-w-[24ch]">
                   {t({
                     de: "Vom ersten Auto bis zum Mentor",
                     en: "From the first car to being a mentor",
                   })}
                 </h3>
+                <p className="lead mt-3">
+                  {t({
+                    de: "Was nach dem Titel kam — Coaching, Jury, Vorträge.",
+                    en: "What came after the title — coaching, judging, talks.",
+                  })}
+                </p>
               </div>
 
               {immersive && (
                 <button
                   type="button"
                   onClick={skip}
-                  className="mt-1 inline-flex shrink-0 items-center gap-2 border border-white/25 px-3.5 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-white/60 transition-colors hover:border-white/50 hover:text-white"
+                  className="btn btn-outline-ink mt-1 shrink-0"
                 >
-                  {t({ de: "Zeitstrahl überspringen", en: "Skip the timeline" })}
-                  <ArrowDown className="h-3.5 w-3.5" />
+                  {t({ de: "Überspringen", en: "Skip" })}
+                  <ArrowDown className="h-4 w-4" />
                 </button>
               )}
             </div>
@@ -379,7 +373,7 @@ export function JourneyTimeline() {
           {immersive ? (
             /* The axis sits in the middle; stations alternate above and below it */
             <div ref={stageRef} className="relative min-h-0 flex-1">
-              <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-white/15" aria-hidden />
+              <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-white/20" aria-hidden />
               <motion.div
                 aria-hidden
                 style={{ scaleX: progressScale }}
@@ -387,7 +381,7 @@ export function JourneyTimeline() {
               >
                 <div
                   className="h-px w-full"
-                  style={{ background: `linear-gradient(to right, ${RECOIL_BRIGHT}, ${F1_RED})` }}
+                  style={{ background: `linear-gradient(to right, ${ACCENT_COOL}, ${ACCENT_WARM})` }}
                 />
               </motion.div>
 
@@ -411,9 +405,9 @@ export function JourneyTimeline() {
                 type="button"
                 onClick={() => setListOpen((o) => !o)}
                 aria-expanded={listOpen}
-                className="flex w-full items-center justify-between gap-4 border-y border-white/20 py-4 text-left"
+                className="flex min-h-[56px] w-full items-center justify-between gap-4 border-y border-white/20 py-4 text-left"
               >
-                <span className="text-sm font-medium text-white/85">
+                <span className="text-body font-medium text-on-ink">
                   {listOpen
                     ? t({ de: "Zeitstrahl ausblenden", en: "Hide the timeline" })
                     : t({ de: "Zeitstrahl ansehen", en: "View the timeline" })}
@@ -421,15 +415,14 @@ export function JourneyTimeline() {
                 </span>
                 <ChevronDown
                   className={cn(
-                    "h-4 w-4 shrink-0 transition-transform duration-300",
+                    "h-5 w-5 shrink-0 text-primary-bright transition-transform duration-300",
                     listOpen && "rotate-180",
                   )}
-                  style={{ color: RECOIL_BRIGHT }}
                 />
               </button>
 
               {listOpen && (
-                <ol className="relative mt-8 space-y-8 border-l border-white/20 pl-6">
+                <ol className="relative mt-8 space-y-10 border-l border-white/20 pl-6">
                   {journey.map((point) => (
                     <li key={point.id} className="relative">
                       <span

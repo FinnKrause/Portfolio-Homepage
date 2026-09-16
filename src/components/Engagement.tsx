@@ -5,13 +5,12 @@ import { engagement } from "@/content/engagement";
 import type { LinkItem } from "@/content/types";
 import { useLang } from "@/lib/i18n";
 import { Section, SectionHeading } from "./Section";
-import { Reveal } from "./motion/Reveal";
 import { Gallery } from "./media/Gallery";
 
 function EngLinks({ links }: { links: LinkItem[] }) {
   const { t } = useLang();
   return (
-    <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2">
+    <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
       {links.map((link, i) => {
         const yt = /youtu\.?be/.test(link.href);
         const internal = link.href.startsWith("#");
@@ -22,7 +21,7 @@ function EngLinks({ links }: { links: LinkItem[] }) {
             href={link.href}
             target={internal ? undefined : "_blank"}
             rel={internal ? undefined : "noreferrer"}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-700 transition-colors hover:text-brand-900"
+            className="link text-caption"
           >
             <Icon className="h-4 w-4" />
             {t(link.label)}
@@ -33,46 +32,52 @@ function EngLinks({ links }: { links: LinkItem[] }) {
   );
 }
 
+/**
+ * A flat canvas band: every entry opens on a hairline, nothing is boxed. The
+ * list is long and the entries vary in length, so cards would fight each other
+ * for height — the rules give the same reading order at a fraction of the
+ * visual noise.
+ */
 export function Engagement() {
   const { t } = useLang();
 
   return (
-    <Section id="engagement">
+    <Section id="engagement" surface="cloud">
       <SectionHeading
-        index="04"
-        eyebrow={t({ de: "Engagement", en: "Involvement" })}
-        title={t({ de: "Neben dem Alltag", en: "Alongside my every-day life" })}
+        title={t({ de: "Neben dem Alltag", en: "Alongside the every-day" })}
         intro={t({
-          de: "Wo man mich schon alles sehen und finden konnte",
-          en: "Everything that happend along-side",
+          de: "Gremien, Ehrenämter und Projekte, bei denen ich über die Jahre mitgearbeitet habe.",
+          en: "Committees, voluntary roles and projects I have worked on over the years.",
         })}
       />
 
-      <Reveal className="mt-10">
-        <div className="gap-5 md:columns-2 [&>*]:mb-4 [&>*]:break-inside-avoid">
-          {engagement.map((item) => (
-            <article key={item.id} className="border-t border-line pt-5">
-              <span className="text-xs font-medium text-brand-600">{t(item.periodLabel)}</span>
+      <div className="mt-12 gap-x-12 md:columns-2 [&>*]:mb-10 [&>*]:break-inside-avoid">
+        {engagement.map((item) => (
+          <article key={item.id} className="border-t border-hairline pt-6">
+            <p className="text-caption text-primary">{t(item.periodLabel)}</p>
 
-              <h3 className="mt-2 text-lg font-semibold text-ink-900">{t(item.title)}</h3>
-              {item.org ? <p className="text-sm text-ink-500">{item.org}</p> : null}
-              <p className="mt-2.5 text-sm leading-relaxed text-ink-700">{t(item.description)}</p>
+            <h3 className="display-xs mt-2">{t(item.title)}</h3>
+            {item.org ? <p className="mt-1 text-caption text-graphite">{item.org}</p> : null}
 
-              {item.more?.map((para, i) => (
-                <p key={i} className="mt-2 text-sm leading-relaxed text-ink-700">
-                  {t(para)}
-                </p>
-              ))}
+            <p className="mt-3 text-caption text-charcoal">{t(item.description)}</p>
+            {item.more?.map((para, i) => (
+              <p key={i} className="mt-2 text-caption text-charcoal">
+                {t(para)}
+              </p>
+            ))}
 
-              {item.links && item.links.length > 0 ? <EngLinks links={item.links} /> : null}
+            {item.links && item.links.length > 0 ? <EngLinks links={item.links} /> : null}
 
-              {item.gallery && item.gallery.length > 0 ? (
-                <Gallery slides={item.gallery} columns={3} className="mt-4" />
-              ) : null}
-            </article>
-          ))}
-        </div>
-      </Reveal>
+            {item.gallery && item.gallery.length > 0 ? (
+              <Gallery
+                slides={item.gallery}
+                columns={item.gallery.length > 2 ? 3 : 2}
+                className="mt-5 max-w-md"
+              />
+            ) : null}
+          </article>
+        ))}
+      </div>
     </Section>
   );
 }

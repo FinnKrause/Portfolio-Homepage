@@ -109,32 +109,23 @@ export function Carousel({
               type="button"
               onClick={() => go(index - 1)}
               aria-label="Previous"
-              className={cn(
-                "pointer-events-auto grid place-items-center rounded-full transition",
-                subtle
-                  ? "h-8 w-8 bg-white/60 text-ink-600 shadow-sm ring-1 ring-black/5 backdrop-blur hover:bg-white/90 hover:text-ink-900"
-                  : "h-9 w-9 bg-white/85 text-ink-700 shadow-md backdrop-blur hover:bg-white",
-              )}
+              className="pointer-events-auto grid h-11 w-11 place-items-center rounded-md bg-canvas/85 text-ink shadow-lift backdrop-blur transition-colors hover:bg-canvas"
             >
-              <ChevronLeft className={subtle ? "h-4 w-4" : "h-5 w-5"} />
+              <ChevronLeft className="h-5 w-5" />
             </button>
             <button
               type="button"
               onClick={() => go(index + 1)}
               aria-label="Next"
-              className={cn(
-                "pointer-events-auto grid place-items-center rounded-full transition",
-                subtle
-                  ? "h-8 w-8 bg-white/60 text-ink-600 shadow-sm ring-1 ring-black/5 backdrop-blur hover:bg-white/90 hover:text-ink-900"
-                  : "h-9 w-9 bg-white/85 text-ink-700 shadow-md backdrop-blur hover:bg-white",
-              )}
+              className="pointer-events-auto grid h-11 w-11 place-items-center rounded-md bg-canvas/85 text-ink shadow-lift backdrop-blur transition-colors hover:bg-canvas"
             >
-              <ChevronRight className={subtle ? "h-4 w-4" : "h-5 w-5"} />
+              <ChevronRight className="h-5 w-5" />
             </button>
           </div>
 
-          {/* Dots */}
-          <div className="absolute inset-x-0 bottom-3 flex items-center justify-center gap-1.5">
+          {/* Dots. The button is a full 44px-tall hit box around a 6px mark —
+              the visible dot stays small without the tap target shrinking. */}
+          <div className="absolute inset-x-0 bottom-0 flex items-center justify-center">
             {slides.map((_, i) => (
               <button
                 key={i}
@@ -142,17 +133,18 @@ export function Carousel({
                 onClick={() => go(i)}
                 aria-label={`Go to slide ${i + 1}`}
                 aria-current={index === i}
-                className={cn(
-                  "rounded-full shadow-sm transition-all",
-                  subtle
-                    ? index === i
-                      ? "h-1.5 w-4 bg-white"
-                      : "h-1.5 w-1.5 bg-white/55 hover:bg-white/80"
-                    : index === i
-                      ? "h-1.5 w-5 bg-brand-600"
-                      : "h-1.5 w-1.5 bg-white/90 ring-1 ring-black/5 hover:bg-white",
-                )}
-              />
+                className="group/dot grid h-11 w-5 place-items-center"
+              >
+                <span
+                  aria-hidden
+                  className={cn(
+                    "h-1.5 rounded-sm transition-all",
+                    index === i
+                      ? "w-6 bg-canvas"
+                      : "w-1.5 bg-canvas/55 group-hover/dot:bg-canvas/85",
+                  )}
+                />
+              </button>
             ))}
           </div>
         </>

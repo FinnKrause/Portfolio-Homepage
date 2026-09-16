@@ -81,53 +81,52 @@ export function GithubProjects() {
   }, [failed, repos, t]);
 
   if (!list) {
-    // Loading skeletons
+    // Loading skeletons — same footprint as a real tile, so nothing reflows.
     return (
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="h-24 animate-pulse rounded-xl border border-line bg-paper-soft" />
+          <div key={i} className="h-32 animate-pulse rounded-xl bg-fog" />
         ))}
       </div>
     );
   }
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {list.map((repo) => (
         <a
           key={repo.id}
           href={repo.html_url}
           target="_blank"
           rel="noreferrer"
-          className="group flex flex-col rounded-xl border border-line bg-white p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-soft"
+          className="card group flex flex-col p-4 transition-shadow hover:shadow-float"
         >
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-3">
             {repo.language ? (
-              <span className="inline-flex items-center gap-1.5 text-xs text-ink-500">
+              <span className="inline-flex items-center gap-2 text-fine text-graphite">
                 <span
+                  aria-hidden
                   className="h-2 w-2 rounded-full"
-                  style={{ backgroundColor: LANG_COLOR[repo.language] ?? "#94a3b8" }}
+                  style={{ backgroundColor: LANG_COLOR[repo.language] ?? "#636363" }}
                 />
                 {repo.language}
               </span>
             ) : (
               <span />
             )}
-            <span className="flex items-center gap-2 text-xs text-ink-300">
+            <span className="flex items-center gap-3 text-fine text-graphite">
               {repo.stargazers_count > 0 && (
-                <span className="inline-flex items-center gap-1 text-ink-500">
+                <span className="inline-flex items-center gap-1">
                   <Star className="h-3 w-3" />
                   {repo.stargazers_count}
                 </span>
               )}
-              <ArrowUpRight className="h-4 w-4 transition-colors group-hover:text-brand-600" />
+              <ArrowUpRight className="h-4 w-4 text-steel transition-colors group-hover:text-primary" />
             </span>
           </div>
-          <h4 className="mt-2.5 text-sm font-semibold text-ink-900">{prettyName(repo.name)}</h4>
+          <h4 className="mt-3 text-body font-medium">{prettyName(repo.name)}</h4>
           {repo.description ? (
-            <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-ink-500">
-              {repo.description}
-            </p>
+            <p className="mt-1.5 line-clamp-2 text-caption text-graphite">{repo.description}</p>
           ) : null}
         </a>
       ))}

@@ -1,112 +1,117 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
+import { ArrowRight } from "lucide-react";
 import { profile } from "@/content/profile";
 import { useLang } from "@/lib/i18n";
 
+/**
+ * The hero band.
+ *
+ * An introduction, and only that: a portrait, the name, one paragraph and two
+ * links. Earlier versions carried a taxonomy here — three headline domains, a
+ * three-fact stamp, a row of category cards, a list of pointers at what was
+ * further down — and each one committed the site to a shape before a visitor
+ * had read a word. What Finn works on is shown by the tiles in `Areas`
+ * directly below; this card only has to say who this is.
+ *
+ * Kept to two type sizes and two text colours on purpose. The name is ink at
+ * display scale, everything else is one size of charcoal prose. A landing card
+ * that changes size and weight every other line reads as a layout rather than
+ * as an introduction.
+ *
+ * `band-screen` gives the band a full screen of height and centres the card in
+ * it. The card itself is sized by its content — the band decides how much room
+ * there is, not how big the card is.
+ *
+ * The photo column is the narrower one, for two reasons: a portrait wants a
+ * narrower frame than a landscape photograph would, and this source is only
+ * 768px wide, so a wide column would upscale it on any retina display.
+ *
+ * The arrival sequence is the single orchestrated moment on the site — the
+ * slashes draw in from the page edges, the copy rises behind them, and after
+ * that nothing moves again unless a visitor asks it to.
+ */
 export function Hero() {
   const { t } = useLang();
-  const reduce = useReducedMotion();
-  const ref = useRef<HTMLDivElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-  const fade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-  const drift = useTransform(scrollYProgress, [0, 1], [0, -50]);
-
-  const rise = {
-    hidden: { opacity: 0, y: reduce ? 0 : 18 },
-    show: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.7, delay: i * 0.09, ease: [0.22, 1, 0.36, 1] as const },
-    }),
-  };
 
   return (
-    <div ref={ref} className="relative z-0 lg:sticky lg:top-0 lg:h-[100svh]">
-      <section
-        id="top"
-        className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#03050c] text-night-ink lg:h-full lg:min-h-0"
-      >
-        {/* Light */}
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(60rem_44rem_at_50%_18%,rgba(30,51,207,0.3),transparent_64%),radial-gradient(50rem_38rem_at_50%_100%,rgba(9,60,140,0.18),transparent_66%)]"
-        />
+    <section id="top" className="band band-screen band-cloud relative overflow-hidden">
+      <div className="mx-container relative">
+        {/* The pair flanks the *card*, matching its height exactly. They used
+            to overshoot it, which read as stray fragments once the card grew to
+            fill the screen and left them nothing to stand in. */}
+        <div className="relative">
+          <span
+            aria-hidden
+            className="chevron chevron-in absolute inset-y-0 -left-10 hidden w-28 md:block lg:-left-6 lg:w-40"
+            style={{ "--from": "-3rem" } as React.CSSProperties}
+          />
+          <span
+            aria-hidden
+            className="chevron chevron-end chevron-in absolute inset-y-0 -right-10 hidden w-28 md:block lg:-right-6 lg:w-40"
+            style={{ "--from": "3rem" } as React.CSSProperties}
+          />
 
-        {/* Grain + vignette */}
-        <div aria-hidden className="grain absolute inset-0 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_45%,transparent_30%,rgba(3,5,12,0.45)_72%,rgba(3,5,12,0.9)_100%)]" />
-        </div>
+          <div className="card relative overflow-hidden md:grid md:grid-cols-[2fr_3fr] lg:grid-cols-[1fr_2fr]">
+          {/* Portrait. 4:5 stacked, which is near the source's own 3:4, so the
+              crop stays gentle; from `lg` the frame takes the card's full
+              height and `object-cover` trims the sides instead.
 
-        {/* Centred type */}
-        <motion.div
-          style={reduce ? undefined : { opacity: fade, y: drift }}
-          className="mx-container relative z-10 flex flex-col items-center py-24 text-center"
-        >
-          <motion.p
-            custom={0}
-            variants={rise}
-            initial="hidden"
-            animate="show"
-            className="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-white/55"
-          >
-            {profile.name}
-          </motion.p>
+              There used to be an `sm:aspect-[16/10]` here, and it was the bug:
+              it turned a 3:4 portrait into a 1.6 landscape strip, so between
+              640px and 1024px the frame showed less than half the image's
+              height and cut the subject off at the waist. A portrait source
+              never wants a landscape frame — let it crop sideways into
+              background instead. */}
+          <div className="relative aspect-[4/5] w-full bg-cloud md:aspect-[3/4]">
+            <Image
+              src="/images/Portraits/finn-portrait.jpg"
+              alt={t({ de: "Porträt von Finn Krause.", en: "Portrait of Finn Krause." })}
+              fill
+              priority
+              quality={90}
+              sizes="(max-width: 1024px) 100vw, 573px"
+              className="object-cover object-top"
+            />
+          </div>
 
-          <motion.h1
-            custom={1}
-            variants={rise}
-            initial="hidden"
-            animate="show"
-            className="headline mt-7 max-w-[16ch] text-balance text-[clamp(2.75rem,7vw,6rem)] font-medium leading-[1.02] text-white"
-          >
-            {t({
-              de: "Willkommen auf meiner Homepage",
-              en: "Welcome to my homepage",
-            })}
-          </motion.h1>
-
-          <motion.p
-            custom={2}
-            variants={rise}
-            initial="hidden"
-            animate="show"
-            className="mt-8 max-w-xl text-pretty text-base leading-relaxed text-night-ink/85 sm:text-lg"
-          >
-            {t(profile.hero.headline)}
-          </motion.p>
-
-          <motion.p
-            custom={3}
-            variants={rise}
-            initial="hidden"
-            animate="show"
-            className="mt-3 max-w-lg text-pretty text-sm leading-relaxed text-night-mute"
-          >
-            {t(profile.hero.lead)}
-          </motion.p>
-
-          <motion.div custom={4} variants={rise} initial="hidden" animate="show">
-            <a
-              href="#about"
-              className="group mt-10 inline-flex items-center gap-3 text-sm font-medium text-white/90 transition-colors hover:text-white"
+          {/* Copy */}
+          <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
+            <p
+              className="rise text-body-lg text-charcoal"
+              style={{ "--i": 1 } as React.CSSProperties}
             >
-              <span className="relative">
-                {t({ de: "Weiterlesen", en: "Read on" })}
-                <span className="absolute -bottom-1 left-0 h-px w-full origin-left bg-white/40 transition-transform duration-500 group-hover:scale-x-0" />
-              </span>
-              <span className="translate-y-px text-white/50 transition-transform duration-500 group-hover:translate-y-1.5">
-                ↓
-              </span>
-            </a>
-          </motion.div>
-        </motion.div>
-      </section>
-    </div>
+              {t(profile.eyebrow)}
+            </p>
+
+            <h1 className="display-xxl rise mt-4" style={{ "--i": 2 } as React.CSSProperties}>
+              {profile.name}
+            </h1>
+
+            <p
+              className="rise mt-6 max-w-[58ch] text-body-lg text-charcoal"
+              style={{ "--i": 3 } as React.CSSProperties}
+            >
+              {t(profile.hero.headline)}
+            </p>
+
+            <div
+              className="rise mt-8 flex flex-wrap gap-3"
+              style={{ "--i": 4 } as React.CSSProperties}
+            >
+              <a href="#projects" className="btn btn-primary">
+                {t({ de: "Projekte ansehen", en: "See the projects" })}
+                <ArrowRight className="h-4 w-4" />
+              </a>
+              <a href="#about" className="btn btn-outline-ink">
+                {t({ de: "Mehr über mich", en: "More about me" })}
+              </a>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

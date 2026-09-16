@@ -27,9 +27,9 @@ export function Lightbox({
   const reduce = useReducedMotion();
   const open = index !== null;
 
-  // Rendered in a portal on <body>: inside the page tree the viewer would be
-  // trapped in the site-sheet's stacking context and end up underneath the
-  // fixed navbar (covering the close button on mobile).
+  // Rendered in a portal on <body>: inside the page tree the viewer gets
+  // trapped in an ancestor's stacking context and ends up underneath the
+  // sticky header (covering the close button on mobile).
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -56,7 +56,7 @@ export function Lightbox({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm sm:p-8"
+          className="fixed inset-0 z-100 flex items-center justify-center bg-ink/95 p-4 sm:p-8"
           onClick={onClose}
           role="dialog"
           aria-modal="true"
@@ -66,7 +66,7 @@ export function Lightbox({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+            className="absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-md border border-white/25 text-on-ink transition-colors hover:bg-white/15"
           >
             <X className="h-5 w-5" />
           </button>
@@ -80,7 +80,7 @@ export function Lightbox({
                   onNav(-1);
                 }}
                 aria-label="Previous image"
-                className="absolute left-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 sm:left-5"
+                className="absolute left-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-md border border-white/25 text-on-ink transition-colors hover:bg-white/15 sm:left-5"
               >
                 <ChevronLeft className="h-6 w-6" />
               </button>
@@ -91,7 +91,7 @@ export function Lightbox({
                   onNav(1);
                 }}
                 aria-label="Next image"
-                className="absolute right-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 sm:right-5"
+                className="absolute right-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-md border border-white/25 text-on-ink transition-colors hover:bg-white/15 sm:right-5"
               >
                 <ChevronRight className="h-6 w-6" />
               </button>
@@ -119,7 +119,7 @@ export function Lightbox({
           </motion.div>
 
           {images.length > 1 && (
-            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-3 py-1 text-sm font-medium text-white/80">
+            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-md px-3 py-1 text-caption tabular-nums text-steel">
               {index + 1} / {images.length}
             </div>
           )}

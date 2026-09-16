@@ -41,17 +41,65 @@ export const profile = {
     en: "Information Systems · FAU Erlangen-Nürnberg",
   } as Localized,
 
-  // Understated, journey-led hero copy — the site leads with the story, not the name/photo.
+  // Hero copy.
+  //
+  // An introduction, not an inventory: the landing card says who Finn is, and
+  // the `areas` tiles below it show roughly what he works on. Deliberately one
+  // paragraph — the band reads as one voice at one size rather than a stack of
+  // differently-weighted lines.
   hero: {
     headline: {
-      de: "Student der Wirtschaftsinformatik, Hobby-Softwareentwickler und Lichttechniker.",
-      en: "Student of Information Systems, hobby software engineer and lighting technician.",
-    } as Localized,
-    lead: {
-      de: "Diese Seite ist eine kleine Reise durch meine Projekte, mein Engagement und ein paar Wettbewerbe rund um die Welt.",
-      en: "This site is a small journey through my projects, my involvement and a few competitions around the world.",
+      de: "Ich entwickle leidenschaftlich gerne Software und bin sehr interessiert, was Cybersicherheit, Servermanagement, Bühnentechnik und Teammanagement angeht.",
+      en: "I'm passionate about building software, and I'm very interested in cybersecurity, server management, stage technology and team management.",
     } as Localized,
   },
+
+  /**
+   * The tiles under the hero: roughly what Finn does, each opening the band of
+   * the site that covers it.
+   *
+   * Photography carries these — a label on a picture, and nothing else. Keep
+   * the labels to one or two words: they sit on a photograph, where a long line
+   * stops being legible long before it stops fitting.
+   */
+  areas: [
+    {
+      href: "#projects",
+      title: { de: "Software", en: "Software" },
+      image: "/images/Coding-Projects/FSI-Songreq/fsi-image1.png",
+      alt: {
+        de: "Oberfläche des Song-Request-Portals für die WiWi-Meisterschaften.",
+        en: "Interface of the song request portal built for the WiWi championships.",
+      },
+    },
+    {
+      href: "#experience",
+      title: { de: "Bühnentechnik", en: "Stage technology" },
+      image: "/images/Stagelighting/stage-lighting3.png",
+      alt: {
+        de: "Hände an einer grandMA3-Lichtkonsole während einer Veranstaltung.",
+        en: "Hands on a grandMA3 lighting console during an event.",
+      },
+    },
+    {
+      href: "#championship",
+      title: { de: "Wettbewerbe", en: "Competitions" },
+      image: "/images/Competitions/F1/f1-podium.jpg",
+      alt: {
+        de: "Recoil Racing auf dem Podium der F1 in Schools World Finals 2023.",
+        en: "Recoil Racing on the podium of the 2023 F1 in Schools World Finals.",
+      },
+    },
+    {
+      href: "#engagement",
+      title: { de: "Engagement", en: "Involvement" },
+      image: "/images/General-Impressions/finn-rede-image1.jpeg",
+      alt: {
+        de: "Finn bei einer Rede vor Publikum.",
+        en: "Finn giving a speech in front of an audience.",
+      },
+    },
+  ] as { href: string; title: Localized; image: string; alt: Localized }[],
 
   // About section — character-focused, drawn from the long-form CV.
   aboutBody: [
@@ -69,7 +117,7 @@ export const profile = {
     },
   ] as Localized[],
 
-  // Four pillars
+  // Four pillars, explained in the About band.
   pillars: [
     {
       key: "software",

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLang } from "@/lib/i18n";
-import { RECOIL_BRIGHT, F1_RED } from "@/content/theme";
+import { ACCENT_WARM, ACCENT_COOL } from "@/content/theme";
 
 const BEST_KEY = "fk-reaction-best";
 
@@ -119,7 +119,7 @@ export function ReactionTest() {
   };
 
   return (
-    <div className="relative">
+    <div className="lg:ml-auto lg:max-w-sm">
       <button
         type="button"
         onClick={react}
@@ -127,29 +127,25 @@ export function ReactionTest() {
           de: "Reaktionstest: Klicken, sobald die Lichter ausgehen",
           en: "Reaction test: click the moment the lights go out",
         })}
-        className="group relative block w-full cursor-pointer border border-white/25 bg-black/25 p-4 text-left transition-colors hover:border-white/45"
+        className="block w-full cursor-pointer rounded-xl border border-white/20 bg-white/[0.04] p-5 text-left transition-colors hover:border-white/40"
       >
         {/* Gantry: five columns, two lights each */}
-        <div className="flex items-end justify-center gap-2.5 sm:gap-3">
+        <div className="flex items-end justify-center gap-3">
           {[1, 2, 3, 4, 5].map((col) => {
             const on = lit >= col;
             return (
               <div key={col} className="flex flex-col items-center gap-2">
-                <span
-                  aria-hidden
-                  className="h-4 w-1 bg-white/25 sm:h-5"
-                  style={{ opacity: 0.6 }}
-                />
-                <div className="flex flex-col gap-1.5 rounded border border-white/25 bg-black/55 p-1.5 sm:gap-2 sm:p-2">
+                <span aria-hidden className="h-5 w-1 bg-white/20" />
+                <div className="flex flex-col gap-2 rounded-md border border-white/20 bg-ink-deep/60 p-2">
                   {[0, 1].map((row) => (
                     <span
                       key={row}
-                      className="block h-4 w-4 rounded-full transition-all duration-150 sm:h-5 sm:w-5"
+                      className="block h-5 w-5 rounded-full transition-all duration-150"
                       style={
                         on
                           ? {
-                              backgroundColor: F1_RED,
-                              boxShadow: `0 0 20px 5px rgba(225,6,0,0.65), inset 0 0 8px rgba(255,190,185,0.55)`,
+                              backgroundColor: ACCENT_WARM,
+                              boxShadow: "0 0 20px 5px rgba(255, 80, 80, 0.5)",
                             }
                           : { backgroundColor: "rgba(255,255,255,0.12)" }
                       }
@@ -162,7 +158,7 @@ export function ReactionTest() {
         </div>
 
         {/* Readout — deliberately terse; anyone who tries it works it out */}
-        <div className="mt-4 flex items-center justify-between gap-4">
+        <div className="mt-5 flex items-center justify-between gap-4 border-t border-white/15 pt-4">
           <AnimatePresence mode="wait">
             <motion.span
               key={phase}
@@ -170,10 +166,14 @@ export function ReactionTest() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.16 }}
-              className="text-[0.68rem] font-semibold uppercase tracking-[0.16em]"
+              className="text-caption font-medium"
               style={{
                 color:
-                  phase === "go" ? RECOIL_BRIGHT : phase === "jump" ? F1_RED : "rgba(255,255,255,0.6)",
+                  phase === "go"
+                    ? ACCENT_COOL
+                    : phase === "jump"
+                      ? ACCENT_WARM
+                      : "rgba(255, 255, 255, 0.6)",
               }}
             >
               {label()}
@@ -183,16 +183,16 @@ export function ReactionTest() {
           <span className="flex items-baseline gap-4 tabular-nums">
             {time !== null && (
               <span
-                className="text-xl font-medium"
-                style={{ color: time < 200 ? RECOIL_BRIGHT : "#fff" }}
+                className="display-sm"
+                style={{ color: time < 200 ? ACCENT_COOL : "#fff" }}
               >
                 {(time / 1000).toFixed(3)}
-                <span className="ml-0.5 text-xs text-white/50">s</span>
+                <span className="ml-1 text-fine text-steel">s</span>
               </span>
             )}
             {best !== null && (
-              <span className="text-[0.68rem] uppercase tracking-[0.14em] text-white/45">
-                {t({ de: "Best", en: "Best" })} {(best / 1000).toFixed(3)}
+              <span className="text-caption text-steel">
+                {t({ de: "Bestzeit", en: "Best" })} {(best / 1000).toFixed(3)}
               </span>
             )}
           </span>

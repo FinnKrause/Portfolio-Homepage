@@ -1,19 +1,22 @@
 /**
- * Colours that appear in inline styles.
+ * The three colours the F1 chapter paints through inline `style={{}}` — SVG
+ * strokes, telemetry traces and the start-light glow, none of which Tailwind
+ * has a class for. Everything else on the site is a token from globals.css.
  *
- * Everything else on the site is a Tailwind token from globals.css. These three
- * are the exception because the F1 chapter paints them through `style={{}}` —
- * SVG strokes, gradients and glows Tailwind has no class for. They were
- * previously copy-pasted as raw hex into four components, where `RECOIL` had
- * come to mean two different greens depending on the file. One definition,
- * matching the `--recoil` / `--recoil-bright` / `--f1-red` custom properties
- * that `.f1-world` already declares.
+ * These are design-system values, not brand values. DESIGN.md closes the
+ * palette: the primary family, one warm bloom accent and the storm neutrals
+ * are the whole vocabulary, and nothing saturated is allowed outside it. So
+ * Recoil Racing's green and Formula 1's own red are represented here by the
+ * system's equivalents rather than reproduced literally — the bloom coral
+ * carries the racing red, and the bright blue carries the second accent on
+ * the ink slab, where the deep blue would muddy.
  */
 
-/** Recoil Racing's own green. Dark — for solid fills, never for type. */
-export const RECOIL = "#097b41";
+/** The warm accent — the racing red, in the system's own coral. */
+export const ACCENT_WARM = "#ff5050"; /* --color-coral */
 
-/** The lifted green. Readable on dark, so type, rules and glows use this one. */
-export const RECOIL_BRIGHT = "#19d982";
+/** The cool accent on ink. The lifted blue, readable on the dark slab. */
+export const ACCENT_COOL = "#296ef9"; /* --color-primary-bright */
 
-export const F1_RED = "#e10600";
+/** The deeper warm tone, for fills that sit behind type. */
+export const ACCENT_WARM_DEEP = "#b3262b"; /* --color-bloom-deep */

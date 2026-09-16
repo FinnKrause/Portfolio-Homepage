@@ -6,7 +6,6 @@ import { Expand } from "lucide-react";
 import type { MediaSlide } from "@/content/types";
 import { useLang } from "@/lib/i18n";
 import { Lightbox, type LightboxImage } from "./Lightbox";
-import { RevealGroup, RevealItem } from "../motion/Reveal";
 import { cn } from "@/lib/utils";
 
 /**
@@ -47,16 +46,17 @@ export function Gallery({
             ? "grid-cols-2"
             : "grid-cols-2 md:grid-cols-3";
 
+
   return (
     <>
-      <RevealGroup className={cn("grid gap-3 sm:gap-4", gridCols, className)} stagger={0.06}>
+      <ul className={cn("grid gap-4", gridCols, className)}>
         {slides.map((slide, i) => (
-          <RevealItem key={i}>
+          <li key={i}>
             <button
               type="button"
               onClick={() => setOpenIndex(i)}
               aria-label={t({ de: "Bild vergrößern", en: "Enlarge image" })}
-              className="group relative block aspect-[4/3] w-full cursor-pointer overflow-hidden ring-1 ring-black/10 transition-shadow duration-300 hover:shadow-lift"
+              className="frame group relative block aspect-[4/3] w-full cursor-pointer"
             >
               <Image
                 src={slide.src}
@@ -64,16 +64,16 @@ export function Gallery({
                 fill
                 quality={90}
                 sizes="(max-width: 768px) 50vw, 28rem"
-                className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]"
+                className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
               />
-              <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              <span className="pointer-events-none absolute right-2.5 top-2.5 grid h-8 w-8 place-items-center rounded-full bg-white/85 text-ink-700 opacity-0 shadow-sm backdrop-blur transition-all duration-300 group-hover:opacity-100">
+              {/* The control only appears on intent — hover or keyboard focus. */}
+              <span className="pointer-events-none absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-md bg-canvas/90 text-ink opacity-0 shadow-lift backdrop-blur transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
                 <Expand className="h-4 w-4" />
               </span>
             </button>
-          </RevealItem>
+          </li>
         ))}
-      </RevealGroup>
+      </ul>
 
       <Lightbox images={images} index={openIndex} onClose={() => setOpenIndex(null)} onNav={nav} />
     </>

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useReducedMotion } from "framer-motion";
 import { Volume2, VolumeX } from "lucide-react";
 import { useLang } from "@/lib/i18n";
-import { RECOIL_BRIGHT, F1_RED } from "@/content/theme";
+
 
 const CLIP = "/videos/f1-web.webm"; // web transcode; f1.webm is the 68 MB master
 
@@ -79,7 +79,7 @@ export function RaceFilm({ posterAlt }: { posterAlt: string }) {
   };
 
   return (
-    <div ref={wrapRef} className="relative aspect-[2/1] overflow-hidden md:aspect-[21/8]">
+    <div ref={wrapRef} className="relative aspect-[2/1] md:aspect-[21/8]">
       {/* Poster — optimised, and the only thing that loads up front */}
       <Image
         src="/images/Competitions/F1/f1-podium2.JPG"
@@ -105,14 +105,10 @@ export function RaceFilm({ posterAlt }: { posterAlt: string }) {
         />
       )}
 
+      {/* A floor of shade so the control stays legible over any frame. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0a2418] via-transparent to-transparent"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-1"
-        style={{ background: `linear-gradient(to right, ${RECOIL_BRIGHT}, ${F1_RED})` }}
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-ink/70 to-transparent"
       />
 
       {ready && (
@@ -120,9 +116,9 @@ export function RaceFilm({ posterAlt }: { posterAlt: string }) {
           type="button"
           onClick={toggleSound}
           aria-pressed={!muted}
-          className="absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/55 px-3.5 py-2 text-xs font-medium text-white/90 backdrop-blur-sm transition-colors hover:border-white/50 hover:bg-black/75"
+          className="absolute bottom-4 right-4 inline-flex min-h-11 items-center gap-2 rounded-md border border-white/35 bg-ink/70 px-4 text-caption font-medium text-on-ink backdrop-blur-sm transition-colors hover:bg-ink"
         >
-          {muted ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
+          {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
           {muted ? t({ de: "Ton an", en: "Sound on" }) : t({ de: "Ton aus", en: "Sound off" })}
         </button>
       )}
