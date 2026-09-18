@@ -72,6 +72,17 @@ export interface EducationItem {
   period: Localized;
   description?: Localized;
   upcoming?: boolean;
+  /** Marks the entry currently running, the same way `ExperienceItem` does. */
+  current?: boolean;
+  /**
+   * Scholarships or grants supporting this entry. Plain strings, not
+   * `Localized`: these are the programmes' official names, and a programme is
+   * called what it is called in either language — the same treatment `org`
+   * gets.
+   */
+  funding?: string[];
+  /** Optional images — add photos to an entry later. */
+  gallery?: MediaSlide[];
 }
 
 export interface Award {

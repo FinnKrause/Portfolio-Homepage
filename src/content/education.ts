@@ -14,11 +14,13 @@ export const education: EducationItem[] = [
     title: { de: "Auslandssemester", en: "Exchange semester" },
     org: "Kyonggi University (KGU), Suwon · Südkorea",
     period: { de: "Aug. 2026 – Jan. 2027", en: "Aug 2026 – Jan 2027" },
-    upcoming: false,
-    description: {
-      de: "Ein Semester an der Kyonggi University in Suwon mit hoffentlich vielen neue Perspektiven, Sprache und Kultur.",
-      en: "A semester at Kyonggi University in Suwon with new perspectives, language and culture.",
-    },
+    current: true,
+    // description: {
+    //   de: "Ein Semester an der Kyonggi University in Suwon.",
+    //   en: "A semester at Kyonggi University in Suwon.",
+    // },
+    gallery: [{ src: "/images/General-Impressions/exchange-semester-image1.jpeg", alt: { de: "Gruppenbild KGU", en: "Group Picture at KGU" } }],
+    funding: ["FAU-Reisestipendium", "DAAD-PROMOS-Stipendium"],
   },
   {
     title: { de: "Bachelorarbeit", en: "Bachelor's thesis" },

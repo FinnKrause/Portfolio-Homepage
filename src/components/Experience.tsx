@@ -7,6 +7,34 @@ import type { ExperienceItem } from "@/content/types";
 import { useLang } from "@/lib/i18n";
 import { Section, SectionHeading } from "./Section";
 import { Gallery } from "./media/Gallery";
+import { cn } from "@/lib/utils";
+
+/**
+ * Scholarships supporting an entry, as one line of prose.
+ *
+ * This started as a labelled block on a hairline with the names in outlined
+ * pills. Two things were wrong with that: the rule and the label made two facts
+ * look like a module bolted onto the card, and the pills are the same treatment
+ * the Skills band uses for its chips, so they read as interactive when they are
+ * not. A sentence says it in a third of the height, and putting the weight on
+ * the names rather than on a border is what makes them findable.
+ */
+function Funding({ grants }: { grants: string[] }) {
+  const { t } = useLang();
+  const last = grants.length - 1;
+
+  return (
+    <p className="mt-3 text-caption text-graphite">
+      {t({ de: "Gefördert durch", en: "Supported by" })}{" "}
+      {grants.map((grant, i) => (
+        <span key={grant}>
+          {i > 0 && (i === last ? t({ de: " und ", en: " and " }) : ", ")}
+          <span className="font-medium text-ink">{grant}</span>
+        </span>
+      ))}
+    </p>
+  );
+}
 
 function ExpEntry({ item }: { item: ExperienceItem }) {
   const { t } = useLang();
@@ -97,6 +125,11 @@ export function Experience() {
               <li key={i} className="card p-6">
                 <div className="flex flex-wrap items-center gap-3">
                   <span className="text-caption text-primary">{t(edu.period)}</span>
+                  {edu.current && (
+                    <span className="badge badge-soft text-fine">
+                      {t({ de: "aktuell", en: "current" })}
+                    </span>
+                  )}
                   {edu.upcoming && (
                     <span className="badge badge-soft text-fine">
                       {t({ de: "geplant", en: "planned" })}
@@ -107,6 +140,28 @@ export function Experience() {
                 <p className="mt-1 text-caption text-graphite">{edu.org}</p>
                 {edu.description && (
                   <p className="mt-3 text-caption text-charcoal">{t(edu.description)}</p>
+                )}
+
+                {edu.funding?.length ? <Funding grants={edu.funding} /> : null}
+
+                {/* Capped narrower than the card: these are supporting
+                    snapshots, not the subject of the entry, and at full column
+                    width a single one outweighed everything above it.
+
+                    The cap scales with the count so a thumbnail is ~200px
+                    whether there is one or four. Capping at a single width
+                    instead made a lone image shrink to 136px on a phone, where
+                    the column is narrow and there is no second tile to share
+                    the row with. */}
+                {edu.gallery && edu.gallery.length > 0 && (
+                  <Gallery
+                    slides={edu.gallery}
+                    columns={edu.gallery.length > 1 ? 2 : undefined}
+                    className={cn(
+                      "mt-4",
+                      edu.gallery.length > 1 ? "max-w-[26rem]" : "max-w-[13rem]",
+                    )}
+                  />
                 )}
               </li>
             ))}
