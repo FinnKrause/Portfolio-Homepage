@@ -789,7 +789,8 @@ export function AdminDashboard({ publicOrigin }: { publicOrigin: string }) {
                       <EventBadge e={e} />
                     </td>
                     <td className="py-2 pr-3 font-mono text-fine">
-                      {e.token_code ?? e.attempted_code ?? "—"}
+                      {e.token_code ?? e.attempted_code ?? e.token_name ?? "—"}
+                      {e.token_name && ` (${e.token_name})`}
                     </td>
                     <td className="py-2 pr-3 font-mono text-fine text-charcoal">
                       {shortId(e.visitor_id)}
@@ -915,8 +916,8 @@ function NewToken({
 
   const set =
     (k: keyof typeof form) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
-      setForm((f) => ({ ...f, [k]: e.target.value }));
+      (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+        setForm((f) => ({ ...f, [k]: e.target.value }));
 
   return (
     <form
